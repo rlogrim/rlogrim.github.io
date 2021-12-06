@@ -1,5 +1,7 @@
 ---
-title: "R 자료구조와 인덱싱"
+title: R 자료구조와 인덱싱
+date: YYYY-MM-DD hh:mm:ss
+categories: R
 output:
   html_document:
     keep_md: true
