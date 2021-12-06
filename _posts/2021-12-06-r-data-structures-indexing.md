@@ -1,6 +1,6 @@
 ---
 title: R 자료구조와 인덱싱
-date: YYYY-MM-DD hh:mm:ss
+date: YYYY-MM-DD
 categories: R
 ---
 
