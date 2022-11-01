@@ -1,8 +1,21 @@
 {
-  "extends": "stylelint-config-sass-guidelines",
+  "ignoreFiles": [
+    "assets/css/just-the-docs-default.scss",
+    "assets/css/just-the-docs-light.scss",
+    "assets/css/just-the-docs-dark.scss",
+    "_sass/vendor/**/*.scss"
+  ],
+  "extends": [
+    "stylelint-config-standard-scss",
+    "stylelint-config-prettier-scss"
+  ],
+  "plugins": ["stylelint-prettier"],
   "rules": {
-    "selector-max-compound-selectors": 4,
-    "selector-max-id": 1,
-    "selector-no-qualifying-type": null
+    "prettier/prettier": true,
+    "alpha-value-notation": null,
+    "color-function-notation": null,
+    "declaration-block-no-redundant-longhand-properties": null,
+    "no-descending-specificity": null,
+    "scss/no-global-function-names": null
   }
 }
