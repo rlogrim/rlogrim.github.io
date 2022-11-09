@@ -61,6 +61,8 @@ div.listingblock > div.content {
   div.highlight,
   pre.highlight,
   code {
+    white-space: pre-wrap;
+    word-break: break-all;
     padding: 0;
     margin: 0;
     border: 0;
