@@ -4,7 +4,7 @@
 // {% raw %}
 
 code {
-  padding: 0.2em 0.15em;
+  padding: 0.1em;
   font-weight: 400;
   background-color: $code-background-color;
   border: $border $border-color;
@@ -50,7 +50,8 @@ a:visited code {
 div.highlighter-rouge,
 div.listingblock > div.content {
   padding: $sp-3;
-  margin-top: 0;
+  line-height: 1.5;
+  margin-top: 1.0em;
   margin-bottom: $sp-3;
   overflow-x: auto;
   background-color: $code-background-color;
