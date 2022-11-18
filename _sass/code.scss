@@ -70,6 +70,17 @@ div.listingblock > div.content {
   }
 }
 
+div.language-plaintext {
+  color: #939393;
+  background-color: white;
+  border-radius: $border-radius;
+  border: solid 1px #e0e0e0;
+
+  code {
+    background-color: white;
+  }
+}
+
 // {% highlight LANG %}...{% endhighlight %},
 // {% highlight LANG linenos %}...{% endhighlight %}:
 figure.highlight {
