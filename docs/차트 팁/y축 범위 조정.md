@@ -50,7 +50,7 @@ ggplot(data=data, aes(x=종류, y=`꽃받침 길이`, label=`꽃받침 길이`))
   theme_bw(base_size=12)
 ```
 
-<img src="{{ site.baseurl }}/assets/images/y축-범위-조정/unnamed-chunk-2-1.png" width="70%" style="display: block; margin: auto;" />
+<img src="/assets/images/y축-범위-조정/unnamed-chunk-2-1.png" width="70%" style="display: block; margin: auto;" />
 
 위 그래프를 보면, x축과 막대그래프 사이에 간격이 벌어져 있습니다.
 
