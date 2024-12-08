@@ -281,7 +281,6 @@ PLATFORMS
 
 DEPENDENCIES
   github-pages
-  jekyll-redirect-from
   just-the-docs
 
 BUNDLED WITH
