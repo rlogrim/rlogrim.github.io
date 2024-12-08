@@ -4,7 +4,9 @@ baseurl: "" # Root URL ("" for GitHub Pages root)
 url: "https://codebyday.github.io/ggsave"
 
 remote_theme: just-the-docs/just-the-docs
-
+plugins:
+  - jekyll-remote-theme
+  
 # Optional settings
 # Enable the search functionality
 just_the_docs:
@@ -14,6 +16,3 @@ just_the_docs:
 
 # Build settings
 markdown: kramdown
-
-plugins:
-  - jekyll-remote-theme
