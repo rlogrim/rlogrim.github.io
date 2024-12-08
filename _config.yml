@@ -1,7 +1,7 @@
 title: "R 팁 저장소"
 description: "R로 데이터 분석과 시각화 팁을 체계적으로 정리하고 공유하는 공간입니다"
-baseurl: "/ggsave" # Root URL ("" for GitHub Pages root)
-url: "https://codebyday.github.io"
+baseurl: "" # Root URL ("" for GitHub Pages root)
+url: "https://codebyday.github.io/ggsave"
 
 remote_theme: just-the-docs/just-the-docs
 plugins:
