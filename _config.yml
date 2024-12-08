@@ -3,7 +3,7 @@ description: "R로 데이터 분석과 시각화 팁을 체계적으로 정리�
 baseurl: "" # Root URL ("" for GitHub Pages root)
 url: "https://codebyday.github.io/ggsave"
 
-theme: just-the-docs
+remote_theme: just-the-docs/just-the-docs
 
 # Optional settings
 # Enable the search functionality
