@@ -7,3 +7,8 @@ gem "jekyll-seo-tag"
 gem "jekyll-include-cache"
 
 ruby "3.3.4" # 특정 버전을 사용하도록 명시
+
+gem "rake"
+gem "base64"
+gem "bigdecimal"
+gem "kramdown-parser-gfm"

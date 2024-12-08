@@ -16,3 +16,5 @@ just_the_docs:
 
 # Build settings
 markdown: kramdown
+kramdown:
+  input: GFM
