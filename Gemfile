@@ -1,7 +1,9 @@
 source "https://rubygems.org"
 
-gem "jekyll", "~> 4.3" # 최신 버전을 사용하도록 명시
+gem "jekyll", "3.10.0" # 특정 버전을 사용하도록 명시
 gem "jekyll-remote-theme" # Remote Theme 사용 시 추가
 gem "webrick" # 로컬 서버 실행 시 필요
 gem "jekyll-seo-tag"
 gem "jekyll-include-cache"
+
+ruby "3.3.4" # 특정 버전을 사용하도록 명시
