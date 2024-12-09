@@ -5,6 +5,7 @@ gem "jekyll-remote-theme" # Remote Theme 사용 시 추가
 gem "webrick" # 로컬 서버 실행 시 필요
 gem "jekyll-seo-tag"
 gem "jekyll-include-cache"
+gem "jekyll-sitemap"
 
 ruby "3.3.4" # 특정 버전을 사용하도록 명시
 

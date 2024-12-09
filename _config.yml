@@ -6,13 +6,7 @@ url: "https://codebyday.github.io/ggsave"
 remote_theme: just-the-docs/just-the-docs
 plugins:
   - jekyll-remote-theme
-  
-# Optional settings
-# Enable the search functionality
-just_the_docs:
-  search_enabled: true
-  search:
-    placeholder: "찾고 싶은 내용을 입력하세요"
+  - jekyll-sitemap
 
 # Build settings
 markdown: kramdown
