@@ -14,404 +14,376 @@
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/y%EC%B6%95%20%EB%B2%94%EC%9C%84%20%EC%A1%B0%EC%A0%95.html"
   },"2": {
     "doc": "y축 범위 조정",
-    "title": "목차",
-    "content": ". | y축 범위를 조정하고 싶을 때 | y축이 0에서 시작하도록 수정하기 | y축이 데이터 중간에서 시작하도록 수정하기 | . ",
-    "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/y%EC%B6%95%20%EB%B2%94%EC%9C%84%20%EC%A1%B0%EC%A0%95.html#%EB%AA%A9%EC%B0%A8",
+    "title": "y축 범위, 왜 신경 써야 할까?",
+    "content": "데이터를 시각화할 때 y축 범위는 중요하지 않은 요소로 보일 수 있지만, 사실 그래프의 가독성과 메시지 전달력에 큰 영향을 미칩니다. 적절하지 않은 y축 범위는 데이터의 주요 차이를 흐리거나, 불필요한 여백을 만들어 시각적 집중도를 떨어뜨릴 수 있기 때문입니다. 이 글에서는 붓꽃 데이터셋을 예로 들어, y축 범위 조정이 필요한 상황과 이를 해결하는 방법을 구체적으로 살펴보겠습니다. 붓꽃 데이터셋은 150개의 붓꽃에 대해 꽃받침과 꽃잎의 길이와 너비를 측정한 데이터입니다. 이를 활용해 각 붓꽃 종류별로 꽃받침 길이, 꽃받침 너비, 꽃잎 길이, 꽃잎 너비의 평균을 계산하면 아래와 같은 결과를 얻을 수 있습니다. head(data) . ## # A tibble: 3 × 5 ## 종류 `꽃받침 길이` `꽃받침 너비` `꽃잎 길이` `꽃잎 너비` ## &lt;fct&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; ## 1 setosa 5.01 3.43 1.46 0.246 ## 2 versicolor 5.94 2.77 4.26 1.33 ## 3 virginica 6.59 2.97 5.55 2.03 . 이 데이터를 기반으로 간단한 시각화를 진행해 보겠습니다. 붓꽃 종류별 평균 꽃받침 길이를 비교하는 막대그래프를 그려보았습니다. ggplot(data=data, aes(x=종류, y=`꽃받침 길이`, label=`꽃받침 길이`)) + geom_col(width=0.6) + geom_text(vjust=-0.5, size=12/.pt) + theme_bw(base_size=12) . 그런데 x축과 막대그래프 사이에 공간이 생겨 시각적으로 불필요한 여백이 발생했습니다. 이 공간을 없애려면 어떻게 해야 할까요? . ",
+    "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/y%EC%B6%95%20%EB%B2%94%EC%9C%84%20%EC%A1%B0%EC%A0%95.html#y%EC%B6%95-%EB%B2%94%EC%9C%84-%EC%99%9C-%EC%8B%A0%EA%B2%BD-%EC%8D%A8%EC%95%BC-%ED%95%A0%EA%B9%8C",
     
-    "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/y%EC%B6%95%20%EB%B2%94%EC%9C%84%20%EC%A1%B0%EC%A0%95.html#목차"
+    "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/y%EC%B6%95%20%EB%B2%94%EC%9C%84%20%EC%A1%B0%EC%A0%95.html#y축-범위-왜-신경-써야-할까"
   },"3": {
     "doc": "y축 범위 조정",
-    "title": "y축 범위를 조정하고 싶을 때",
-    "content": "붓꽃 데이터셋을 이용해 그래프를 그려보겠습니다. 붓꽃 데이터셋은 150개 붓꽃을 조사하여 붓꽃의 종류, 꽃받침와 꽃잎의 길이, 너비를 측정하여 기록해 놓은 데이터셋입니다. 그래프를 그리기 전, 사전 작업으로 붓꽃 종류별로 꽃받침 길이, 꽃받침 너비, 꽃잎 길이, 꽃잎 너비의 평균값을 계산해 놓았습니다. head(data) . ## # A tibble: 3 × 5 ## 종류 `꽃받침 길이` `꽃받침 너비` `꽃잎 길이` `꽃잎 너비` ## &lt;fct&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; ## 1 setosa 5.01 3.43 1.46 0.246 ## 2 versicolor 5.94 2.77 4.26 1.33 ## 3 virginica 6.59 2.97 5.55 2.03 . 이 데이터를 사용해 붓꽃 종류별 평균 꽃받침 길이를 비교하는 막대그래프를 그려보겠습니다. x축은 ‘꽃의 종류’, y축은 ‘평균 꽃받침 길이’입니다. 막대그래프는 geom_col로, 막대그래프 위의 텍스트는 geom_text로 그렸습니다. 그리고 Complete themes 중 theme_bw를 이용해 그래프 테마를 기본 테마보다 더 깔끔한 버전으로 바꿔 주었습니다. ggplot(data=data, aes(x=종류, y=`꽃받침 길이`, label=`꽃받침 길이`)) + geom_col(width=0.6) + geom_text(vjust=-0.5, size=12/.pt) + theme_bw(base_size=12) . 위 그래프를 보면, x축과 막대그래프 사이에 간격이 벌어져 있습니다. 이 빈 공간을 어떻게 하면 없앨 수 있을까요? . ",
-    "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/y%EC%B6%95%20%EB%B2%94%EC%9C%84%20%EC%A1%B0%EC%A0%95.html#y%EC%B6%95-%EB%B2%94%EC%9C%84%EB%A5%BC-%EC%A1%B0%EC%A0%95%ED%95%98%EA%B3%A0-%EC%8B%B6%EC%9D%84-%EB%95%8C",
+    "title": "y축을 0에서 시작하도록 설정",
+    "content": "x축과 막대그래프 사이의 여백을 없애려면 y축의 범위를 0에서 시작하도록 설정해야 합니다. 이를 위해 scale_y_continuous 함수의 expand 옵션을 활용할 수 있습니다. expand 옵션은 그래프의 축 끝에 추가되는 여백을 설정하는 데 사용됩니다. 이 여백은 데이터를 더 명확히 표현하거나 그래프의 가독성을 높이는 데 도움을 줄 수 있지만, 불필요한 여백은 제거하는 것이 좋습니다. 다음 코드를 기존 그래프 코드에 추가하면, y축이 정확히 0에서 시작하고 여백이 최소화됩니다. 여기서 mult 매개변수는 축 끝에 추가할 상대적 여백을 설정합니다. 첫 번째 값 0은 y축의 시작점에서 여백을 0으로 설정합니다. 즉, y축이 0에서 시작하게 됩니다. 두 번째 값 0.1은 y축의 끝점에서 총 데이터 범위의 10%에 해당하는 여백을 추가하는 것을 의미합니다. ggplot(data=data, aes(x=종류, y=`꽃받침 길이`, label=`꽃받침 길이`)) + geom_col(width=0.6) + geom_text(vjust=-0.5, size=12/.pt) + scale_y_continuous(expand=expansion(mult=c(0, 0.1))) + theme_bw(base_size=12) . ",
+    "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/y%EC%B6%95%20%EB%B2%94%EC%9C%84%20%EC%A1%B0%EC%A0%95.html#y%EC%B6%95%EC%9D%84-0%EC%97%90%EC%84%9C-%EC%8B%9C%EC%9E%91%ED%95%98%EB%8F%84%EB%A1%9D-%EC%84%A4%EC%A0%95",
     
-    "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/y%EC%B6%95%20%EB%B2%94%EC%9C%84%20%EC%A1%B0%EC%A0%95.html#y축-범위를-조정하고-싶을-때"
+    "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/y%EC%B6%95%20%EB%B2%94%EC%9C%84%20%EC%A1%B0%EC%A0%95.html#y축을-0에서-시작하도록-설정"
   },"4": {
     "doc": "y축 범위 조정",
-    "title": "y축이 0에서 시작하도록 수정하기",
-    "content": "y축이 0에서 시작하도록 수정해 주면, x축과 막대그래프 사이의 빈 공간을 없앨 수 있습니다. 기존 코드에 scale_y_continuous(expand=expansion(mult=c(0, 0.1)))를 한 줄 추가하면 해결됩니다. ggplot(data=data, aes(x=종류, y=`꽃받침 길이`, label=`꽃받침 길이`)) + geom_col(width=0.6) + geom_text(vjust=-0.5, size=12/.pt) + scale_y_continuous(expand=expansion(mult=c(0, 0.1))) + theme_bw(base_size=12) . ",
-    "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/y%EC%B6%95%20%EB%B2%94%EC%9C%84%20%EC%A1%B0%EC%A0%95.html#y%EC%B6%95%EC%9D%B4-0%EC%97%90%EC%84%9C-%EC%8B%9C%EC%9E%91%ED%95%98%EB%8F%84%EB%A1%9D-%EC%88%98%EC%A0%95%ED%95%98%EA%B8%B0",
+    "title": "y축이 데이터 중간에서 시작하도록 설정",
+    "content": "경우에 따라 y축을 데이터 중간부터 시작하고 싶을 때가 있습니다. 예를 들어, 비교하고자 하는 값들이 큰 차이가 없는 경우, y축이 0부터 시작하면 중요한 차이를 제대로 드러내기 어렵습니다. 이럴 때는 y축의 범위를 데이터의 중간값이나 원하는 구간으로 조정하면 됩니다. 이를 위해 coord_cartesian 함수를 사용할 수 있습니다. ggplot(data=data, aes(x=종류, y=`꽃받침 길이`, label=`꽃받침 길이`)) + geom_col(width=0.6) + geom_text(vjust=-0.5, size=12/.pt) + scale_y_continuous(expand=expansion(mult=c(0, 0.1))) + coord_cartesian(ylim=c(3, 7)) + theme_bw(base_size=12) . 그래프의 작은 설정 하나가 시각화의 가독성과 전달력을 크게 바꿀 수 있습니다. 오늘 다룬 y축 범위 조정 팁을 활용해 데이터를 더 명확히 전달할 수 있는 그래프를 만들어 보세요 😊 . ",
+    "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/y%EC%B6%95%20%EB%B2%94%EC%9C%84%20%EC%A1%B0%EC%A0%95.html#y%EC%B6%95%EC%9D%B4-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A4%91%EA%B0%84%EC%97%90%EC%84%9C-%EC%8B%9C%EC%9E%91%ED%95%98%EB%8F%84%EB%A1%9D-%EC%84%A4%EC%A0%95",
     
-    "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/y%EC%B6%95%20%EB%B2%94%EC%9C%84%20%EC%A1%B0%EC%A0%95.html#y축이-0에서-시작하도록-수정하기"
+    "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/y%EC%B6%95%20%EB%B2%94%EC%9C%84%20%EC%A1%B0%EC%A0%95.html#y축이-데이터-중간에서-시작하도록-설정"
   },"5": {
-    "doc": "y축 범위 조정",
-    "title": "y축이 데이터 중간에서 시작하도록 수정하기",
-    "content": "종종 막대그래프가 0이 아니라 데이터의 중간 값에서 시작하도록 바꾸고 싶을 때도 있습니다. 비교하려는 값들 사이에 큰 차이가 없는 경우 막대그래프가 0에서 시작하면 어떤 값이 더 큰 지 한 눈에 확인하기 어려운 경우가 있기 때문입니다. 평균 꽃받침 길이를 더 빠르게 비교할 수 있도록 위 그래프를 수정해 보겠습니다. 기존 코드에 coord_cartesian(ylim=c(3, 7))를 추가해 주기만 하면 됩니다. 그래프 상 표현되는 y축 범위가 3과 7사이로 변경되고 막대그래프 간 높이 차이가 더 커져서, 이전 그래프보다 값 비교가 더 쉬워집니다. ggplot(data=data, aes(x=종류, y=`꽃받침 길이`, label=`꽃받침 길이`)) + geom_col(width=0.6) + geom_text(vjust=-0.5, size=12/.pt) + scale_y_continuous(expand=expansion(mult=c(0, 0.1))) + coord_cartesian(ylim=c(3, 7)) + theme_bw(base_size=12) . ",
-    "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/y%EC%B6%95%20%EB%B2%94%EC%9C%84%20%EC%A1%B0%EC%A0%95.html#y%EC%B6%95%EC%9D%B4-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A4%91%EA%B0%84%EC%97%90%EC%84%9C-%EC%8B%9C%EC%9E%91%ED%95%98%EB%8F%84%EB%A1%9D-%EC%88%98%EC%A0%95%ED%95%98%EA%B8%B0",
-    
-    "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/y%EC%B6%95%20%EB%B2%94%EC%9C%84%20%EC%A1%B0%EC%A0%95.html#y축이-데이터-중간에서-시작하도록-수정하기"
-  },"6": {
     "doc": "글꼴 변경",
     "title": "글꼴 변경",
     "content": " ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%EB%B3%80%EA%B2%BD.html",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%EB%B3%80%EA%B2%BD.html"
+  },"6": {
+    "doc": "글꼴 변경",
+    "title": "필요한 패키지 준비",
+    "content": "차트의 글꼴을 변경하려면 먼저 showtext 패키지를 설치하고 로드해야 합니다. 이 패키지는 R 그래프에서 다양한 글꼴을 쉽게 사용할 수 있도록 도와줍니다. showtext 기능을 활성화하면, 새로 생성되는 그래픽 장치(graphic device)에서 텍스트가 showtext를 통해 출력됩니다. install.packages(\"showtext\") # 패키지 설치 library(showtext) # 패키지 로드 . ",
+    "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%EB%B3%80%EA%B2%BD.html#%ED%95%84%EC%9A%94%ED%95%9C-%ED%8C%A8%ED%82%A4%EC%A7%80-%EC%A4%80%EB%B9%84",
+    
+    "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%EB%B3%80%EA%B2%BD.html#필요한-패키지-준비"
   },"7": {
     "doc": "글꼴 변경",
-    "title": "목차",
-    "content": ". | 필요한 패키지 | 컴퓨터에 설치된 글꼴 사용하기 | showtext 기능 자동 사용 설정 | ggplot에서 글꼴 적용 | . ",
-    "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%EB%B3%80%EA%B2%BD.html#%EB%AA%A9%EC%B0%A8",
+    "title": "컴퓨터에 설치된 글꼴 불러오기",
+    "content": "컴퓨터에 설치된 글꼴을 사용하려면 글꼴 파일의 경로를 알아야 합니다. | Windows 기준으로, 제어판 &gt; 모양 및 개인 설정 &gt; 글꼴 경로에서 원하는 글꼴을 찾습니다. | 해당 글꼴을 마우스 오른쪽 버튼으로 클릭하고, 속성에서 경로를 확인합니다. | . font_add 함수를 사용하여 R에서 글꼴을 등록할 수 있습니다. 예를 들어, 아래와 같이 Kopub 돋움체 글꼴을 사용할 수 있습니다. 등록한 글꼴은 kopub이라는 이름으로 사용할 수 있습니다. font_add(\"kopub\", \"C:/Users/.../AppData/Local/Microsoft/Windows/Fonts/Kopubdotummedium.ttf\") . ",
+    "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%EB%B3%80%EA%B2%BD.html#%EC%BB%B4%ED%93%A8%ED%84%B0%EC%97%90-%EC%84%A4%EC%B9%98%EB%90%9C-%EA%B8%80%EA%BC%B4-%EB%B6%88%EB%9F%AC%EC%98%A4%EA%B8%B0",
     
-    "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%EB%B3%80%EA%B2%BD.html#목차"
+    "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%EB%B3%80%EA%B2%BD.html#컴퓨터에-설치된-글꼴-불러오기"
   },"8": {
     "doc": "글꼴 변경",
-    "title": "필요한 패키지",
-    "content": "글꼴을 변경하기 위해서 먼저 showtext 패키지 설치하고 불러와야 합니다. showtext 기능을 켜면, 새로 열린 그래픽 장치(graphics devices)는 showtext를 사용하여 텍스트를 출력합니다. install.packages(\"showtext\") # 패키지 설치 library(showtext) # 패키지 불러오기 . ",
-    "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%EB%B3%80%EA%B2%BD.html#%ED%95%84%EC%9A%94%ED%95%9C-%ED%8C%A8%ED%82%A4%EC%A7%80",
+    "title": "showtext 자동 사용 설정",
+    "content": "showtext 기능을 자동으로 활성화하면, 매번 수동으로 설정하지 않아도 됩니다. 이와 함께 dpi 설정도 변경할 수 있습니다. 기본 dpi는 96으로 설정되어 있지만, 인쇄용 그래프에서는 300dpi를 추천합니다. 이제 모든 그래프에 showtext 기능이 적용됩니다. showtext_auto() # showtext 자동 활성화 showtext_opts(dpi=300) # dpi 300 설정 . ",
+    "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%EB%B3%80%EA%B2%BD.html#showtext-%EC%9E%90%EB%8F%99-%EC%82%AC%EC%9A%A9-%EC%84%A4%EC%A0%95",
     
-    "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%EB%B3%80%EA%B2%BD.html#필요한-패키지"
+    "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%EB%B3%80%EA%B2%BD.html#showtext-자동-사용-설정"
   },"9": {
     "doc": "글꼴 변경",
-    "title": "컴퓨터에 설치된 글꼴 사용하기",
-    "content": "글꼴 파일이 위치한 경로는 컴퓨터에서 ‘제어판 &gt; 모양 및 개인 설정 &gt; 글꼴’로 이동해서 설치하려는 글꼴을 검색하고, 글꼴에서 마우스 오른쪽 클릭하여 속성을 클릭하면 확인할 수 있습니다. font_add 함수 이용해서 컴퓨터에 설치된 글꼴을 R에서 사용할 수 있도록 불러옵니다. font_add(\"kopub\", \"C:/Users/.../AppData/Local/Microsoft/Windows/Fonts/Kopubdotummedium.ttf\") . ",
-    "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%EB%B3%80%EA%B2%BD.html#%EC%BB%B4%ED%93%A8%ED%84%B0%EC%97%90-%EC%84%A4%EC%B9%98%EB%90%9C-%EA%B8%80%EA%BC%B4-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0",
+    "title": "ggplot2에서 글꼴 적용하기",
+    "content": "ggplot2를 사용하는 경우, geom_text나 theme에서 글꼴을 설정할 수 있습니다. 예를 들어, 아래와 같이 Kopub 돋움체 글꼴을 적용할 수 있습니다. ggplot(data = mtcars, aes(x = wt, y = mpg)) + geom_point() + geom_text(aes(label = rownames(mtcars)), family = \"kopub\") + theme_minimal(base_family = \"kopub\") . 이렇게 하면 R 차트에서 원하는 글꼴을 적용할 수 있습니다. 글꼴을 바꾸면 그래프의 가독성과 디자인이 한층 개선되니, 다양한 글꼴을 시도해 보세요! . ",
+    "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%EB%B3%80%EA%B2%BD.html#ggplot2%EC%97%90%EC%84%9C-%EA%B8%80%EA%BC%B4-%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0",
     
-    "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%EB%B3%80%EA%B2%BD.html#컴퓨터에-설치된-글꼴-사용하기"
+    "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%EB%B3%80%EA%B2%BD.html#ggplot2에서-글꼴-적용하기"
   },"10": {
-    "doc": "글꼴 변경",
-    "title": "showtext 기능 자동 사용 설정",
-    "content": "showtext 기능이 자동으로 켜지도록 설정하고, dpi를 300으로 설정해 줍니다. 기본 dpi가 96으로 설정되어 있어서 보고서용 그래프를 출력하기에는 적합하지 않습니다. dpi를 300으로 변경하는 것을 추천합니다. showtext_auto() # showtext 기능 자동 사용 showtext_opts(dpi=300) # dpi 300 설정 . ",
-    "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%EB%B3%80%EA%B2%BD.html#showtext-%EA%B8%B0%EB%8A%A5-%EC%9E%90%EB%8F%99-%EC%82%AC%EC%9A%A9-%EC%84%A4%EC%A0%95",
-    
-    "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%EB%B3%80%EA%B2%BD.html#showtext-기능-자동-사용-설정"
-  },"11": {
-    "doc": "글꼴 변경",
-    "title": "ggplot에서 글꼴 적용",
-    "content": "geom_text(family=\"kopub\") . ",
-    "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%EB%B3%80%EA%B2%BD.html#ggplot%EC%97%90%EC%84%9C-%EA%B8%80%EA%BC%B4-%EC%A0%81%EC%9A%A9",
-    
-    "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%EB%B3%80%EA%B2%BD.html#ggplot에서-글꼴-적용"
-  },"12": {
     "doc": "글꼴 크기 설정",
     "title": "글꼴 크기 설정",
     "content": " ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%ED%81%AC%EA%B8%B0%20%EC%84%A4%EC%A0%95.html",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%ED%81%AC%EA%B8%B0%20%EC%84%A4%EC%A0%95.html"
+  },"11": {
+    "doc": "글꼴 크기 설정",
+    "title": "theme과 geom_text의 차이점",
+    "content": "R에서 차트의 텍스트 크기를 조정하는 방법에 대해 알아보겠습니다. theme과 geom_text를 적절히 사용하면 도표에 필요한 모든 텍스트 크기를 효과적으로 설정할 수 있습니다. 많은 사람들이 theme 함수로 차트 안의 모든 텍스트 크기를 조정할 수 있다고 생각하지만, 이는 정확하지 않습니다. theme으로는 축, 범례 등 데이터와 무관한 텍스트의 크기만 조정할 수 있습니다. 반면, geom_text로 출력되는 데이터 관련 텍스트(예: 막대그래프 위의 수치)는 별도로 크기를 설정해야 합니다. 또한, theme에서 크기 단위는 ‘pt’이고, geom_text에서는 ‘mm’로 정의되므로 이 차이를 반드시 유념해야 합니다. ",
+    "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%ED%81%AC%EA%B8%B0%20%EC%84%A4%EC%A0%95.html#theme%EA%B3%BC-geom_text%EC%9D%98-%EC%B0%A8%EC%9D%B4%EC%A0%90",
+    
+    "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%ED%81%AC%EA%B8%B0%20%EC%84%A4%EC%A0%95.html#theme과-geom_text의-차이점"
+  },"12": {
+    "doc": "글꼴 크기 설정",
+    "title": "데이터와 무관한 텍스트 크기 조정하기",
+    "content": "theme을 사용하여 제목, 축, 범례 등의 텍스트 크기를 설정할 수 있습니다. 기본 텍스트 크기를 10pt로 설정하는 방법은 아래와 같습니다. # 방법 1: 기본 테마 사용 theme_classic(base_size=10) # 방법2 : 사용자 지정 테마 사용 theme( text=element_text(size=10) ) . 그러나 이렇게 설정해도 축이나 범례 텍스트는 기본 크기의 0.8배로 출력됩니다. 이 값을 기본 크기와 같게 만들려면 rel을 사용해 조정할 수 있습니다. theme( text=element_text(size=10), axis.text=element_text(size=rel(1)), legend.text=element_text(size=rel(1)) ) . ",
+    "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%ED%81%AC%EA%B8%B0%20%EC%84%A4%EC%A0%95.html#%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%99%80-%EB%AC%B4%EA%B4%80%ED%95%9C-%ED%85%8D%EC%8A%A4%ED%8A%B8-%ED%81%AC%EA%B8%B0-%EC%A1%B0%EC%A0%95%ED%95%98%EA%B8%B0",
+    
+    "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%ED%81%AC%EA%B8%B0%20%EC%84%A4%EC%A0%95.html#데이터와-무관한-텍스트-크기-조정하기"
   },"13": {
     "doc": "글꼴 크기 설정",
-    "title": "목차",
-    "content": ". | theme, geom_text 구분하기 | 데이터 무관 텍스트(제목, 축, 범례 등) 크기 조정하기 | 데이터 관련 텍스트 크기 조정하기 | 도표가 여러개일 때 글꼴 크기 일괄 조정하기 | 참고자료 | . ",
-    "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%ED%81%AC%EA%B8%B0%20%EC%84%A4%EC%A0%95.html#%EB%AA%A9%EC%B0%A8",
-    
-    "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%ED%81%AC%EA%B8%B0%20%EC%84%A4%EC%A0%95.html#목차"
-  },"14": {
-    "doc": "글꼴 크기 설정",
-    "title": "theme, geom_text 구분하기",
-    "content": "보통 theme에서 글꼴 크기를 설정하면 도표 안의 모든 텍스트 크기를 일괄 조정할 수 있다고 착각하기 쉽습니다. 그러나 theme 함수로는 축, 범례 등 데이터와 무관한 텍스트 크기만 조정할 수 있습니다. geom_text로 출력되는 텍스트(예: 막대그래프 위의 수치) 크기를 조정하려면, 별도의 작업이 필요합니다. 그리고 theme에서 size는 ‘pt 단위’로 정의되지만 geom_text에서 size는 ‘mm 단위’로 정의돼서 주의가 필요합니다. ",
-    "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%ED%81%AC%EA%B8%B0%20%EC%84%A4%EC%A0%95.html#theme-geom_text-%EA%B5%AC%EB%B6%84%ED%95%98%EA%B8%B0",
-    
-    "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%ED%81%AC%EA%B8%B0%20%EC%84%A4%EC%A0%95.html#theme-geom_text-구분하기"
-  },"15": {
-    "doc": "글꼴 크기 설정",
-    "title": "데이터 무관 텍스트(제목, 축, 범례 등) 크기 조정하기",
-    "content": "먼저 Complete themes나 theme에서 텍스트 기본 크기(base size)를 10pt로 설정합니다. # 방법 1 theme_classic(base_size=10) # 방법2 theme( text=element_text(size=10) ) . 그러나 이렇게 하면 축, 범례 크기가 10pt보다 작게 출력됩니다. 왜일까요? 축 텍스트(axis.text)나 범례 텍스트(legend.text)의 size가 기본 크기의 0.8배로 출력되도록 설정되어 있기 때문입니다. 그렇다면 어떻게 해야 축이나 범례 텍스트를 10pt로 설정할 수 있을까요? . rel로 조정하면 축이나 범레 텍스트가 기본 크기와 같은 크기로 출력되도록 할 수 있습니다. theme( text=element_text(size=10), axis.text=element_text(size=rel(1)), legend.text=element_text(size=rel(1)) ) . ",
-    "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%ED%81%AC%EA%B8%B0%20%EC%84%A4%EC%A0%95.html#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%AC%B4%EA%B4%80-%ED%85%8D%EC%8A%A4%ED%8A%B8%EC%A0%9C%EB%AA%A9-%EC%B6%95-%EB%B2%94%EB%A1%80-%EB%93%B1-%ED%81%AC%EA%B8%B0-%EC%A1%B0%EC%A0%95%ED%95%98%EA%B8%B0",
-    
-    "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%ED%81%AC%EA%B8%B0%20%EC%84%A4%EC%A0%95.html#데이터-무관-텍스트제목-축-범례-등-크기-조정하기"
-  },"16": {
-    "doc": "글꼴 크기 설정",
     "title": "데이터 관련 텍스트 크기 조정하기",
-    "content": "데이터 관련 텍스트 크기를 10pt로 조정하려면 어떻게 해야 할까요? . geom_text의 size는 단위가 mm이니까 10pt를 mm 단위로 환산한 값을 넣어줘야 합니다. 1pt : 0.3514598mm =&gt; 10pt = 3.514598mm처럼 직접 계산해도 되지만, 더 쉬운 방법도 있습니다. ggplot에서는 특별한 상수(1mm가 몇 pt인지 나타내는 상수, .pt)가 있는데, 이 상수를 이용하면 글꼴 크기를 쉽게 계산할 수 있습니다. 1mm : .pt = Xmm : 10pt =&gt; X = 10/.pt . # 방법 1 geom_text(size=3.514598) # 방법2 geom_text(size=10/.pt) . ",
+    "content": "geom_text를 사용하여 데이터 관련 텍스트(예: 그래프 위의 수치) 크기를 설정할 수 있습니다. 이때, geom_text에서 사용하는 단위는 ‘mm’입니다. 10pt를 mm로 환산하려면 다음과 같이 계산합니다: . 1pt = 0.3514598mm; 10pt = 3.514598mm . 하지만, 직접 계산하지 않고도 ggplot2에서 제공하는 .pt 상수를 사용하면 쉽게 크기를 설정할 수 있습니다.pt 상수를 사용하면 pt 단위를 mm로 간단히 변환할 수 있어 편리합니다. # 방법 1: 직접 계산 geom_text(size=3.514598) # 방법 2: .pt 상수 사용 geom_text(size=10/.pt) . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%ED%81%AC%EA%B8%B0%20%EC%84%A4%EC%A0%95.html#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EA%B4%80%EB%A0%A8-%ED%85%8D%EC%8A%A4%ED%8A%B8-%ED%81%AC%EA%B8%B0-%EC%A1%B0%EC%A0%95%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%ED%81%AC%EA%B8%B0%20%EC%84%A4%EC%A0%95.html#데이터-관련-텍스트-크기-조정하기"
-  },"17": {
+  },"14": {
     "doc": "글꼴 크기 설정",
-    "title": "도표가 여러개일 때 글꼴 크기 일괄 조정하기",
-    "content": "theme.size, geom.text.size처럼 변수를 만들어서 활용하면, 좀더 쉽게 모든 도표의 글꼴 크기를 일괄 조정할 수 있습니다. 아래 코드처럼 글꼴 크기를 10pt로 설정했다가 나중에 모든 글꼴의 크기를 11pt로 바꾸고 싶다면, theme.size = 11로 바꿔주면 됩니다. # 변수 정의 theme.size = 10 goem.text.size = theme.size/.pt # geom_text 글꼴 크기 설정 geom_text(size=geom.text.size) # theme 글꼴 크기 설정 theme( text=element_text(size=theme.size), axis.text=element_text(size=rel(1)), legend.text=element_text(size=rel(1)) ) . ",
-    "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%ED%81%AC%EA%B8%B0%20%EC%84%A4%EC%A0%95.html#%EB%8F%84%ED%91%9C%EA%B0%80-%EC%97%AC%EB%9F%AC%EA%B0%9C%EC%9D%BC-%EB%95%8C-%EA%B8%80%EA%BC%B4-%ED%81%AC%EA%B8%B0-%EC%9D%BC%EA%B4%84-%EC%A1%B0%EC%A0%95%ED%95%98%EA%B8%B0",
+    "title": "여러 차트의 글꼴 크기 일괄 조정하기",
+    "content": "차트가 여러 개 있을 경우, 글꼴 크기를 일괄적으로 조정하면 효율적입니다. 아래처럼 변수로 글꼴 크기를 정의하면, 이후에 해당 변수를 변경하는 것만으로도 모든 차트의 텍스트 크기를 수정할 수 있습니다. 변수를 활용하면 글꼴 크기를 손쉽게 적용할 수 있어, 여러 차트에 동일한 설정을 적용하거나 수정할 때 유용합니다. # 변수 정의 theme.size = 10 # pt 단위 goem.text.size = theme.size/.pt # mm 단위 # geom_text 글꼴 크기 설정 geom_text(size=geom.text.size) # theme 글꼴 크기 설정 theme( text=element_text(size=theme.size), axis.text=element_text(size=rel(1)), legend.text=element_text(size=rel(1)) ) . 이제 여러분도 차트의 텍스트 크기를 자유롭게 조정할 수 있을 것입니다. 글꼴 크기를 적절하게 설정해 차트의 가독성을 높이세요! . ",
+    "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%ED%81%AC%EA%B8%B0%20%EC%84%A4%EC%A0%95.html#%EC%97%AC%EB%9F%AC-%EC%B0%A8%ED%8A%B8%EC%9D%98-%EA%B8%80%EA%BC%B4-%ED%81%AC%EA%B8%B0-%EC%9D%BC%EA%B4%84-%EC%A1%B0%EC%A0%95%ED%95%98%EA%B8%B0",
     
-    "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%ED%81%AC%EA%B8%B0%20%EC%84%A4%EC%A0%95.html#도표가-여러개일-때-글꼴-크기-일괄-조정하기"
-  },"18": {
-    "doc": "글꼴 크기 설정",
-    "title": "참고자료",
-    "content": ". | Understanding text size and resolution in ggplot2 . | theme-defaults.r . | . ",
-    "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%ED%81%AC%EA%B8%B0%20%EC%84%A4%EC%A0%95.html#%EC%B0%B8%EA%B3%A0%EC%9E%90%EB%A3%8C",
-    
-    "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%ED%81%AC%EA%B8%B0%20%EC%84%A4%EC%A0%95.html#참고자료"
-  },"19": {
+    "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EA%B8%80%EA%BC%B4%20%ED%81%AC%EA%B8%B0%20%EC%84%A4%EC%A0%95.html#여러-차트의-글꼴-크기-일괄-조정하기"
+  },"15": {
     "doc": "날짜 다루기",
     "title": "날짜 다루기",
     "content": " ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%82%A0%EC%A7%9C%20%EB%8B%A4%EB%A3%A8%EA%B8%B0.html",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%82%A0%EC%A7%9C%20%EB%8B%A4%EB%A3%A8%EA%B8%B0.html"
-  },"20": {
+  },"16": {
     "doc": "날짜 다루기",
     "title": "목차",
     "content": ". | 사전 작업 | x축이 날짜인 도표 그리기 | 년월일을 년월로 변경하기 | 자잘한 수정하기 | . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%82%A0%EC%A7%9C%20%EB%8B%A4%EB%A3%A8%EA%B8%B0.html#%EB%AA%A9%EC%B0%A8",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%82%A0%EC%A7%9C%20%EB%8B%A4%EB%A3%A8%EA%B8%B0.html#목차"
-  },"21": {
+  },"17": {
     "doc": "날짜 다루기",
     "title": "사전 작업",
     "content": "시계열 데이터(time-series data)를 이용하여 도표를 그릴 때 날짜를 다뤄야 하는 경우가 있습니다. 시계열 데이터는 동일한 개체에 대해 일정한 시간 간격으로 수집된 데이터를 의미합니다. 2018~2020년 코스피 지수 변화, 2020년 1월~12월 시도별 인구수 변화 등이 일반적으로 접하는 시계열 데이터라고 할 수 있습니다. 그런데 날짜를 다루는 작업이 왜 까다로울까요? . | 날짜를 표현하는 방식이 다양합니다(예: “2020-08-08”, “2020/08/08”, “20-08-08”, “2020년 8월 8일” 등) | 날짜에는 순서가 있는데, 문자형(character) 데이터로 날짜를 불러오면 abc순이나 123순으로 나열되어서 순서가 엉망이 됩니다 | 날짜는 일반적인 숫자형(numerical) 데이터와 달라서, 두 날짜 사이의 기간을 ‘+’나’-’ 연산으로 계산할 수 없습니다 | . lubridate 패키지를 이용하면, R로 날짜-시간 자료(date-time data)를 더 쉽게 다룰 수 있습니다. lubridate에 대한 소개는 웹페이지를 참고해 주세요. 이번에는 우리나라 코로나19 확진자 수 추이를 도표로 그려보겠습니다. 국가별 코로나19 확진자 수 데이터는 Our World in Data에서 받았습니다. 데이터를 열어보면, 모든 국가에 대한 정보가 포함되어 있고 열도 67개나 됩니다. 이 중 날짜(date), 한국(South Korea), 신규 확진자 수(new_cases)만 사용하겠습니다. # 패키지 로드 library(tidyverse) library(lubridate) # 데이터 불러오기 data &lt;- read.csv(\"owid-covid-data.csv\") # 데이터 열 확인 colnames(data) . ## [1] \"iso_code\" ## [2] \"continent\" ## [3] \"location\" ## [4] \"date\" ## [5] \"total_cases\" ## [6] \"new_cases\" ## [7] \"new_cases_smoothed\" ## [8] \"total_deaths\" ## [9] \"new_deaths\" ## [10] \"new_deaths_smoothed\" ## [11] \"total_cases_per_million\" ## [12] \"new_cases_per_million\" ## [13] \"new_cases_smoothed_per_million\" ## [14] \"total_deaths_per_million\" ## [15] \"new_deaths_per_million\" ## [16] \"new_deaths_smoothed_per_million\" ## [17] \"reproduction_rate\" ## [18] \"icu_patients\" ## [19] \"icu_patients_per_million\" ## [20] \"hosp_patients\" ## [21] \"hosp_patients_per_million\" ## [22] \"weekly_icu_admissions\" ## [23] \"weekly_icu_admissions_per_million\" ## [24] \"weekly_hosp_admissions\" ## [25] \"weekly_hosp_admissions_per_million\" ## [26] \"total_tests\" ## [27] \"new_tests\" ## [28] \"total_tests_per_thousand\" ## [29] \"new_tests_per_thousand\" ## [30] \"new_tests_smoothed\" ## [31] \"new_tests_smoothed_per_thousand\" ## [32] \"positive_rate\" ## [33] \"tests_per_case\" ## [34] \"tests_units\" ## [35] \"total_vaccinations\" ## [36] \"people_vaccinated\" ## [37] \"people_fully_vaccinated\" ## [38] \"total_boosters\" ## [39] \"new_vaccinations\" ## [40] \"new_vaccinations_smoothed\" ## [41] \"total_vaccinations_per_hundred\" ## [42] \"people_vaccinated_per_hundred\" ## [43] \"people_fully_vaccinated_per_hundred\" ## [44] \"total_boosters_per_hundred\" ## [45] \"new_vaccinations_smoothed_per_million\" ## [46] \"new_people_vaccinated_smoothed\" ## [47] \"new_people_vaccinated_smoothed_per_hundred\" ## [48] \"stringency_index\" ## [49] \"population_density\" ## [50] \"median_age\" ## [51] \"aged_65_older\" ## [52] \"aged_70_older\" ## [53] \"gdp_per_capita\" ## [54] \"extreme_poverty\" ## [55] \"cardiovasc_death_rate\" ## [56] \"diabetes_prevalence\" ## [57] \"female_smokers\" ## [58] \"male_smokers\" ## [59] \"handwashing_facilities\" ## [60] \"hospital_beds_per_thousand\" ## [61] \"life_expectancy\" ## [62] \"human_development_index\" ## [63] \"population\" ## [64] \"excess_mortality_cumulative_absolute\" ## [65] \"excess_mortality_cumulative\" ## [66] \"excess_mortality\" ## [67] \"excess_mortality_cumulative_per_million\" . # 한국 신규 확진자 수 데이터 추출 data2 &lt;- data %&gt;% select(date, location, new_cases) %&gt;% # date, location, new_cases 열 선택 filter(location==\"South Korea\") # South Korea 자료 선택 # 데이터 요약 summary(data2) . ## date location new_cases ## Length:1034 Length:1034 Min. : 0 ## Class :character Class :character 1st Qu.: 168 ## Mode :character Mode :character Median : 967 ## Mean : 25733 ## 3rd Qu.: 13004 ## Max. :621317 ## NA's :1 . 데이터 요약을 보면, 이 데이터는 1,034일동안 한국의 신규 확진자 수 정보를 담고 있음을 알 수 있습니다. 신규 확진자 수가 적을 때는 0명, 많을 때는 621,317명까지 나온 날도 있습니다. lubridate의 ymd를 사용해서 ‘년도-월-일’ 순서로 표기된 ‘문자형(character) 클래스’를 ‘Date 클래스’로 변경하겠습니다. 데이터 클래스를 바꾼 후 데이터를 요약하면, 이 자료가 2020년 1월 22일부터 2022년 11월 20일까지 해당하는 자료를 담고 있다는 것이 보입니다. # date열 변경 data3 &lt;- data2 %&gt;% mutate(date=ymd(date)) # 데이터 요약 summary(data3) . ## date location new_cases ## Min. :2020-01-22 Length:1034 Min. : 0 ## 1st Qu.:2020-10-06 Class :character 1st Qu.: 168 ## Median :2021-06-21 Mode :character Median : 967 ## Mean :2021-06-21 Mean : 25733 ## 3rd Qu.:2022-03-06 3rd Qu.: 13004 ## Max. :2022-11-20 Max. :621317 ## NA's :1 . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%82%A0%EC%A7%9C%20%EB%8B%A4%EB%A3%A8%EA%B8%B0.html#%EC%82%AC%EC%A0%84-%EC%9E%91%EC%97%85",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%82%A0%EC%A7%9C%20%EB%8B%A4%EB%A3%A8%EA%B8%B0.html#사전-작업"
-  },"22": {
+  },"18": {
     "doc": "날짜 다루기",
     "title": "x축이 날짜인 도표 그리기",
     "content": "ggplot으로 x축은 날짜, y축은 신규 확진자 수를 나타내는 도표를 그려 보겠습니다. 일반 도표를 그릴 때와 차이점은 scale_x_continuous나 scale_x_discrete이 아니라 scale_x_date를 사용한다는 점입니다. ggplot(data=data3, aes(x=date, y=new_cases)) + geom_col() + scale_x_date(name=\"\") + scale_y_continuous(name=\"신규 확진자 수(명)\") + theme_bw() . 만약 3개월 단위로 날짜를 표기하고 싶다면, 어떻게 해야 할까요? . scale_x_date의 breaks 인자를 활용하면 됩니다. 2020년 1월 20일부터 2022년 11월 20일까지 3개월 간격으로 떨어진 벡터는 seq(ymd('2020-01-20'), ymd('2022-11-20'), by='3 month')로 만들 수 있습니다. 이처럼 lubridate 패키지를 이용하면 날짜 시퀀스도 쉽게 생성할 수 있습니다. ggplot(data=data3, aes(x=date, y=new_cases)) + geom_col() + scale_x_date(name=\"\", breaks=seq(ymd('2020-01-20'),ymd('2022-11-20'), by='3 month')) + scale_y_continuous(name=\"신규 확진자 수(명)\") + theme_bw() . 도표를 보면, 날짜를 나타내는 텍스트 길이가 길어서 서로 겹치는 문제가 발생합니다. ‘년도-월-일’ 형식으로 적혀져 있으니, 년도 다음에 나오는 대쉬에서 줄 바꿈을 하면 문제가 해결될 것 같습니다. Date 클래스가 숫자형(double)이기 때문에, 문자형으로 바꾼 후 첫 번째 대쉬 뒤에서 줄 바꿈하겠습니다. 텍스트 줄 바꿈 관련 설명은 축 텍스트 줄 바꿈 포스팅을 참고해 주세요. ggplot(data=data3, aes(x=date, y=new_cases)) + geom_col() + scale_x_date(name=\"\", breaks=seq(ymd('2020-01-20'),ymd('2022-11-20'), by='3 month'), labels=function(x){sub(\"-\", \"-\\n\", as.character(x))}) + # 년도 다음 대쉬 뒤 줄 바꿈 scale_y_continuous(name=\"신규 확진자 수(명)\") + theme_bw() . 줄 바꿈 말고도, 텍스트를 45도 회전하는 방법도 있습니다. 텍스트 회전은 theme의 axis.text.x로 설정할 수 있습니다. hjust와 vjust를 적절하게 설정해 줘야 축과 가까이 텍스트가 위치하게 됩니다. ggplot(data=data3, aes(x=date, y=new_cases)) + geom_col() + scale_x_date(name=\"\", breaks=seq(ymd('2020-01-20'),ymd('2022-11-20'), by='3 month')) + scale_y_continuous(name=\"신규 확진자 수(명)\") + theme_bw() + theme( axis.text.x=element_text(angle=45, hjust=1, vjust=1) ) . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%82%A0%EC%A7%9C%20%EB%8B%A4%EB%A3%A8%EA%B8%B0.html#x%EC%B6%95%EC%9D%B4-%EB%82%A0%EC%A7%9C%EC%9D%B8-%EB%8F%84%ED%91%9C-%EA%B7%B8%EB%A6%AC%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%82%A0%EC%A7%9C%20%EB%8B%A4%EB%A3%A8%EA%B8%B0.html#x축이-날짜인-도표-그리기"
-  },"23": {
+  },"19": {
     "doc": "날짜 다루기",
     "title": "년월일을 년월로 변경하기",
     "content": "만약 우리나라 월 단위 신규 확진자 수 추이를 알고 싶다면, 어떻게 해야 할까요? . 먼저 년월일 신규 확진자 수를 년월별로 합산해야겠죠. 기존 데이터에서 년월을 나타내는 열을 만든 후 년월을 기준으로 신규 확진자 수를 합치겠습니다. Date 클래스를 유지하면서 년월만 표기하는 방법이 없어서, 년월 열을 문자형 ‘년-월’ 포맷으로 만들어 줍니다. mutate(년월=format(date, \"%y-%m\"))으로 년월을 나타내는 열을 만들어 줄 수 있습니다. group_by와 summarise 함수를 이용해서 년월을 기준으로 신규 확진자 수를 합산합니다. data4 &lt;- data3 %&gt;% mutate(년월=format(date, \"%y-%m\")) %&gt;% group_by(년월) %&gt;% summarise(new_cases=sum(new_cases, na.rm=T)) head(data4) . ## # A tibble: 6 × 2 ## 년월 new_cases ## &lt;chr&gt; &lt;dbl&gt; ## 1 20-01 10 ## 2 20-02 3139 ## 3 20-03 6636 ## 4 20-04 988 ## 5 20-05 729 ## 6 20-06 1347 . 이제 도표를 그려보겠습니다. 년월은 이제 Date 클래스가 아니고 일반 문자형과 같습니다. scale_x_date가 아닌 scale_x_discrete을 사용해서 x축을 표현해 줘야 합니다. 그리고 scale_x_discrete의 labels 인자를 사용해서 ‘년-월’이 아닌 년 다음 줄 바꿈 후 월이 나오도록 해줬습니다. ggplot(data=data4, aes(x=년월, y=new_cases)) + geom_col() + scale_x_discrete(name=\"\", labels=function(x){sub(\"-\", \"\\n\", x)}) + scale_y_continuous(name=\"신규 확진자 수(명)\") + theme_bw() . 도표를 보면, 모든 날짜에 년도와 월이 표기되어 있습니다. 모든 날짜에 년도를 함께 표기하기보다는 1월에만 년도를 표기하는 것이 좋을 것 같습니다. 앞서 작업한 것과 마차가지로, x축 라벨의 표기법은 scale_x_discrete의 labels 인자로 바꿔줄 수 있습니다. 아래 순서대로 코드를 작성하면 됩니다. | 대쉬 뒤 줄 바꿈: sub 함수 이용 | 1월 해당 여부 파악: grepl 함수 이용 | 1월 해당하지 않으면 년도 삭제: ifelse, sub 함수 이용 | . ggplot(data=data4, aes(x=년월, y=new_cases)) + geom_col() + scale_x_discrete(name=\"\", labels=function(x){ y=sub(\"-\", \"\\n\", x) ifelse(!grepl(\".*(01)$\", y), sub(\"^\\\\d{2}\", \"\", y), y) }) + scale_y_continuous(name=\"신규 확진자 수(명)\") + theme_bw() . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%82%A0%EC%A7%9C%20%EB%8B%A4%EB%A3%A8%EA%B8%B0.html#%EB%85%84%EC%9B%94%EC%9D%BC%EC%9D%84-%EB%85%84%EC%9B%94%EB%A1%9C-%EB%B3%80%EA%B2%BD%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%82%A0%EC%A7%9C%20%EB%8B%A4%EB%A3%A8%EA%B8%B0.html#년월일을-년월로-변경하기"
-  },"24": {
+  },"20": {
     "doc": "날짜 다루기",
     "title": "자잘한 수정하기",
     "content": "그래프를 좀 더 예쁘게 만들어 보겠습니다🐱 . | y축 숫자 단위 만명으로 수정하기 | 막대그래프가 x축과 맞닿도록 수정하기 | 막대그래프 위에 숫자 표시하기 | 글꼴, 색상 변경하기 | . # 글꼴 변경 library(showtext) font_add_google(\"Noto Sans KR\", \"noto\") showtext_auto() showtext_opts(dpi=300) theme.size = 10 geom.text.size = theme.size/.pt # 그래프 작성 ggplot(data=data4, aes(x=년월, y=new_cases/10000, label=scales::comma(new_cases/10000, accuracy=1))) + geom_col(fill=\"#9AD1F5\") + geom_text(size=geom.text.size, family=\"noto\", vjust=-0.5) + scale_x_discrete(name=\"\", labels=function(x){ y=sub(\"-\", \"\\n\", x) ifelse(!grepl(\".*(01)$\", y), sub(\"^\\\\d{2}\", \"\", y), y) }) + scale_y_continuous(name=\"신규 확진자 수(만명)\", labels=scales::comma_format(), expand=expansion(mult=c(0, 0.2))) + theme_bw(base_size=theme.size, base_family=\"noto\") . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%82%A0%EC%A7%9C%20%EB%8B%A4%EB%A3%A8%EA%B8%B0.html#%EC%9E%90%EC%9E%98%ED%95%9C-%EC%88%98%EC%A0%95%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%82%A0%EC%A7%9C%20%EB%8B%A4%EB%A3%A8%EA%B8%B0.html#자잘한-수정하기"
-  },"25": {
+  },"21": {
     "doc": "데이터 가공 팁",
     "title": "데이터 가공 팁",
     "content": "데이터를 정돈하고 준비하는 과정에서 효율적인 R 코딩 방법을 정리합니다. tidyverse 패키지를 주로 활용하여 복잡한 데이터셋을 다루기 쉽도록 정리, 변환, 필터링하는 팁을 설명합니다. ",
     "url": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81",
     
     "relUrl": "/docs/데이터 가공 팁"
-  },"26": {
+  },"22": {
     "doc": "둘 이상의 속성 시각화",
     "title": "둘 이상의 속성 시각화",
     "content": " ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%91%98%20%EC%9D%B4%EC%83%81%EC%9D%98%20%EC%86%8D%EC%84%B1%20%EC%8B%9C%EA%B0%81%ED%99%94.html",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%91%98%20%EC%9D%B4%EC%83%81%EC%9D%98%20%EC%86%8D%EC%84%B1%20%EC%8B%9C%EA%B0%81%ED%99%94.html"
-  },"27": {
+  },"23": {
     "doc": "둘 이상의 속성 시각화",
     "title": "목차",
     "content": ". | 데이터 준비 | 하나의 그래프로 그리기 | 속성별 화면 분할하기 | . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%91%98%20%EC%9D%B4%EC%83%81%EC%9D%98%20%EC%86%8D%EC%84%B1%20%EC%8B%9C%EA%B0%81%ED%99%94.html#%EB%AA%A9%EC%B0%A8",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%91%98%20%EC%9D%B4%EC%83%81%EC%9D%98%20%EC%86%8D%EC%84%B1%20%EC%8B%9C%EA%B0%81%ED%99%94.html#목차"
-  },"28": {
+  },"24": {
     "doc": "둘 이상의 속성 시각화",
     "title": "데이터 준비",
     "content": "iris 데이터셋을 예시로 사용하겠습니다. 아래 테이블을 보면, 붓꽃 종류별로 꽃받침 길이, 꽃받침 너비, 꽃잎 길이, 꽃잎 너비 등 다양한 정보가 나와 있습니다. 어떻게 하면 이 많은 정보를 효과적으로 시각화하여 보여줄 수 있을까요? . head(data) . ## # A tibble: 3 × 5 ## 종류 `꽃받침 길이` `꽃받침 너비` `꽃잎 길이` `꽃잎 너비` ## &lt;fct&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; ## 1 setosa 5.01 3.43 1.46 0.246 ## 2 versicolor 5.94 2.77 4.26 1.33 ## 3 virginica 6.59 2.97 5.55 2.03 . 먼저 ggplot으로 그리기 쉽도록 데이터를 longer한 형태로 바꿔주겠습니다. 데이터를 longer한 형태로 바꿔주는 함수인 pivot_longer를 사용하겠습니다. 아래 코드를 풀어서 설명하면, ’꽃받침 길이’부터 ’꽃잎 너비’까지의 열을 longer한 형태로 바꿀 것이며, ’구분’이라는 새로운 열에는 속성을 넣고, ’값’이라는 새로운 열에는 각 속성에 해당하는 값을 넣겠다는 의미입니다. data2 &lt;- data %&gt;% pivot_longer(cols=`꽃받침 길이`:`꽃잎 너비`, names_to=\"구분\", values_to=\"값\") head(data2) . ## # A tibble: 6 × 3 ## 종류 구분 값 ## &lt;fct&gt; &lt;chr&gt; &lt;dbl&gt; ## 1 setosa 꽃받침 길이 5.01 ## 2 setosa 꽃받침 너비 3.43 ## 3 setosa 꽃잎 길이 1.46 ## 4 setosa 꽃잎 너비 0.246 ## 5 versicolor 꽃받침 길이 5.94 ## 6 versicolor 꽃받침 너비 2.77 . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%91%98%20%EC%9D%B4%EC%83%81%EC%9D%98%20%EC%86%8D%EC%84%B1%20%EC%8B%9C%EA%B0%81%ED%99%94.html#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A4%80%EB%B9%84",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%91%98%20%EC%9D%B4%EC%83%81%EC%9D%98%20%EC%86%8D%EC%84%B1%20%EC%8B%9C%EA%B0%81%ED%99%94.html#데이터-준비"
-  },"29": {
+  },"25": {
     "doc": "둘 이상의 속성 시각화",
     "title": "하나의 그래프로 그리기",
     "content": "붓꽃과 관련된 네 가지 속성에 대한 정보가 하나의 그래프로 표현될 수 있도록 막대그래프를 그려보겠습니다. x축은 붓꽃과 관련된 속성을 나타내고, y축은 각 속성에 해당하는 값을 나타냅니다. ggplot(data=data2, aes(x=구분, y=값, group=종류)) + geom_col(aes(fill=종류), position=position_dodge(width=0.7), width=0.6) + geom_text(aes(label=값), position=position_dodge(width=0.6), vjust=-0.5) + scale_y_continuous(expand=expansion(mult=c(0, 0.1))) + theme_bw() . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%91%98%20%EC%9D%B4%EC%83%81%EC%9D%98%20%EC%86%8D%EC%84%B1%20%EC%8B%9C%EA%B0%81%ED%99%94.html#%ED%95%98%EB%82%98%EC%9D%98-%EA%B7%B8%EB%9E%98%ED%94%84%EB%A1%9C-%EA%B7%B8%EB%A6%AC%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%91%98%20%EC%9D%B4%EC%83%81%EC%9D%98%20%EC%86%8D%EC%84%B1%20%EC%8B%9C%EA%B0%81%ED%99%94.html#하나의-그래프로-그리기"
-  },"30": {
+  },"26": {
     "doc": "둘 이상의 속성 시각화",
     "title": "속성별 화면 분할하기",
     "content": "앞서 하나의 그래프에 여러 정보를 담았지만, 속성별로 화면을 분할해 줄 수도 있습니다. facet_wrap 함수를 이용하면 됩니다. 이번 예시에서는 facet_wrap(vars(구분), nrow=2)로 입력해 보겠습니다. vars(구분)은 데이터의 ’구분’이라는 변수를 기준으로 화면을 분할하겠다는 의미이고, nrow=2는 분할된 화면을 2줄로 배열하겠다는 의미입니다. ggplot(data=data2, aes(x=종류, y=값, group=종류)) + geom_col(aes(fill=종류), width=0.6) + geom_text(aes(label=값), vjust=-0.5) + scale_y_continuous(expand=expansion(mult=c(0, 0.2))) + facet_wrap(vars(구분), nrow=2) + theme_bw() . 위 그림을 보면 모든 그래프의 x축이 setosa, versicolor, virginica로 고정되어 있는데, 화면마다 막대그래프가 속성 값을 기준으로 오름차순으로 정렬되도록 x축 순서를 바꿔줄 수도 있습니다. 이를 위해서는 tidytext라는 패키지의 reorder_within, scale_x_reordered 함수가 필요합니다. 기존 코드의 aes(x=종류)를 aes(x=reorder_within(x=종류, by=값, within=구분))으로 수정하고, scale_x_reordered(name=\"종류\") 코드를 추가해 줍니다. ’붓꽃 종류’를 ’구분’이라는 카테고리 안에서 ’값’을 기준으로 정렬하라는 의미로 이해하면 됩니다. 그리고 고정되어 있는 x축을 풀어주기 위해, facet_wrap 함수 안에 scales=\"free_x\"를 입력해 줍니다. 완성된 코드는 아래와 같습니다. library(tidytext) ggplot(data=data2, aes(x=reorder_within(x=종류, by=값, within=구분), y=값, group=종류)) + geom_col(aes(fill=종류), width=0.6) + geom_text(aes(label=값), vjust=-0.5) + scale_x_reordered(name=\"종류\") + scale_y_continuous(expand=expansion(mult=c(0, 0.2))) + facet_wrap(vars(구분), nrow=2, scales=\"free_x\") + theme_bw() . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%91%98%20%EC%9D%B4%EC%83%81%EC%9D%98%20%EC%86%8D%EC%84%B1%20%EC%8B%9C%EA%B0%81%ED%99%94.html#%EC%86%8D%EC%84%B1%EB%B3%84-%ED%99%94%EB%A9%B4-%EB%B6%84%ED%95%A0%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%91%98%20%EC%9D%B4%EC%83%81%EC%9D%98%20%EC%86%8D%EC%84%B1%20%EC%8B%9C%EA%B0%81%ED%99%94.html#속성별-화면-분할하기"
-  },"31": {
+  },"27": {
     "doc": "막대그래프 오름차순 정렬",
     "title": "막대그래프 오름차순 정렬",
     "content": " ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%98%A4%EB%A6%84%EC%B0%A8%EC%88%9C%20%EC%A0%95%EB%A0%AC.html",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%98%A4%EB%A6%84%EC%B0%A8%EC%88%9C%20%EC%A0%95%EB%A0%AC.html"
-  },"32": {
+  },"28": {
     "doc": "막대그래프 오름차순 정렬",
     "title": "목차",
     "content": ". | 그래프의 기본 정렬 순서 | 막대그래프 오름/내림차순 정렬 | x축 제목 수정 | . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%98%A4%EB%A6%84%EC%B0%A8%EC%88%9C%20%EC%A0%95%EB%A0%AC.html#%EB%AA%A9%EC%B0%A8",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%98%A4%EB%A6%84%EC%B0%A8%EC%88%9C%20%EC%A0%95%EB%A0%AC.html#목차"
-  },"33": {
+  },"29": {
     "doc": "막대그래프 오름차순 정렬",
     "title": "그래프의 기본 정렬 순서",
     "content": "iris 데이터셋을 예시로 사용하겠습니다. head(data) . ## # A tibble: 3 × 5 ## 종류 `꽃받침 길이` `꽃받침 너비` `꽃잎 길이` `꽃잎 너비` ## &lt;fct&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; ## 1 setosa 5.01 3.43 1.46 0.246 ## 2 versicolor 5.94 2.77 4.26 1.33 ## 3 virginica 6.59 2.97 5.55 2.03 . x축은 붓꽃 종류를, y축은 꽃받침 너비를 나타내는 막대그래프를 그려보겠습니다. 기본 그래프에서는 붓꽃 이름이 abc순으로 나타납니다. ggplot(data=data, aes(x=종류, y=`꽃받침 너비`, label=`꽃받침 너비`)) + geom_col(width=0.6) + geom_text(vjust=-0.5) + scale_y_continuous(expand=expansion(mult=c(0, 0.1))) + coord_cartesian(ylim=c(2.5, 3.5)) + theme_bw() . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%98%A4%EB%A6%84%EC%B0%A8%EC%88%9C%20%EC%A0%95%EB%A0%AC.html#%EA%B7%B8%EB%9E%98%ED%94%84%EC%9D%98-%EA%B8%B0%EB%B3%B8-%EC%A0%95%EB%A0%AC-%EC%88%9C%EC%84%9C",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%98%A4%EB%A6%84%EC%B0%A8%EC%88%9C%20%EC%A0%95%EB%A0%AC.html#그래프의-기본-정렬-순서"
-  },"34": {
+  },"30": {
     "doc": "막대그래프 오름차순 정렬",
     "title": "막대그래프 오름/내림차순 정렬",
     "content": "꽃받침 너비가 넓은 순으로 막대그래프를 정렬하고 싶다면, 어떻게 해야 할까요? . 기존 코드에서 aes(x=종류)를 aes(x=reorder(종류, -`꽃받침 너비`))로 수정해 주면, x축에 텍스트가 나열되는 순서가 꽃받침 너비가 넓은 순으로 바뀝니다. 반대로, 꽃받침 너비가 좁은 순부터 정렬하고 싶다면 aes(x=reorder(종류,`꽃받침 너비`))로 적어주면 됩니다. ggplot(data=data, aes(x=reorder(종류, -`꽃받침 너비`), y=`꽃받침 너비`, label=`꽃받침 너비`)) + geom_col(width=0.6) + geom_text(vjust=-0.5) + scale_y_continuous(expand=expansion(mult=c(0, 0.1))) + coord_cartesian(ylim=c(2.5, 3.5)) + theme_bw() . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%98%A4%EB%A6%84%EC%B0%A8%EC%88%9C%20%EC%A0%95%EB%A0%AC.html#%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84-%EC%98%A4%EB%A6%84%EB%82%B4%EB%A6%BC%EC%B0%A8%EC%88%9C-%EC%A0%95%EB%A0%AC",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%98%A4%EB%A6%84%EC%B0%A8%EC%88%9C%20%EC%A0%95%EB%A0%AC.html#막대그래프-오름내림차순-정렬"
-  },"35": {
+  },"31": {
     "doc": "막대그래프 오름차순 정렬",
     "title": "x축 제목 수정",
     "content": "그러나 reorder 함수를 써서 막대그래프 정렬 순서를 바꿀 경우, x축 제목이 ‘reorder(종류, -`꽃받침 너비`)’가 되는 문제가 생깁니다. 이때는 scale_x_discrete 함수를 이용해, x축 제목을 원하는 대로 변경하면 됩니다. ggplot(data=data, aes(x=reorder(종류, -`꽃받침 너비`), y=`꽃받침 너비`, label=`꽃받침 너비`)) + geom_col(width=0.6) + geom_text(vjust=-0.5) + scale_x_discrete(name=\"종류\") + scale_y_continuous(expand=expansion(mult=c(0, 0.1))) + coord_cartesian(ylim=c(2.5, 3.5)) + theme_bw() . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%98%A4%EB%A6%84%EC%B0%A8%EC%88%9C%20%EC%A0%95%EB%A0%AC.html#x%EC%B6%95-%EC%A0%9C%EB%AA%A9-%EC%88%98%EC%A0%95",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%98%A4%EB%A6%84%EC%B0%A8%EC%88%9C%20%EC%A0%95%EB%A0%AC.html#x축-제목-수정"
-  },"36": {
+  },"32": {
     "doc": "숫자 포맷팅",
     "title": "숫자 포맷팅",
     "content": " ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%88%AB%EC%9E%90%20%ED%8F%AC%EB%A7%B7%ED%8C%85.html",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%88%AB%EC%9E%90%20%ED%8F%AC%EB%A7%B7%ED%8C%85.html"
-  },"37": {
+  },"33": {
     "doc": "숫자 포맷팅",
     "title": "목차",
     "content": ". | 사전 작업 | 콤마 표기하기 | 백분율 표기하고 소수점 아래 자릿수 조정하기 | 그외 자잘한 수정하기 | . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%88%AB%EC%9E%90%20%ED%8F%AC%EB%A7%B7%ED%8C%85.html#%EB%AA%A9%EC%B0%A8",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%88%AB%EC%9E%90%20%ED%8F%AC%EB%A7%B7%ED%8C%85.html#목차"
-  },"38": {
+  },"34": {
     "doc": "숫자 포맷팅",
     "title": "사전 작업",
     "content": "전에 그린 혼합형 그래프를 발전시켜 보겠습니다. 이전에 작성한 글을 참고해 주세요. 막대그래프, 선그래프 위에 텍스트를 아직 추가하지 않은 상태입니다. geom_text를 사용해 텍스트를 추가하겠습니다. 출력된 그래프를 보면 텍스트가 추가되긴 했지만, 세자릿수마다 콤마가 표기되어 있지 않습니다. 그리고 선그래프 아래에 전년 대비 승객 수 증감률도 백분율로 표기되어 있지 않은데다가 소수점 아래 자릿수도 너무 깁니다. coeff &lt;- data2[2,\"승객 수\"]/(data2[2,\"전년 대비 승객 수 증감률\"]*2) ggplot(data=data2) + geom_col(aes(x=년도, y=`승객 수`, fill=\"승객 수\"), width=0.6) + geom_text(aes(x=년도, y=`승객 수`, label=`승객 수`), vjust=-1) + # 승객 수 텍스트 추가 geom_line(aes(x=년도, y=`전년 대비 승객 수 증감률`*coeff, color=\"전년 대비 승객 수 증감률\")) + geom_text(aes(x=년도, y=`전년 대비 승객 수 증감률`*coeff, label=`전년 대비 승객 수 증감률`), vjust=1.5) + # 전년 대비 승객 수 증감률 텍스트 추가 scale_fill_manual(values=\"gray40\") + scale_color_manual(values=\"gray70\") + scale_x_continuous(n.breaks=12) + scale_y_continuous( name=\"승객 수(천명)\", labels=scales::comma_format(), sec.axis = sec_axis(~./coeff, name=\"전년 대비 승객 수 증감률(%)\", labels=scales::percent_format()) ) + theme_bw() + theme( legend.title=element_blank(), legend.background=element_blank(), legend.position=c(0.20, 0.90), legend.margin=margin(0, 0, 0, 0), ) . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%88%AB%EC%9E%90%20%ED%8F%AC%EB%A7%B7%ED%8C%85.html#%EC%82%AC%EC%A0%84-%EC%9E%91%EC%97%85",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%88%AB%EC%9E%90%20%ED%8F%AC%EB%A7%B7%ED%8C%85.html#사전-작업"
-  },"39": {
+  },"35": {
     "doc": "숫자 포맷팅",
     "title": "콤마 표기하기",
     "content": "승객 수 세자릿수마다 콤마를 찍어주도록 하겠습니다. 데이터를 수정하지 않고도 scales 패키지의 comma 함수로 숫자에 콤마를 추가해 줄 수 있습니다. geom_text(aes(label=`승객 수`))를 geom_text(aes(label=scales::comma(`승객 수`)))로 수정해 줍니다. ggplot(data=data2) + geom_col(aes(x=년도, y=`승객 수`, fill=\"승객 수\"), width=0.6) + geom_text(aes(x=년도, y=`승객 수`, label=scales::comma(`승객 수`)), vjust=-1) + geom_line(aes(x=년도, y=`전년 대비 승객 수 증감률`*coeff, color=\"전년 대비 승객 수 증감률\")) + geom_text(aes(x=년도, y=`전년 대비 승객 수 증감률`*coeff, label=`전년 대비 승객 수 증감률`), vjust=1.5) + scale_fill_manual(values=\"gray40\") + scale_color_manual(values=\"gray70\") + scale_x_continuous(n.breaks=12) + scale_y_continuous( name=\"승객 수(천명)\", labels=scales::comma_format(), sec.axis = sec_axis(~./coeff, name=\"전년 대비 승객 수 증감률(%)\", labels=scales::percent_format()) ) + theme_bw() + theme( legend.title=element_blank(), legend.background=element_blank(), legend.position=c(0.20, 0.90), legend.margin=margin(0, 0, 0, 0), ) . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%88%AB%EC%9E%90%20%ED%8F%AC%EB%A7%B7%ED%8C%85.html#%EC%BD%A4%EB%A7%88-%ED%91%9C%EA%B8%B0%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%88%AB%EC%9E%90%20%ED%8F%AC%EB%A7%B7%ED%8C%85.html#콤마-표기하기"
-  },"40": {
+  },"36": {
     "doc": "숫자 포맷팅",
     "title": "백분율 표기하고 소수점 아래 자릿수 조정하기",
     "content": "다음으로, 전년 대비 승객 수 증감률을 백분율로 표기하고 소수점 아래 한자리까지만 나오도록 수정하겠습니다. 콤마 표기와 비슷하게 scales 패키지의 percent 함수를 이용하면, 숫자가 백분율로 나오게 만들 수 있습니다. 기존 코드에서 geom_text(aes(label=`전년 대비 승객 수 증감률`))을 geom_text(aes(label=scales::percent(`전년 대비 승객 수 증감률`, accuracy=.1, suffix=\"\")))로 수정해 줍니다. suffix=\"\"를 입력하지 않으면, % 단위까지 나옵니다. ggplot(data=data2) + geom_col(aes(x=년도, y=`승객 수`, fill=\"승객 수\"), width=0.6) + geom_text(aes(x=년도, y=`승객 수`, label=scales::comma(`승객 수`)), vjust=-1) + geom_line(aes(x=년도, y=`전년 대비 승객 수 증감률`*coeff, color=\"전년 대비 승객 수 증감률\")) + geom_text(aes(x=년도, y=`전년 대비 승객 수 증감률`*coeff, label=scales::percent(`전년 대비 승객 수 증감률`, accuracy=.1, suffix=\"\")), vjust=1.5) + scale_fill_manual(values=\"gray40\") + scale_color_manual(values=\"gray70\") + scale_x_continuous(n.breaks=12) + scale_y_continuous( name=\"승객 수(천명)\", labels=scales::comma_format(), sec.axis = sec_axis(~./coeff, name=\"전년 대비 승객 수 증감률(%)\", labels=scales::percent_format()) ) + theme_bw() + theme( legend.title=element_blank(), legend.background=element_blank(), legend.position=c(0.20, 0.90), legend.margin=margin(0, 0, 0, 0), ) . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%88%AB%EC%9E%90%20%ED%8F%AC%EB%A7%B7%ED%8C%85.html#%EB%B0%B1%EB%B6%84%EC%9C%A8-%ED%91%9C%EA%B8%B0%ED%95%98%EA%B3%A0-%EC%86%8C%EC%88%98%EC%A0%90-%EC%95%84%EB%9E%98-%EC%9E%90%EB%A6%BF%EC%88%98-%EC%A1%B0%EC%A0%95%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%88%AB%EC%9E%90%20%ED%8F%AC%EB%A7%B7%ED%8C%85.html#백분율-표기하고-소수점-아래-자릿수-조정하기"
-  },"41": {
+  },"37": {
     "doc": "숫자 포맷팅",
     "title": "그외 자잘한 수정하기",
     "content": "그외 자잘한 수정이 필요한 부분은 아래와 같습니다. | x축과 막대그래프 사이에 빈 공간이 있습니다. | 그래프가 잘려서 1960년 승객 수 텍스트가 안 보입니다. | 선그래프 위에 점이 추가되면 좋을 것 같습니다. | 첫 번째 y축에는 단위가 생략되었지만, 두 번째 y축에는 단위가 표기되어 있습니다. 두 번째 y축 제목에 단위가 있으니 통일성을 위해 y축 상에는 단위를 없애도 될 것 같습니다. | 범례 간 간격이 넓습니다. | 마지막으로, 그래프가 안 예쁩니다..😦 | . 이 모든 수정사항을 반영하면 그래프 완성! . # 글꼴 변경 library(showtext) font_add_google(\"Noto Sans KR\", \"noto\") showtext_auto() showtext_opts(dpi=300) theme.size = 10 geom.text.size = theme.size/.pt # 그래프 작성 ggplot(data=data2) + geom_col(aes(x=년도, y=`승객 수`, fill=\"승객 수\"), width=0.6) + geom_text(aes(x=년도, y=`승객 수`, label=scales::comma(`승객 수`)), vjust=-1, family=\"noto\", size=geom.text.size) + geom_line(aes(x=년도, y=`전년 대비 승객 수 증감률`*coeff, color=\"전년 대비 승객 수 증감률\"), size=1) + geom_point(aes(x=년도, y=`전년 대비 승객 수 증감률`*coeff, color=\"전년 대비 승객 수 증감률\"), size=2) + # 3번 문제 해결 geom_text(aes(x=년도, y=`전년 대비 승객 수 증감률`*coeff, label=scales::percent(`전년 대비 승객 수 증감률`, accuracy=.1, suffix=\"\")), vjust=ifelse(data2$`전년 대비 승객 수 증감률`&lt;0.07, -1.0, 1.5), family=\"noto\", size=geom.text.size) + scale_fill_manual(values=\"#9AD1F5\") + scale_color_manual(values=\"#e25a6c\") + scale_x_continuous(n.breaks=12) + scale_y_continuous( name=\"승객 수(천명)\", labels=scales::comma_format(), expand=expansion(mult=c(0, 0.2)), # 1, 2번 문제 해결 sec.axis = sec_axis(~./coeff, name=\"전년 대비 승객 수 증감률(%)\", labels=scales::percent_format(suffix=\"\")) # 4번 문제 해결 ) + theme_bw(base_family=\"noto\", base_size=theme.size) + theme( panel.grid.major.x=element_blank(), panel.grid.minor.x=element_blank(), legend.title=element_blank(), legend.background=element_blank(), legend.key.size=unit(geom.text.size, \"mm\"), legend.text=element_text(size=rel(1)), legend.position=c(0.20, 0.90), legend.margin=margin(0, 0, 0, 0), legend.spacing.y=unit(0.5, \"mm\") # 5번 문제 해결 ) . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%88%AB%EC%9E%90%20%ED%8F%AC%EB%A7%B7%ED%8C%85.html#%EA%B7%B8%EC%99%B8-%EC%9E%90%EC%9E%98%ED%95%9C-%EC%88%98%EC%A0%95%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%88%AB%EC%9E%90%20%ED%8F%AC%EB%A7%B7%ED%8C%85.html#그외-자잘한-수정하기"
-  },"42": {
+  },"38": {
     "doc": "정규표현식을 활용한 문자열 처리",
     "title": "정규표현식이란?",
     "content": "정규표현식(Regular expression or Regex)은 규칙을 가진 문자열을 표현하는 기법으로, 특정한 패턴과 일치하는 문자열을 찾거나, 치환할 때 사용됩니다. 정규표현식에는 규칙을 표기하기 위해 사용하는 특수문자들이 있습니다. 어떤 특수문자가 있는지, 각 특수문자가 무엇을 의미하는지 어느 정도 알고 있어야 정규표현식을 사용할 수 있습니다. 많이 사용되는 문자들 중심으로 정리해 보겠습니다. 문자 클래스(Character class) . 정규표현식에서 문자 클래스(Character class)는 특정 문자 집합을 나타낼 때 사용됩니다. 대괄호([]) 안에 문자를 나열하여 문자 집합을 나타낼 수 있습니다. 대괄호에 나열된 문자 중 한 문자와 일치하는지 확인할 때 사용됩니다. | 0부터 9까지 숫자 중 한 문자: [0123456789] | a부터 z까지 소문자 중 한 문자: [abcdefghijklmnopqrstuvwxyz] | 영어 소문자 모음 중 한 문자: [aeiou] | . 순서가 있는 문자의 경우, 범위를 나타내는 - 기호로 축약하여 나타낼 수 있습니다. 기호 그 자체인 -를 표현하고 싶다면, 대괄호 안에서 문자들 사이가 아닌 처음이나 마지막 위치에 -를 작성하면 됩니다. | 0부터 9까지 숫자 중 한 문자: [0-9] | a부터 z까지 소문자 중 한 문자: [a-z] | 알파벳 중 한 문자: [a-zA-Z] | 한글 중 한 문자: [가-힣] | . 대괄호 안 가장 처음에 ^ 기호로 부정을 표현할 수 있습니다. | 숫자가 아닌 한 문자: [^0-9] | 숫자, 알파벳, 한글이 아닌 한 문자: [^0-9a-zA-Z] | . 메타문자(Metacharacter) . 문자 클래스로 표기할 경우 길이가 길어지는 경우 메타문자(Metacharacter)를 사용하기도 합니다. 일반적으로, ‘백슬래쉬 + 알파벳’ 형태로 생겼습니다. ‘백슬래쉬 + 대문자’는 ’백슬래쉬 + 소문자’의 반대 의미로 쓰이므로, ’백슬래쉬 + 소문자’ 의미만 알고 있으면 됩니다. | 메타문자 | 의미 | 문자 클래스로 표현할 경우 | . | . | 줄바꿈 문자(\\n)를 제외한 모든 문자 | [^\\n] | . | \\d | 숫자(0-9) | [0-9] | . | \\D | 숫자가 아닌 문자 | [^0-9] | . | \\w | 단어 문자(word character), 유니코드에서 글자(letters), 숫자(digits), 언더스코어(underscore)를 의미함 | [a-zA-Z가-힣0-9_] | . | \\W | 단어 문자가 아닌 문자 | [^a-zA-Z가-힣0-9_] | . | \\s | 공백 문자(white space), 스페이스 바(``), 줄바꿈(\\n), 수평탭 간격 띄우기(\\t), 수직탭 간격 띄우기(\\v), 프린트 출력 용지 한 페이지 넘김(\\f), 동일한 줄 맨 앞으로 커서 이동(\\r) 등을 의미함 | [\\n\\t\\v\\f\\r ] | . | \\S | 공백 문자가 아닌 문자 | [^\\n\\t\\v\\f\\r ] | . 수량자(Quantifier) . 수량자(Quantifier)는 특정 문자의 반복 횟수를 지정하는 데 쓰입니다. 다만, 문자 클래스 안에 수량자를 적으면 문자의 반복 정도가 아니라 기호 그 자체를 나타낸다는 점을 주의해 주세요. | 수량자 | 의미 | . | ? | 0 또는 1회만 반복 | . | + | 1회 이상 반복 | . | * | 0회 이상 반복 | . | {n} | n회 반복 | . | {n,} | n회 이상 반복 | . | {n, m} | n~m회 반복 | . 앵커(Anchor) . 앵커(Anchor)는 문자의 특정 위치를 나타내는 기호입니다. 앵커를 사용하면, 문자열의 시작이나 끝과 매칭되는 패턴을 정의할 수 있습니다. | 앵커 | 의미 | . | ^ | 행의 처음(문자 클래스 안에서 부정을 나타내는 ^와 다른 의미) | . | $ | 행의 끝 | . | \\A | 텍스트 처음 | . | \\Z | 텍스트 끝 | . | \\b | 단어 경계 | . 그룹(Group) . 그룹은 ()로 표현하며, 여러 문자를 하나의 단위로 묶는 데 사용됩니다. 연산의 우선순위를 지정하거나 역참조하기 위한 참조 그룹을 정의할 때 쓰입니다. 전후방탐색(Look around) . 전후방탐색에서 괄호 안의 문자는 소비되지 않습니다. 즉, 괄호 앞이나 뒤에 있는 문자만 탐색합니다. ‘전방탐색’은 괄호 앞의 문자를 탐색하고, ’후방탐색’은 괄호 뒤의 문자를 탐색합니다. 괄호 안의 문자가 있어야 하는 조건이면 ’긍정형’, 없어야 하는 조건이면 ’부정형’이라고 합니다. 기호가 헷갈릴 수 있는데, 기본 기호는 (?)이고, 긍정형/부정형, 전방탐색/후방탐색에 따라 기호가 추가됩니다. 긍정형은 =, 부정형은 ! 기호가 사용되고, 후방탐색의 경우 ?와 =/! 사이에 &lt; 기호가 추가됩니다. | 전후방탐색 | 의미 | . | a(?=b) | 긍정형 전방탐색: a 다음 b가 나오는 a | . | a(?!b) | 부정형 전방탐색: a 다음 b가 나오지 않는 a | . | (?&lt;=b)a | 긍정형 후방탐색: b 다음 a가 나오는 a | . | (?&lt;!b)a | 부정형 후방탐색: b 다음 a가 나오지 않는 a | . 백슬래쉬 주의사항 . 정규표현식에서는 괄호((, )), 중괄호({, }), 대괄호([, ]), 마침표(.), 별표(*), 덧셈기호(+), 백슬래쉬(\\) 등이 특별한 의미로 사용됩니다. 특별한 의미로 사용되는 문자를 문자 그 자체를 의미하는 기호로 나타내기 위해서는 앞에 백슬래쉬(\\)를 붙여줘야 합니다. 그런데 \\\\(, \\\\{, \\\\.처럼 R에서는 백슬래쉬를 두 번 작성해야 합니다. R의 stringr 패키지와 함수 . R에서 제공하는 기본 함수도 있지만 stringr 패키지를 사용하면 더 쉽게 문자열을 처리할 수 있습니다. stringr 패키지는 tidyverse에도 포함되어 있어서 tidyverse만 설치해도 됩니다. stringr 패키지가 제공하는 함수에 정규표현식을 입력하여 문자열을 처리할 수 있습니다. 패턴 일치 여부, 패턴 위치, 패턴 일치 수, 패턴과 일치하는 문자열 일부 추출, 패턴을 포함하는 문자열 추출 등 다양한 작업이 가능합니다. 자세한 내용은 아래 커닝 페이퍼(Cheat sheet)을 참고해 주세요. | String manipulation with stringr::CHEAT SHEET | . 경험 상 아래 5개 함수를 주로 사용하게 되는 것 같습니다. 패턴과 일치하는 문자열이 있는지 ’확인(detect)’하거나, 패턴과 일치하는 문자열을 ’추출(extract)’하거나, 다른 문자열로 ’대체(replace)’하는 함수가 활용도가 높습니다. 함수에서 pattern 인자에 문자열 패턴을 정규표현식으로 작성해 주면 됩니다. | 함수 | 설명 | . | str_detect(string, pattern) | 각 문자열에서 패턴과 일치하는 문자열이 있는지를 탐색함 | . | str_extract(string, pattern) | 각 문자열에서 패턴과 첫 번째로 일치하는 문자열을 추출함 | . | str_extract_all(string, pattern) | 각 문자열에서 패턴과 일치하는 모든 문자열을 추출함 | . | str_replace(string, pattern, replacement) | 각 문자열에서 패턴과 첫 번째로 일치하는 문자열을 다른 문자열로 바꿈 | . | str_replace_all(string, pattern, replacement) | 각 문자열에서 패턴과 일치하는 모든 문자열을 다른 문자열로 바꿈 | . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D%EC%9D%84%20%ED%99%9C%EC%9A%A9%ED%95%9C%20%EB%AC%B8%EC%9E%90%EC%97%B4%20%EC%B2%98%EB%A6%AC.html#%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D%EC%9D%B4%EB%9E%80",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D%EC%9D%84%20%ED%99%9C%EC%9A%A9%ED%95%9C%20%EB%AC%B8%EC%9E%90%EC%97%B4%20%EC%B2%98%EB%A6%AC.html#정규표현식이란"
-  },"43": {
+  },"39": {
     "doc": "정규표현식을 활용한 문자열 처리",
     "title": "문자열 유무 감지 예시",
     "content": "str_detect() 함수는 문자열에서 특정 패턴이 존재하는지 여부를 불리언(Boolean) 값으로 변환하는 함수입니다. # 예시 문자 text &lt;- c(\"1991년\", \"2000년\", \"2010년\", \"2012년\") # \"2000년\" 이후에 해당하는지 확인 str_detect(text, \"^20\") . ## [1] FALSE TRUE TRUE TRUE . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D%EC%9D%84%20%ED%99%9C%EC%9A%A9%ED%95%9C%20%EB%AC%B8%EC%9E%90%EC%97%B4%20%EC%B2%98%EB%A6%AC.html#%EB%AC%B8%EC%9E%90%EC%97%B4-%EC%9C%A0%EB%AC%B4-%EA%B0%90%EC%A7%80-%EC%98%88%EC%8B%9C",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D%EC%9D%84%20%ED%99%9C%EC%9A%A9%ED%95%9C%20%EB%AC%B8%EC%9E%90%EC%97%B4%20%EC%B2%98%EB%A6%AC.html#문자열-유무-감지-예시"
-  },"44": {
+  },"40": {
     "doc": "정규표현식을 활용한 문자열 처리",
     "title": "문자열 추출 예시",
     "content": "str_extract() 함수는 문자열에서 특정 패턴과 첫 번째로 일치하는 문자열을 추출하는 데 사용됩니다. # 예시 문자 text &lt;- c(\"이메일 주소는 alice@example.com입니다.\", \"john.doe@gmail.com도 사용 중이에요.\", \"다양한 주소들: support@company.com, info@website.or.kr\") # 이메일주소 추출 str_extract(text, \"[a-zA-Z_.]+@\\\\w+\\\\.[a-zA-Z]+\") . ## [1] \"alice@example.com\" \"john.doe@gmail.com\" \"support@company.com\" . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D%EC%9D%84%20%ED%99%9C%EC%9A%A9%ED%95%9C%20%EB%AC%B8%EC%9E%90%EC%97%B4%20%EC%B2%98%EB%A6%AC.html#%EB%AC%B8%EC%9E%90%EC%97%B4-%EC%B6%94%EC%B6%9C-%EC%98%88%EC%8B%9C",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D%EC%9D%84%20%ED%99%9C%EC%9A%A9%ED%95%9C%20%EB%AC%B8%EC%9E%90%EC%97%B4%20%EC%B2%98%EB%A6%AC.html#문자열-추출-예시"
-  },"45": {
+  },"41": {
     "doc": "정규표현식을 활용한 문자열 처리",
     "title": "문자열 대체 예시",
     "content": "str_replace() 함수는 문자열에서 특정 패턴과 첫 번째로 일치하는 문자열을 다른 문자열로 대체하는 데 사용됩니다. # 예시 문자 text &lt;- c(\"I have an apple.\", \"She brought apples.\", \"The apple tree is tall.\") # apple을 orange로 대체 str_replace(text, \"apple\", \"orange\") . ## [1] \"I have an orange.\" \"She brought oranges.\" ## [3] \"The orange tree is tall.\" . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D%EC%9D%84%20%ED%99%9C%EC%9A%A9%ED%95%9C%20%EB%AC%B8%EC%9E%90%EC%97%B4%20%EC%B2%98%EB%A6%AC.html#%EB%AC%B8%EC%9E%90%EC%97%B4-%EB%8C%80%EC%B2%B4-%EC%98%88%EC%8B%9C",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D%EC%9D%84%20%ED%99%9C%EC%9A%A9%ED%95%9C%20%EB%AC%B8%EC%9E%90%EC%97%B4%20%EC%B2%98%EB%A6%AC.html#문자열-대체-예시"
-  },"46": {
+  },"42": {
     "doc": "정규표현식을 활용한 문자열 처리",
     "title": "정규표현식을 활용한 문자열 처리",
     "content": " ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D%EC%9D%84%20%ED%99%9C%EC%9A%A9%ED%95%9C%20%EB%AC%B8%EC%9E%90%EC%97%B4%20%EC%B2%98%EB%A6%AC.html",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D%EC%9D%84%20%ED%99%9C%EC%9A%A9%ED%95%9C%20%EB%AC%B8%EC%9E%90%EC%97%B4%20%EC%B2%98%EB%A6%AC.html"
-  },"47": {
+  },"43": {
     "doc": "지도 팁",
     "title": "지도 팁",
     "content": "공간 데이터를 시각화하고 분석하는 데 유용한 R 팁과 기술을 다룹니다. sf와 ggplot2를 활용해 지도를 만들고, 공간 데이터를 시각화하며, 지역 정보를 효과적으로 표현하는 방법을 정리합니다. ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81",
     
     "relUrl": "/docs/지도 팁"
-  },"48": {
+  },"44": {
     "doc": "차트 팁",
     "title": "차트 팁",
     "content": "데이터를 한눈에 이해할 수 있는 시각화를 위한 R 그래프 작성 팁을 공유합니다. ggplot2를 활용해 다양한 유형의 차트를 만들어 인사이트를 효과적으로 전달하는 방법을 정리합니다. ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81",
     
     "relUrl": "/docs/차트 팁"
-  },"49": {
+  },"45": {
     "doc": "축 텍스트 줄 바꿈",
     "title": "축 텍스트 줄 바꿈",
     "content": " ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%B6%95%20%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%A4%84%20%EB%B0%94%EA%BF%88.html",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%B6%95%20%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%A4%84%20%EB%B0%94%EA%BF%88.html"
-  },"50": {
+  },"46": {
     "doc": "축 텍스트 줄 바꿈",
     "title": "목차",
     "content": ". | 축 텍스트 길이가 길어서 서로 중첩될 때 | 일정 너비가 넘어가면 줄 바꾸기 | 특정 문자(괄호, 대쉬 등) 기준으로 줄 바꾸기 | . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%B6%95%20%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%A4%84%20%EB%B0%94%EA%BF%88.html#%EB%AA%A9%EC%B0%A8",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%B6%95%20%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%A4%84%20%EB%B0%94%EA%BF%88.html#목차"
-  },"51": {
+  },"47": {
     "doc": "축 텍스트 줄 바꿈",
     "title": "축 텍스트 길이가 길어서 서로 중첩될 때",
     "content": "ggplot2로 그래프를 그리다보면, 축 텍스트 길이가 길어서 줄 바꿈하고 싶을 때가 있습니다. ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%B6%95%20%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%A4%84%20%EB%B0%94%EA%BF%88.html#%EC%B6%95-%ED%85%8D%EC%8A%A4%ED%8A%B8-%EA%B8%B8%EC%9D%B4%EA%B0%80-%EA%B8%B8%EC%96%B4%EC%84%9C-%EC%84%9C%EB%A1%9C-%EC%A4%91%EC%B2%A9%EB%90%A0-%EB%95%8C",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%B6%95%20%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%A4%84%20%EB%B0%94%EA%BF%88.html#축-텍스트-길이가-길어서-서로-중첩될-때"
-  },"52": {
+  },"48": {
     "doc": "축 텍스트 줄 바꿈",
     "title": "일정 너비가 넘어가면 줄 바꾸기",
     "content": "첫 번째 방법으로 str_wrap 함수를 이용해서 축 텍스트 너비가 일정 범위를 넘어서면 줄 바꿈하도록 설정하는 방법이 있습니다. str_wrap 함수는 stringr 패키지에서 제공하는 함수라서 먼저 패키지를 설치해야 합니다. 그리고 아래 코드처럼 width 인자의 숫자를 바꾸면 텍스트 너비를 조정할 수 있습니다. scale_x_discrete(labels=function(x){str_wrap(x, width=8)}) . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%B6%95%20%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%A4%84%20%EB%B0%94%EA%BF%88.html#%EC%9D%BC%EC%A0%95-%EB%84%88%EB%B9%84%EA%B0%80-%EB%84%98%EC%96%B4%EA%B0%80%EB%A9%B4-%EC%A4%84-%EB%B0%94%EA%BE%B8%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%B6%95%20%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%A4%84%20%EB%B0%94%EA%BF%88.html#일정-너비가-넘어가면-줄-바꾸기"
-  },"53": {
+  },"49": {
     "doc": "축 텍스트 줄 바꿈",
     "title": "특정 문자(괄호, 대쉬 등) 기준으로 줄 바꾸기",
     "content": "두 번째 방법으로 sub 함수와 정규표현식(regular expression)을 사용해서 특정 문자(괄호, 대쉬, 쉼표, 공백 등)가 시작될 때 줄 바꾸도록 설정하는 방법도 있습니다. 정규표현식에서 괄호는 ‘\\\\(‘, 줄 바꿈(line break)은 ‘\\n’으로, 공백문자(whitespace)는 ‘\\\\s’로 표현합니다. # 괄호 앞 줄 바꿈 scale_x_discrete(labels=function(x){sub(\"\\\\(\", \"\\n\\\\(\", x)}) # 대쉬 뒤 줄 바꿈 scale_x_discrete(labels=function(x){sub(\"-\", \"-\\n\", x)}) # 대쉬 뒤 줄 바꿈 후 공백 줄 바꿈 scale_x_discrete(labels = function(x){ y=sub(\"-\", \"-\\n\", x) sub(\"\\\\s\", \"\\n\", y)}) . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%B6%95%20%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%A4%84%20%EB%B0%94%EA%BF%88.html#%ED%8A%B9%EC%A0%95-%EB%AC%B8%EC%9E%90%EA%B4%84%ED%98%B8-%EB%8C%80%EC%89%AC-%EB%93%B1-%EA%B8%B0%EC%A4%80%EC%9C%BC%EB%A1%9C-%EC%A4%84-%EB%B0%94%EA%BE%B8%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%B6%95%20%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%A4%84%20%EB%B0%94%EA%BF%88.html#특정-문자괄호-대쉬-등-기준으로-줄-바꾸기"
-  },"54": {
+  },"50": {
     "doc": "혼합형 그래프 작성",
     "title": "혼합형 그래프 작성",
     "content": " ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%ED%98%BC%ED%95%A9%ED%98%95%20%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%9E%91%EC%84%B1.html",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%ED%98%BC%ED%95%A9%ED%98%95%20%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%9E%91%EC%84%B1.html"
-  },"55": {
+  },"51": {
     "doc": "혼합형 그래프 작성",
     "title": "목차",
     "content": ". | 데이터 준비 | 혼합형 그래프 그리기 | 이중축(보조축) 추가하기 | 범례 추가하기 | . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%ED%98%BC%ED%95%A9%ED%98%95%20%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%9E%91%EC%84%B1.html#%EB%AA%A9%EC%B0%A8",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%ED%98%BC%ED%95%A9%ED%98%95%20%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%9E%91%EC%84%B1.html#목차"
-  },"56": {
+  },"52": {
     "doc": "혼합형 그래프 작성",
     "title": "데이터 준비",
     "content": "이번에는 월간 항공사 승객 수 1949~1960(Monthly Airline Passenger Numbers 1949-1960) 데이터셋을 이용하겠습니다. 데이터셋 행은 ‘년도’, 열은 ’월’을 나타내고, 승객 수는 천명 단위로 제공됩니다. AirPassengers . ## Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec ## 1949 112 118 132 129 121 135 148 148 136 119 104 118 ## 1950 115 126 141 135 125 149 170 170 158 133 114 140 ## 1951 145 150 178 163 172 178 199 199 184 162 146 166 ## 1952 171 180 193 181 183 218 230 242 209 191 172 194 ## 1953 196 196 236 235 229 243 264 272 237 211 180 201 ## 1954 204 188 235 227 234 264 302 293 259 229 203 229 ## 1955 242 233 267 269 270 315 364 347 312 274 237 278 ## 1956 284 277 317 313 318 374 413 405 355 306 271 306 ## 1957 315 301 356 348 355 422 465 467 404 347 305 336 ## 1958 340 318 362 348 363 435 491 505 404 359 310 337 ## 1959 360 342 406 396 420 472 548 559 463 407 362 405 ## 1960 417 391 419 461 472 535 622 606 508 461 390 432 . 년도별 승객 수와 전년 대비 승객 수 증감률을 보여주는 그래프를 그리고 싶다면, 어떻게 해야 할까요? . 년도별 승객 수는 막대그래프로, 전년 대비 승객 수 증감률은 선그래프로 표현하면 좋을 것 같습니다. 그래프를 그리기 전에 년도별 승객 수, 전년 대비 승객 수 증감률을 계산하겠습니다. AirPassengers 데이터셋은 ts 객체(시계열 객체)라서 ggplot으로 그래프를 그리기에 적합하지 않아 데이터프레임 객체로 변환시켜 주겠습니다. # 데이터 클래스 변환 data &lt;- data.frame(matrix(AirPassengers, ncol=12, byrow=TRUE)) # 열 이름 변경 colnames(data) &lt;- seq(1, 12) # 년도를 나타내는 열 추가 data &lt;- data %&gt;% mutate(년도=seq(1949, 1960)) head(data) . ## 1 2 3 4 5 6 7 8 9 10 11 12 년도 ## 1 112 118 132 129 121 135 148 148 136 119 104 118 1949 ## 2 115 126 141 135 125 149 170 170 158 133 114 140 1950 ## 3 145 150 178 163 172 178 199 199 184 162 146 166 1951 ## 4 171 180 193 181 183 218 230 242 209 191 172 194 1952 ## 5 196 196 236 235 229 243 264 272 237 211 180 201 1953 ## 6 204 188 235 227 234 264 302 293 259 229 203 229 1954 . 년도별 승객 수를 합산하고, 전년 대비 승객 수 증감률을 계산하겠습니다. rowSums(across(1:12))는 1~12월 승객 수를 년도(행)별로 합산하는 함수입니다. lag(`승객 수`)는 직전 년도 승객 수를 가리킵니다. select(!1:12)는 1~12월에 해당하는 열을 제외한 나머지 열인 년도, 승객 수, 전년 대비 승객 수 증감률만 선택하겠다는 의미입니다. data2 &lt;- data %&gt;% mutate(`승객 수`=rowSums(across(1:12)), `전년 대비 승객 수 증감률`=(`승객 수`-lag(`승객 수`))/lag(`승객 수`)) %&gt;% select(!1:12) head(data2) . ## 년도 승객 수 전년 대비 승객 수 증감률 ## 1 1949 1520 NA ## 2 1950 1676 0.10263158 ## 3 1951 2042 0.21837709 ## 4 1952 2364 0.15768854 ## 5 1953 2700 0.14213198 ## 6 1954 2867 0.06185185 . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%ED%98%BC%ED%95%A9%ED%98%95%20%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%9E%91%EC%84%B1.html#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A4%80%EB%B9%84",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%ED%98%BC%ED%95%A9%ED%98%95%20%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%9E%91%EC%84%B1.html#데이터-준비"
-  },"57": {
+  },"53": {
     "doc": "혼합형 그래프 작성",
     "title": "혼합형 그래프 그리기",
     "content": "우선 년도별 승객 수를 보여주는 막대그래프를 그리겠습니다. ggplot(data=data2) + geom_col(aes(x=년도, y=`승객 수`), width=0.6) + scale_x_continuous(n.breaks=12) + theme_bw() . 여기에 전년 대비 승객 수 증감률을 나타내는 선그래프를 추가하겠습니다. geom_line으로 전년 대비 승객 수 증감률을 추가하니까 승객 수에 비해 증감률 수치가 매우 낮아 선그래프가 잘 보이지 않습니다. ggplot(data=data2) + geom_col(aes(x=년도, y=`승객 수`), width=0.6) + geom_line(aes(x=년도, y=`전년 대비 승객 수 증감률`)) + scale_x_continuous(n.breaks=12) + theme_bw() . 막대그래프의 중간 정도 위치에 선그래프가 그려진다면 좋을 것 같습니다. geom_line(aes(x=년도, y=`전년 대비 승객 수 증감률`))에서 y=`전년 대비 승객 수 증감률`에 적당한 값을 곱해주면 선그래프가 보이겠죠. 적당한 값은 전년 대비 승객 수 증감률에 곱했을 때 승객 수의 절반에 해당하는 값이 나오면 될 것 같습니다. 적당한 값을 coeff라고 하면, ‘전년 대비 승객 수 증감률’*coeff=‘승객 수’/2가 되어야 겠죠. 즉, coeff는 ‘승객 수’/(‘전년 대비 승객 수 증감률’*2)로 구할 수 있습니다. coeff &lt;- data2[2,\"승객 수\"]/(data2[2,\"전년 대비 승객 수 증감률\"]*2) ggplot(data=data2) + geom_col(aes(x=년도, y=`승객 수`), width=0.6) + geom_line(aes(x=년도, y=`전년 대비 승객 수 증감률`*coeff)) + scale_x_continuous(n.breaks=12) + theme_bw() . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%ED%98%BC%ED%95%A9%ED%98%95%20%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%9E%91%EC%84%B1.html#%ED%98%BC%ED%95%A9%ED%98%95-%EA%B7%B8%EB%9E%98%ED%94%84-%EA%B7%B8%EB%A6%AC%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%ED%98%BC%ED%95%A9%ED%98%95%20%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%9E%91%EC%84%B1.html#혼합형-그래프-그리기"
-  },"58": {
+  },"54": {
     "doc": "혼합형 그래프 작성",
     "title": "이중축(보조축) 추가하기",
     "content": "이렇게만 보여주면 선그래프가 어느 정도 값을 나타내는지 알 수 없으니, 전년 대비 승객 수 증감률에 해당하는 두 번째 y축을 추가해 주겠습니다. 두 번째 y축은 scale_y_continuous 함수의 sec.axis 인자를 통해 추가할 수 있습니다. ggplot(data=data2) + geom_col(aes(x=년도, y=`승객 수`), width=0.6) + geom_line(aes(x=년도, y=`전년 대비 승객 수 증감률`*coeff)) + scale_x_continuous(n.breaks=12) + scale_y_continuous( sec.axis = sec_axis(~./coeff, name=\"전년 대비 승객 수 증감률(%)\") ) + theme_bw() . 그런데 두 번째 y축을 보면, 증감률이 백분율로 표기되어 있지 않죠. sec_axis에 labels=scales::percent_format()을 추가하여 백분율로 표기되도록 수정해 줍니다. 첫 번째 y축도 보면, 콤마와 단위가 표기되어 있지 않습니다. 이 문제는 scale_y_continuous 함수의 name 인자를 통해 축 제목을 수정하여 단위를 표기하고 labels 인자를 통해 콤마를 표기하여 해결할 수 있습니다. ggplot(data=data2) + geom_col(aes(x=년도, y=`승객 수`), width=0.6) + geom_line(aes(x=년도, y=`전년 대비 승객 수 증감률`*coeff)) + scale_x_continuous(n.breaks=12) + scale_y_continuous( name=\"승객 수(천명)\", labels=scales::comma_format(), sec.axis = sec_axis(~./coeff, name=\"전년 대비 승객 수 증감률(%)\", labels=scales::percent_format()) ) + theme_bw() . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%ED%98%BC%ED%95%A9%ED%98%95%20%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%9E%91%EC%84%B1.html#%EC%9D%B4%EC%A4%91%EC%B6%95%EB%B3%B4%EC%A1%B0%EC%B6%95-%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%ED%98%BC%ED%95%A9%ED%98%95%20%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%9E%91%EC%84%B1.html#이중축보조축-추가하기"
-  },"59": {
+  },"55": {
     "doc": "혼합형 그래프 작성",
     "title": "범례 추가하기",
     "content": "마지막으로, 막대그래프가 승객 수를, 선그래프가 전년 대비 승객 수 증감률을 나타낸다는 것을 명확히 하기 위해 범례를 추가하면 그래프가 완성됩니다! . 범례를 추가하기 위해 geom_col(aes()) 안에 fill=\"승객 수\"를 추가하고, geom_line(aes()) 안에 color=\"전년 대비 승객 수 증감률\"을 추가합니다. 각각의 색상을 지정하기 위해 scale_fill_manual(values=\"gray40\"), scale_color_manual(values=\"gray70\")를 추가합니다. theme에서 범례와 관련된 제목, 배경색, 위치, 여백을 조정해 줍니다. 여기서는 범례 제목, 배경색, 여백을 없앴고, 화면 상에서 좌측 상부에 범례가 위치하도록 조정했습니다. ggplot(data=data2) + geom_col(aes(x=년도, y=`승객 수`, fill=\"승객 수\"), width=0.6) + geom_line(aes(x=년도, y=`전년 대비 승객 수 증감률`*coeff, color=\"전년 대비 승객 수 증감률\")) + scale_fill_manual(values=\"gray40\") + scale_color_manual(values=\"gray70\") + scale_x_continuous(n.breaks=12) + scale_y_continuous( name=\"승객 수(천명)\", labels=scales::comma_format(), sec.axis = sec_axis(~./coeff, name=\"전년 대비 승객 수 증감률(%)\", labels=scales::percent_format()) ) + theme_bw() + theme( legend.title=element_blank(), legend.background=element_blank(), legend.position=c(0.20, 0.90), legend.margin=margin(0, 0, 0, 0), ) . ",

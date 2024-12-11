@@ -13,6 +13,8 @@ knit: (function(inputFile, encoding) {
   output_file=paste0(Sys.Date(), "-", sub(".Rmd", ".md",inputFile)), 
   output_dir = "C:/Users/MINYOUNG/projects/ggsave/docs/차트 팁") })
 ---
+# {{ page.title }}
+{: .no_toc }
 
 ## y축 범위, 왜 신경 써야 할까?
 
@@ -99,8 +101,6 @@ ggplot(data=data, aes(x=종류, y=`꽃받침 길이`, label=`꽃받침 길이`))
 ```
 
 <img src="{{ site.baseurl }}/assets/images/y축-범위-조정/unnamed-chunk-5-1.png" width="70%" style="display: block; margin: auto;" />
-
-## 마무리하며
 
 그래프의 작은 설정 하나가 시각화의 가독성과 전달력을 크게 바꿀 수
 있습니다. 오늘 다룬 y축 범위 조정 팁을 활용해 데이터를 더 명확히 전달할
