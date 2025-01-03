@@ -50,7 +50,7 @@ ggplot(data=data, aes(x=종류, y=`꽃받침 길이`, label=`꽃받침 길이`))
   theme_bw(base_size=12)
 ```
 
-<img src="{{ site.baseurl }}/assets/images/y축-범위-조정/unnamed-chunk-2-1.png" width="70%" style="display: block; margin: auto;" />
+<img src="{{ site.baseurl }}/assets/images/y축-범위-조정/unnamed-chunk-2-1.png" width="70%" style="display: block; margin: auto;" alt="Iris 품종별 평균 꽃받침 길이 비교 막대그래프"/>
 
 그런데 x축과 막대그래프 사이에 공간이 생겨 시각적으로 불필요한 여백이
 발생했습니다. 이 공간을 없애려면 어떻게 해야 할까요?
@@ -81,7 +81,7 @@ ggplot(data=data, aes(x=종류, y=`꽃받침 길이`, label=`꽃받침 길이`))
   theme_bw(base_size=12)
 ```
 
-<img src="{{ site.baseurl }}/assets/images/y축-범위-조정/unnamed-chunk-4-1.png" width="70%" style="display: block; margin: auto;" />
+<img src="{{ site.baseurl }}/assets/images/y축-범위-조정/unnamed-chunk-4-1.png" width="70%" style="display: block; margin: auto;" alt="y축이 0에서 시작하도록 수정한 막대그래프"/>
 
 ## y축이 데이터 중간에서 시작하도록 설정
 
@@ -100,7 +100,7 @@ ggplot(data=data, aes(x=종류, y=`꽃받침 길이`, label=`꽃받침 길이`))
   theme_bw(base_size=12)
 ```
 
-<img src="{{ site.baseurl }}/assets/images/y축-범위-조정/unnamed-chunk-5-1.png" width="70%" style="display: block; margin: auto;" />
+<img src="{{ site.baseurl }}/assets/images/y축-범위-조정/unnamed-chunk-5-1.png" width="70%" style="display: block; margin: auto;" alt="y축이 데이터 중간에서 시작하도록 수정한 막대그래프"/>
 
 그래프의 작은 설정 하나가 시각화의 가독성과 전달력을 크게 바꿀 수
 있습니다. 오늘 다룬 y축 범위 조정 팁을 활용해 데이터를 더 명확히 전달할

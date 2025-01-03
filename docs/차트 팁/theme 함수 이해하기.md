@@ -67,7 +67,7 @@ knit: (function(inputFile, encoding) {
 
 글로만 보면 `theme` 함수의 요소들이 차트에서 정확히 어디에 적용되는지 감이 잘 안 올 수 있습니다. 아래 그림을 보면, 각 요소가 차트의 어떤 부분을 조정하는지 한눈에 확인할 수 있어 훨씬 이해하기 쉬울 거예요.
 
-<img src="{{ site.baseurl }}/assets/images/theme-함수-이해하기/unnamed-chunk.jpg" width="100%" style="display: block; margin: auto;" />
+<img src="{{ site.baseurl }}/assets/images/theme-함수-이해하기/unnamed-chunk.jpg" width="100%" style="display: block; margin: auto;" alt="theme 함수의 구성요소"/>
 
 ## 공식 문서를 참고해 보세요!
 
