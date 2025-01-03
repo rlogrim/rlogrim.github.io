@@ -1,5 +1,6 @@
 title: "R 팁 저장소"
-description: "R로 데이터 분석과 시각화 팁을 체계적으로 정리하고 공유하는 공간입니다"
+description: "R 언어를 활용한 데이터 분석과 시각화 팁을 기록하고 공유하는 블로그입니다. tidyverse, sf, ggplot2를 활용한 데이터 정리, 분석, 차트 및 지도 제작 노하우를 간단하고 이해하기 쉽게 제공합니다."
+keywords: "R 언어, 데이터 분석, 데이터 시각화, tidyverse, ggplot2, sf, 차트 제작, 지도 제작, 데이터 정리"
 baseurl: "" # Root URL ("" for GitHub Pages root)
 url: "https://codebyday.github.io/ggsave"
 
