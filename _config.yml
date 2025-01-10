@@ -6,7 +6,6 @@ baseurl: "/ggsave" # Root URL ("" for GitHub Pages root)
 remote_theme: just-the-docs/just-the-docs
 plugins:
   - jekyll-remote-theme
-  - jekyll-sitemap
 
 # Build settings
 markdown: kramdown
