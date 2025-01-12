@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://codebyday.github.io/ggsave/sitemap.xml
+Sitemap: https://ggsave.tidylog.kr/sitemap.xml
