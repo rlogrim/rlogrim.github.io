@@ -426,895 +426,930 @@
     
     "relUrl": "/docs/데이터 가공 팁"
   },"61": {
+    "doc": "동일 구조 엑셀파일 병합",
+    "title": "동일 구조 엑셀파일 병합",
+    "content": " ",
+    "url": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EB%8F%99%EC%9D%BC%20%EA%B5%AC%EC%A1%B0%20%EC%97%91%EC%85%80%ED%8C%8C%EC%9D%BC%20%EB%B3%91%ED%95%A9.html",
+    
+    "relUrl": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EB%8F%99%EC%9D%BC%20%EA%B5%AC%EC%A1%B0%20%EC%97%91%EC%85%80%ED%8C%8C%EC%9D%BC%20%EB%B3%91%ED%95%A9.html"
+  },"62": {
+    "doc": "동일 구조 엑셀파일 병합",
+    "title": "개요",
+    "content": "구조가 동일한 여러 개의 엑셀 파일을 하나의 테이블로 합치는 방법을 소개합니다. 이런 상황은 데이터를 지역별, 연도별 등으로 나눠 제공받을 때 흔히 발생합니다. 이번 글에서는 관광지식정보시스템에서 제공하는 주요관광지점 입장객 통계를 예로 들어, 서울, 경기, 인천 자료를 합쳐 하나의 테이블로 만드는 과정을 보여드리겠습니다. ",
+    "url": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EB%8F%99%EC%9D%BC%20%EA%B5%AC%EC%A1%B0%20%EC%97%91%EC%85%80%ED%8C%8C%EC%9D%BC%20%EB%B3%91%ED%95%A9.html#%EA%B0%9C%EC%9A%94",
+    
+    "relUrl": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EB%8F%99%EC%9D%BC%20%EA%B5%AC%EC%A1%B0%20%EC%97%91%EC%85%80%ED%8C%8C%EC%9D%BC%20%EB%B3%91%ED%95%A9.html#개요"
+  },"63": {
+    "doc": "동일 구조 엑셀파일 병합",
+    "title": "데이터 준비하기",
+    "content": "먼저, 데이터를 확인하고 합치는 작업을 위해 필요한 패키지를 로드합니다. 데이터를 구조적으로 살펴보기 위해 서울 자료를 불러와 확인해 보겠습니다. 데이터를 살펴보면 첫 번째 행뿐만 아니라 두 번째 행에도 칼럼명이 포함되어 있어, 데이터 가공이 필요하다는 것을 알 수 있습니다. 이 구조를 염두에 두고 데이터를 처리해 나가겠습니다. # 패키지 로드 library(tidyverse) library(readxl) # 확인용 데이터 로드 tmp &lt;- read_xls(\"데이터/수도권 주요관광지점 입장객/주요관광지점 입장객_서울_2023.xls\") # 데이터 확인 head(tmp) . ## # A tibble: 6 × 6 ## 시도 군구 관광지 `내/외국인` 총계 `(2023년 ~ 2023년)` ## &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt; ## 1 &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; NA 2023년 ## 2 서울특별시 종로구 경복궁 내국인 4485430 4485430 ## 3 서울특별시 종로구 경복궁 외국인 1094475 1094475 ## 4 서울특별시 종로구 경복궁 합계 5579905 5579905 ## 5 서울특별시 종로구 종묘 내국인 272304 272304 ## 6 서울특별시 종로구 종묘 외국인 66629 66629 . ",
+    "url": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EB%8F%99%EC%9D%BC%20%EA%B5%AC%EC%A1%B0%20%EC%97%91%EC%85%80%ED%8C%8C%EC%9D%BC%20%EB%B3%91%ED%95%A9.html#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A4%80%EB%B9%84%ED%95%98%EA%B8%B0",
+    
+    "relUrl": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EB%8F%99%EC%9D%BC%20%EA%B5%AC%EC%A1%B0%20%EC%97%91%EC%85%80%ED%8C%8C%EC%9D%BC%20%EB%B3%91%ED%95%A9.html#데이터-준비하기"
+  },"64": {
+    "doc": "동일 구조 엑셀파일 병합",
+    "title": "폴더 내 파일 목록 가져오기",
+    "content": "list.files 함수를 사용해 특정 폴더에 저장된 확장자가 ’.xls’인 파일 목록을 가져옵니다. 이 목록을 file_list 변수에 저장합니다. # 데이터 폴더 경로 folder_path &lt;- \"데이터/수도권 주요관광지점 입장객\" # 확장자가 .xls인 파일 목록 가져오기 file_list &lt;- list.files(folder_path, pattern = \"\\\\.xls$\", full.names = TRUE) # 파일 목록 확인 file_list . ## [1] \"데이터/수도권 주요관광지점 입장객/주요관광지점 입장객_경기_2023.xls\" ## [2] \"데이터/수도권 주요관광지점 입장객/주요관광지점 입장객_서울_2023.xls\" ## [3] \"데이터/수도권 주요관광지점 입장객/주요관광지점 입장객_인천_2023.xls\" . ",
+    "url": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EB%8F%99%EC%9D%BC%20%EA%B5%AC%EC%A1%B0%20%EC%97%91%EC%85%80%ED%8C%8C%EC%9D%BC%20%EB%B3%91%ED%95%A9.html#%ED%8F%B4%EB%8D%94-%EB%82%B4-%ED%8C%8C%EC%9D%BC-%EB%AA%A9%EB%A1%9D-%EA%B0%80%EC%A0%B8%EC%98%A4%EA%B8%B0",
+    
+    "relUrl": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EB%8F%99%EC%9D%BC%20%EA%B5%AC%EC%A1%B0%20%EC%97%91%EC%85%80%ED%8C%8C%EC%9D%BC%20%EB%B3%91%ED%95%A9.html#폴더-내-파일-목록-가져오기"
+  },"65": {
+    "doc": "동일 구조 엑셀파일 병합",
+    "title": "여러 파일 데이터 가공 및 병합",
+    "content": "각 파일의 데이터를 읽어와 필요한 열만 선택한 후, 하나의 테이블로 병합하겠습니다. 이를 위해 lapply 함수를 사용하여 파일 목록의 각 파일에 대해 동일한 작업을 적용합니다. lapply는 리스트를 입력으로 받아 각 요소에 지정한 함수를 적용한 결과를 리스트로 반환합니다. 이를 이용하면, 파일 목록을 입력으로 받아 각 파일의 데이터를 읽고 가공하는 작업을 쉽게 반복할 수 있습니다. | 데이터 읽기: read_xls 함수를 사용해 두 번째 행부터 데이터를 읽습니다 | 열 선택: 필요한 열(예: 첫 번째부터 다섯 번째 열까지)만 선택합니다 | 칼럼명 지정: 데이터 병합을 위해 칼럼명을 통일합니다 | 데이터 병합: bind_rows 함수를 사용해 모든 데이터를 하나의 테이블로 결합합니다 | . # 모든 파일 읽고 가공 all_data &lt;- lapply(file_list, function(file) { data &lt;- read_xls(file, skip = 1) %&gt;% # 두 번째 행부터 읽기 select(1:5) # 필요한 열 선택 colnames(data) &lt;- c(\"시도\", \"시군구\", \"관광지\", \"구분\", \"총계\") return(data) }) # 하나로 병합 united_data &lt;- bind_rows(all_data) # 데이터 확인 head(united_data) . ## # A tibble: 6 × 5 ## 시도 시군구 관광지 구분 총계 ## &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; ## 1 경기도 수원시 kbs수원센터(kbs수원아트홀) 내국인 19612 ## 2 경기도 수원시 kbs수원센터(kbs수원아트홀) 합계 19612 ## 3 경기도 수원시 경기대학교소성박물관 내국인 18150 ## 4 경기도 수원시 경기대학교소성박물관 합계 18150 ## 5 경기도 수원시 서수원칠보체육관 내국인 113703 ## 6 경기도 수원시 서수원칠보체육관 합계 113703 . 이제 여러 파일로 나뉘어 있던 데이터를 하나의 테이블로 성공적으로 병합했습니다. 데이터를 이렇게 한 번에 병합한 후 가공 작업을 진행하면, 파일별로 따로 분석하는 비효율을 피하고 일괄적으로 처리할 수 있어 시간을 크게 절약할 수 있습니다. 예를 들어, 서울, 경기, 인천 데이터를 각각 열어서 동일한 작업을 반복하기보다는, 병합된 데이터를 활용해 한 번에 계산하고 분석하는 것이 훨씬 효과적입니다. 구조가 동일한 파일을 병합할 일이 있다면, 이 방법으로 데이터 분석 과정을 더 효율적으로 관리해 보세요! . ",
+    "url": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EB%8F%99%EC%9D%BC%20%EA%B5%AC%EC%A1%B0%20%EC%97%91%EC%85%80%ED%8C%8C%EC%9D%BC%20%EB%B3%91%ED%95%A9.html#%EC%97%AC%EB%9F%AC-%ED%8C%8C%EC%9D%BC-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EA%B0%80%EA%B3%B5-%EB%B0%8F-%EB%B3%91%ED%95%A9",
+    
+    "relUrl": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EB%8F%99%EC%9D%BC%20%EA%B5%AC%EC%A1%B0%20%EC%97%91%EC%85%80%ED%8C%8C%EC%9D%BC%20%EB%B3%91%ED%95%A9.html#여러-파일-데이터-가공-및-병합"
+  },"66": {
     "doc": "둘 이상의 속성 시각화",
     "title": "둘 이상의 속성 시각화",
     "content": " ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%91%98%20%EC%9D%B4%EC%83%81%EC%9D%98%20%EC%86%8D%EC%84%B1%20%EC%8B%9C%EA%B0%81%ED%99%94.html",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%91%98%20%EC%9D%B4%EC%83%81%EC%9D%98%20%EC%86%8D%EC%84%B1%20%EC%8B%9C%EA%B0%81%ED%99%94.html"
-  },"62": {
+  },"67": {
     "doc": "둘 이상의 속성 시각화",
     "title": "개요",
     "content": "여러 속성을 한눈에 시각화하는 방법을 알아보겠습니다. 이번 예제에서는 붓꽃 데이터셋(iris)을 활용해 다양한 속성을 시각화하는 팁을 소개합니다. 데이터에는 붓꽃의 종류별로 꽃받침 길이, 꽃받침 너비, 꽃잎 길이, 꽃잎 너비 등이 포함되어 있습니다. 먼저 데이터를 ggplot2로 그리기 쉽도록 pivot_longer를 사용해 데이터를 ‘longer’ 형태로 변환하겠습니다. 이 과정을 통해 여러 속성이 하나의 열로 묶이고, 각각의 값이 새로운 열에 담기게 됩니다. # 패키지 로드 library(tidyverse) # 데이터 불러오기 data &lt;- iris %&gt;% rename(`꽃받침 길이` = Sepal.Length, `꽃받침 너비` = Sepal.Width, `꽃잎 길이` = Petal.Length, `꽃잎 너비` = Petal.Width, 종류 = Species) %&gt;% group_by(종류) %&gt;% summarise_if(is.numeric, ~sum(.)/n()) # 데이터 변환 data2 &lt;- data %&gt;% pivot_longer(cols = `꽃받침 길이`:`꽃잎 너비`, names_to = \"구분\", values_to = \"값\") # 데이터 확인 head(data2) . ## # A tibble: 6 × 3 ## 종류 구분 값 ## &lt;fct&gt; &lt;chr&gt; &lt;dbl&gt; ## 1 setosa 꽃받침 길이 5.01 ## 2 setosa 꽃받침 너비 3.43 ## 3 setosa 꽃잎 길이 1.46 ## 4 setosa 꽃잎 너비 0.246 ## 5 versicolor 꽃받침 길이 5.94 ## 6 versicolor 꽃받침 너비 2.77 . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%91%98%20%EC%9D%B4%EC%83%81%EC%9D%98%20%EC%86%8D%EC%84%B1%20%EC%8B%9C%EA%B0%81%ED%99%94.html#%EA%B0%9C%EC%9A%94",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%91%98%20%EC%9D%B4%EC%83%81%EC%9D%98%20%EC%86%8D%EC%84%B1%20%EC%8B%9C%EA%B0%81%ED%99%94.html#개요"
-  },"63": {
+  },"68": {
     "doc": "둘 이상의 속성 시각화",
     "title": "하나의 그래프로 그리기",
     "content": "변환된 데이터를 활용해 모든 속성을 하나의 그래프로 시각화합니다. | x축: 구분 | y축: 값 | 종류별로 그룹과 색상 구분 | . ggplot(data = data2, aes(x = 구분, y = 값, group = 종류, fill = 종류)) + geom_col(position=position_dodge(width = 0.7), width = 0.6) + geom_text(aes(label=scales::comma(값, accuracy = .1)), position=position_dodge(width = 0.7), vjust = -0.5) + scale_y_continuous(expand = expansion(mult = c(0, 0.1))) + theme_bw() . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%91%98%20%EC%9D%B4%EC%83%81%EC%9D%98%20%EC%86%8D%EC%84%B1%20%EC%8B%9C%EA%B0%81%ED%99%94.html#%ED%95%98%EB%82%98%EC%9D%98-%EA%B7%B8%EB%9E%98%ED%94%84%EB%A1%9C-%EA%B7%B8%EB%A6%AC%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%91%98%20%EC%9D%B4%EC%83%81%EC%9D%98%20%EC%86%8D%EC%84%B1%20%EC%8B%9C%EA%B0%81%ED%99%94.html#하나의-그래프로-그리기"
-  },"64": {
+  },"69": {
     "doc": "둘 이상의 속성 시각화",
     "title": "속성별 화면 분할하기",
     "content": "하나의 그래프에 모든 정보를 담는 대신, 각 속성을 별도의 화면으로 분할하여 시각화할 수도 있습니다. facet_wrap을 사용해 속성별로 화면을 나눕니다. | vars(구분): 속성(구분)을 기준으로 분할 | nrow=2: 2줄로 화면 배열 | . ggplot(data = data2, aes(x = 종류, y = 값, group = 종류, fill = 종류)) + geom_col(width = 0.6) + geom_text(aes(label = scales::comma(값, accuracy = .1)), vjust = -0.5) + scale_x_discrete(name = \"\") + scale_y_continuous(name = \"\", expand = expansion(mult = c(0, 0.2))) + facet_wrap(vars(구분), nrow = 2) + theme_bw() . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%91%98%20%EC%9D%B4%EC%83%81%EC%9D%98%20%EC%86%8D%EC%84%B1%20%EC%8B%9C%EA%B0%81%ED%99%94.html#%EC%86%8D%EC%84%B1%EB%B3%84-%ED%99%94%EB%A9%B4-%EB%B6%84%ED%95%A0%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%91%98%20%EC%9D%B4%EC%83%81%EC%9D%98%20%EC%86%8D%EC%84%B1%20%EC%8B%9C%EA%B0%81%ED%99%94.html#속성별-화면-분할하기"
-  },"65": {
+  },"70": {
     "doc": "둘 이상의 속성 시각화",
     "title": "x축 순서 정렬하기",
     "content": "앞서 작성한 그래프에서 x축이 붓꽃 종류(setosa, versicolor, virginica)로 고정되어 있습니다. 속성별 값에 따라 막대를 오름차순으로 정렬하려면 tidytext 패키지의 reorder_within과 scale_x_reordered를 사용하면 됩니다. # 패키지 로드 library(tidytext) # 속성 내 값 기준 오름차순 정렬 ggplot(data = data2, aes(x = reorder_within(종류, 값, 구분), y = 값, group = 종류, fill = 종류)) + geom_col(width = 0.6) + geom_text(aes(label = scales::comma(값, accuracy = .1)), vjust = -0.5) + scale_x_reordered(name = \"\") + scale_y_continuous(name = \"\", expand = expansion(mult = c(0, 0.2))) + facet_wrap(vars(구분), nrow = 2, scales = \"free_x\") + theme_bw() . 이번에는 여러 속성을 효과적으로 보여주는 방식을 소개했습니다. 화면 분할, 정렬 등을 조합하여 복잡한 데이터를 직관적으로 표현할 수 있습니다. 위 코드를 참고하여 여러분 데이터에 맞는 시각화를 시도해 보세요! . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%91%98%20%EC%9D%B4%EC%83%81%EC%9D%98%20%EC%86%8D%EC%84%B1%20%EC%8B%9C%EA%B0%81%ED%99%94.html#x%EC%B6%95-%EC%88%9C%EC%84%9C-%EC%A0%95%EB%A0%AC%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%91%98%20%EC%9D%B4%EC%83%81%EC%9D%98%20%EC%86%8D%EC%84%B1%20%EC%8B%9C%EA%B0%81%ED%99%94.html#x축-순서-정렬하기"
-  },"66": {
+  },"71": {
     "doc": "막대그래프 너비와 간격 조절",
     "title": "막대그래프 너비와 간격 조절",
     "content": " ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%20%EB%84%88%EB%B9%84%EC%99%80%20%EA%B0%84%EA%B2%A9%20%EC%A1%B0%EC%A0%88.html",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%20%EB%84%88%EB%B9%84%EC%99%80%20%EA%B0%84%EA%B2%A9%20%EC%A1%B0%EC%A0%88.html"
-  },"67": {
+  },"72": {
     "doc": "막대그래프 너비와 간격 조절",
     "title": "개요",
     "content": "이번 글에서는 R의 ggplot2 패키지를 사용하여 막대그래프를 그릴 때 막대 너비와 간격을 조정하는 방법을 알아보겠습니다. geom_col과 position_dodge 함수의 다양한 설정을 활용해 여러분의 데이터를 더 깔끔하고 직관적으로 시각화해 봅시다. 이번 시간에는 둘 이상의 속성 시각화 글에서 그린 차트를 활용하겠습니다. 기본 막대그래프를 살펴보면, 별도 설정을 해주지 않으면 geom_col로 그린 막대그래프는 아래와 같이 막대가 서로 붙어 있게 됩니다. # 패키지 로드 library(showtext) # 글꼴 설정 font_add(\"kopub\", \"C:/Users/.../AppData/Local/Microsoft/Windows/Fonts/KoPub Dotum Medium.ttf\") showtext_auto() showtext_opts(dpi=300) theme.size = 14 text.size = theme.size / .pt # 차트 그리기 ggplot(data = data2, aes(x = 구분, y = 값, group = 종류, fill = 종류)) + geom_col(position=position_dodge()) + geom_text(aes(label=scales::comma(값, accuracy = .1)), position=position_dodge(width = 0.9), vjust = -0.5, family = \"kopub\", size = text.size) + scale_y_continuous(name = \"길이(단위: cm)\", expand = expansion(mult = c(0, 0.3))) + theme_bw(base_family = \"kopub\", base_size = theme.size) + theme( axis.title.x = element_blank(), legend.title = element_blank(), legend.key.height = unit(theme.size, \"pt\"), legend.key.spacing.y = unit(3, \"pt\") ) . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%20%EB%84%88%EB%B9%84%EC%99%80%20%EA%B0%84%EA%B2%A9%20%EC%A1%B0%EC%A0%88.html#%EA%B0%9C%EC%9A%94",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%20%EB%84%88%EB%B9%84%EC%99%80%20%EA%B0%84%EA%B2%A9%20%EC%A1%B0%EC%A0%88.html#개요"
-  },"68": {
+  },"73": {
     "doc": "막대그래프 너비와 간격 조절",
     "title": "막대 너비와 간격을 조정하는 두 가지 함수",
     "content": "geom_col 함수의 width와 position_dodge 함수의 width를 사용하면 막대그래프의 너비와 간격을 손쉽게 조정할 수 있습니다. geom_col의 width는 막대 자체의 너비를, position_dodge의 width는 막대 사이 간격을 조정하는 역할을 합니다. | 구분 | position_dodge의 width | geom_col의 width | . | 역할 | 동일한 x 위치에 있는 막대들이 얼마나 떨어져 배치될지 조정 | 각 막대의 너비 조정 | . | 기본값 | 기본값은 NULL이나, 자동으로 적절한 간격이 설정됨 | 기본값은 0.9 | . | 단위 | x축 값에 대한 상대적인 단위 | x축 값에 대한 상대적인 단위(예: 0.9는 x축 간격을 기준으로 막대 너비를 90%로 설정한다는 의미) | . | 값 | 값이 클수록 막대들 사이의 간격이 넓어짐 | 값이 작을수록 막대가 얇아지고, 1 이상일 경우 막대가 x축 간격을 초과해 두꺼워짐 | . 추가로, geom_col의 width가 position_dodge의 width보다 크면 막대가 서로 겹치게 됩니다. 반대로 geom_col의 width가 더 작으면 막대 간 간격이 벌어집니다. 두 값이 같을 경우 막대들이 딱 붙어있는 형태를 가지게 됩니다. ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%20%EB%84%88%EB%B9%84%EC%99%80%20%EA%B0%84%EA%B2%A9%20%EC%A1%B0%EC%A0%88.html#%EB%A7%89%EB%8C%80-%EB%84%88%EB%B9%84%EC%99%80-%EA%B0%84%EA%B2%A9%EC%9D%84-%EC%A1%B0%EC%A0%95%ED%95%98%EB%8A%94-%EB%91%90-%EA%B0%80%EC%A7%80-%ED%95%A8%EC%88%98",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%20%EB%84%88%EB%B9%84%EC%99%80%20%EA%B0%84%EA%B2%A9%20%EC%A1%B0%EC%A0%88.html#막대-너비와-간격을-조정하는-두-가지-함수"
-  },"69": {
+  },"74": {
     "doc": "막대그래프 너비와 간격 조절",
     "title": "막대 너비를 줄이고 간격 없애기",
     "content": "막대의 너비를 줄이면서 막대들 간의 간격을 없애고 싶다면, geom_col과 position_dodge의 width 값을 동일하게 설정해야 합니다. 기본값인 0.9보다 작은 값을 사용하면 막대의 너비를 줄일 수 있습니다. 이번에는 두 값을 모두 0.5로 설정해 보겠습니다. 이렇게 하면 막대가 더 얇아지면서 서로 간격 없이 정렬됩니다. ggplot(data = data2, aes(x = 구분, y = 값, group = 종류, fill = 종류)) + geom_col(position=position_dodge(width=0.5), width = 0.5) + geom_text(aes(label=scales::comma(값, accuracy = .1)), position=position_dodge(width=0.5), vjust = -0.5, family = \"kopub\", size = text.size) + scale_y_continuous(name = \"길이(단위: cm)\", expand = expansion(mult = c(0, 0.3))) + theme_bw(base_family = \"kopub\", base_size = theme.size) + theme( axis.title.x = element_blank(), legend.title = element_blank(), legend.key.height = unit(theme.size, \"pt\"), legend.key.spacing.y = unit(3, \"pt\") ) . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%20%EB%84%88%EB%B9%84%EC%99%80%20%EA%B0%84%EA%B2%A9%20%EC%A1%B0%EC%A0%88.html#%EB%A7%89%EB%8C%80-%EB%84%88%EB%B9%84%EB%A5%BC-%EC%A4%84%EC%9D%B4%EA%B3%A0-%EA%B0%84%EA%B2%A9-%EC%97%86%EC%95%A0%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%20%EB%84%88%EB%B9%84%EC%99%80%20%EA%B0%84%EA%B2%A9%20%EC%A1%B0%EC%A0%88.html#막대-너비를-줄이고-간격-없애기"
-  },"70": {
+  },"75": {
     "doc": "막대그래프 너비와 간격 조절",
     "title": "막대 너비는 유지하고 간격 넓히기",
     "content": "이번에는 막대의 너비는 그대로 두고 막대들 사이의 간격을 넓혀보겠습니다. geom_col의 width는 따로 설정하지 않으면 기본값인 0.9가 적용됩니다. 막대들 간 간격이 겹치지 않도록 하려면 position_dodge의 width를 0.9보다 큰 값으로 지정하면 됩니다. 예를 들어, 이번에는 1로 설정해보겠습니다. 아래 그래프를 보면 막대들 간의 간격이 넓어진 것을 확인할 수 있습니다. 하지만 막대 자체의 너비가 여전히 두껍기 때문에 여백이 부족해 약간 답답해 보이는 점이 아쉬울 수 있습니다. ggplot(data = data2, aes(x = 구분, y = 값, group = 종류, fill = 종류)) + geom_col(position=position_dodge(width=1)) + geom_text(aes(label=scales::comma(값, accuracy = .1)), position=position_dodge(width=1), vjust = -0.5, family = \"kopub\", size = text.size) + scale_y_continuous(name = \"길이(단위: cm)\", expand = expansion(mult = c(0, 0.3))) + theme_bw(base_family = \"kopub\", base_size = theme.size) + theme( axis.title.x = element_blank(), legend.title = element_blank(), legend.key.height = unit(theme.size, \"pt\"), legend.key.spacing.y = unit(3, \"pt\") ) . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%20%EB%84%88%EB%B9%84%EC%99%80%20%EA%B0%84%EA%B2%A9%20%EC%A1%B0%EC%A0%88.html#%EB%A7%89%EB%8C%80-%EB%84%88%EB%B9%84%EB%8A%94-%EC%9C%A0%EC%A7%80%ED%95%98%EA%B3%A0-%EA%B0%84%EA%B2%A9-%EB%84%93%ED%9E%88%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%20%EB%84%88%EB%B9%84%EC%99%80%20%EA%B0%84%EA%B2%A9%20%EC%A1%B0%EC%A0%88.html#막대-너비는-유지하고-간격-넓히기"
-  },"71": {
+  },"76": {
     "doc": "막대그래프 너비와 간격 조절",
     "title": "막대 너비 줄이고 간격 넓히기",
     "content": "마지막으로, 기본값에서 조금 변화를 줘서 막대의 너비를 줄이고 막대 사이 간격을 넓혀보겠습니다. 이렇게 하면 그래프에 적당한 여백이 생겨 더 깔끔하게 보이죠. 예를 들어, geom_col의 width를 0.7로 설정하고, position_dodge의 width를 0.8로 지정하면 됩니다. 아래 그래프를 보면, 막대 그룹 사이 간격이 그룹 내부의 막대 간격보다 더 넓게 조정되어 시각적으로 균형 잡힌 느낌을 주는 것을 확인할 수 있습니다. ggplot(data = data2, aes(x = 구분, y = 값, group = 종류, fill = 종류)) + geom_col(position=position_dodge(width=0.8), width=0.7) + geom_text(aes(label=scales::comma(값, accuracy = .1)), position=position_dodge(width=0.8), vjust = -0.5, family = \"kopub\", size = text.size) + scale_y_continuous(name = \"길이(단위: cm)\", expand = expansion(mult = c(0, 0.3))) + theme_bw(base_family = \"kopub\", base_size = theme.size) + theme( axis.title.x = element_blank(), legend.title = element_blank(), legend.key.height = unit(theme.size, \"pt\"), legend.key.spacing.y = unit(3, \"pt\") ) . 막대그래프는 데이터를 전달할 때 가장 자주 쓰이는 시각화 도구 중 하나입니다. 그래프의 가독성을 높이고 메시지를 더 분명하게 전달하려면 막대의 너비와 간격을 적절히 조정하는 게 중요합니다. 다양한 설정을 시도하며 조정해 보세요! . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%20%EB%84%88%EB%B9%84%EC%99%80%20%EA%B0%84%EA%B2%A9%20%EC%A1%B0%EC%A0%88.html#%EB%A7%89%EB%8C%80-%EB%84%88%EB%B9%84-%EC%A4%84%EC%9D%B4%EA%B3%A0-%EA%B0%84%EA%B2%A9-%EB%84%93%ED%9E%88%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%20%EB%84%88%EB%B9%84%EC%99%80%20%EA%B0%84%EA%B2%A9%20%EC%A1%B0%EC%A0%88.html#막대-너비-줄이고-간격-넓히기"
-  },"72": {
+  },"77": {
     "doc": "막대그래프 오름차순 정렬",
     "title": "막대그래프 오름차순 정렬",
     "content": " ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%98%A4%EB%A6%84%EC%B0%A8%EC%88%9C%20%EC%A0%95%EB%A0%AC.html",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%98%A4%EB%A6%84%EC%B0%A8%EC%88%9C%20%EC%A0%95%EB%A0%AC.html"
-  },"73": {
+  },"78": {
     "doc": "막대그래프 오름차순 정렬",
     "title": "데이터 준비",
     "content": "막대그래프의 기본 정렬 순서를 이해하고, 데이터 값에 따라 정렬하는 방법을 알아보겠습니다. 이번 예제에서는 iris 데이터셋을 사용하여 붓꽃 종류별 평균 꽃받침 너비를 나타내는 그래프를 작성하겠습니다. 기본적으로는 종류가 알파벳 순으로 정렬됩니다. # 패키지 로드 library(ggplot2) library(dplyr) # 데이터 준비 data &lt;- iris %&gt;% group_by(Species) %&gt;% summarise(`꽃받침 너비` = mean(Sepal.Width)) %&gt;% rename(종류 = Species) # 기본 그래프 ggplot(data, aes(x = 종류, y = `꽃받침 너비`, label = round(`꽃받침 너비`, 2))) + geom_col(width = 0.6, fill = \"#56B4E9\") + geom_text(vjust = -0.5) + scale_y_continuous(expand = expansion(mult = c(0, 0.1))) + theme_bw() . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%98%A4%EB%A6%84%EC%B0%A8%EC%88%9C%20%EC%A0%95%EB%A0%AC.html#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A4%80%EB%B9%84",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%98%A4%EB%A6%84%EC%B0%A8%EC%88%9C%20%EC%A0%95%EB%A0%AC.html#데이터-준비"
-  },"74": {
+  },"79": {
     "doc": "막대그래프 오름차순 정렬",
     "title": "막대그래프를 값에 따라 정렬하기",
     "content": "꽃받침 너비를 기준으로 막대그래프를 정렬하려면, reorder를 사용하면 됩니다. 1. 내림차순 정렬 . 값이 큰 순서대로 정렬하려면 reorder(종류, -`꽃받침 너비`)를 사용합니다. ggplot(data, aes(x = reorder(종류, -`꽃받침 너비`), y = `꽃받침 너비`, label = round(`꽃받침 너비`, 2))) + geom_col(width = 0.6, fill = \"#56B4E9\") + geom_text(vjust = -0.5) + scale_y_continuous(expand = expansion(mult = c(0, 0.1))) + theme_bw() . 2. 오름차순 정렬 . 값이 작은 순서대로 정렬하려면 reorder(종류,`꽃받침 너비`)를 사용합니다. ggplot(data, aes(x = reorder(종류, `꽃받침 너비`), y = `꽃받침 너비`, label = round(`꽃받침 너비`, 2))) + geom_col(width = 0.6, fill = \"#56B4E9\") + geom_text(vjust = -0.5) + scale_y_continuous(expand = expansion(mult = c(0, 0.1))) + theme_bw() . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%98%A4%EB%A6%84%EC%B0%A8%EC%88%9C%20%EC%A0%95%EB%A0%AC.html#%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%EB%A5%BC-%EA%B0%92%EC%97%90-%EB%94%B0%EB%9D%BC-%EC%A0%95%EB%A0%AC%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%98%A4%EB%A6%84%EC%B0%A8%EC%88%9C%20%EC%A0%95%EB%A0%AC.html#막대그래프를-값에-따라-정렬하기"
-  },"75": {
+  },"80": {
     "doc": "막대그래프 오름차순 정렬",
     "title": "x축 제목 수정",
     "content": "reorder를 사용하면 x축 제목이 ’reorder(종류, -\\꽃받침 너비\\\\)’로 표시됩니다. scale_x_discrete를 사용하여 제목을 수정할 수 있습니다. ggplot(data, aes(x = reorder(종류, -`꽃받침 너비`), y = `꽃받침 너비`, label = round(`꽃받침 너비`, 2))) + geom_col(width = 0.6, fill = \"#56B4E9\") + geom_text(vjust = -0.5) + scale_x_discrete(name = \"붓꽃 종류\") + scale_y_continuous(expand = expansion(mult = c(0, 0.1))) + theme_bw() . reorder를 활용하면 막대그래프를 데이터 값에 따라 쉽게 정렬할 수 있습니다. 이를 통해 시각화를 더욱 직관적으로 만들 수 있습니다. 각 사례를 참고하여 데이터에 맞는 정렬 방식을 적용해 보세요! . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%98%A4%EB%A6%84%EC%B0%A8%EC%88%9C%20%EC%A0%95%EB%A0%AC.html#x%EC%B6%95-%EC%A0%9C%EB%AA%A9-%EC%88%98%EC%A0%95",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%98%A4%EB%A6%84%EC%B0%A8%EC%88%9C%20%EC%A0%95%EB%A0%AC.html#x축-제목-수정"
-  },"76": {
+  },"81": {
     "doc": "멀리 떨어진 지역 박스 처리하기",
     "title": "멀리 떨어진 지역 박스 처리하기",
     "content": " ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EB%A9%80%EB%A6%AC%20%EB%96%A8%EC%96%B4%EC%A7%84%20%EC%A7%80%EC%97%AD%20%EB%B0%95%EC%8A%A4%20%EC%B2%98%EB%A6%AC%ED%95%98%EA%B8%B0.html",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EB%A9%80%EB%A6%AC%20%EB%96%A8%EC%96%B4%EC%A7%84%20%EC%A7%80%EC%97%AD%20%EB%B0%95%EC%8A%A4%20%EC%B2%98%EB%A6%AC%ED%95%98%EA%B8%B0.html"
-  },"77": {
+  },"82": {
     "doc": "멀리 떨어진 지역 박스 처리하기",
     "title": "개요",
     "content": "지도 작업 시 서로 멀리 떨어진 지역이 포함되면, 지도의 가로 길이가 길어져 지역 폴리곤이 전반적으로 작아집니다. 예를 들어, 수도권 지도를 그릴 때 옹진군이 포함되면 육지가 지도의 중심에서 비켜나고, 육지에 있는 지역들이 작게 표현되는 상황이 생길 수 있습니다. 이런 경우, 독자가 집중해야 할 주요 영역을 돋보이게 할 필요가 있습니다. 이번 글에서는 이러한 문제를 해결하기 위해 멀리 떨어진 지역을 별도의 박스로 표시하여 메인 지도에 추가하는 방법을 소개하겠습니다. ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EB%A9%80%EB%A6%AC%20%EB%96%A8%EC%96%B4%EC%A7%84%20%EC%A7%80%EC%97%AD%20%EB%B0%95%EC%8A%A4%20%EC%B2%98%EB%A6%AC%ED%95%98%EA%B8%B0.html#%EA%B0%9C%EC%9A%94",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EB%A9%80%EB%A6%AC%20%EB%96%A8%EC%96%B4%EC%A7%84%20%EC%A7%80%EC%97%AD%20%EB%B0%95%EC%8A%A4%20%EC%B2%98%EB%A6%AC%ED%95%98%EA%B8%B0.html#개요"
-  },"78": {
+  },"83": {
     "doc": "멀리 떨어진 지역 박스 처리하기",
     "title": "데이터 준비하기",
     "content": "먼저, 필요한 패키지를 로드합니다. 이번 작업에서는 두 개의 지도를 조합하기 위해 cowplot 패키지가 추가로 필요합니다. 이 패키지를 활용하면 여러 플롯을 하나의 시각화로 결합할 수 있습니다. # 패키지 로드 library(tidyverse) library(sf) library(ggplot2) library(cowplot) . 이전에 작성한 행정구 병합하기 글에서 만든 지도 데이터를 그대로 불러옵니다. # 데이터 불러오기 map &lt;- st_read(\"아웃풋/수도권 행정구 병합 지도.shp\") . ## Reading layer `수도권 행정구 병합 지도' from data source ## `C:\\...\\아웃풋\\수도권 행정구 병합 지도.shp' ## using driver `ESRI Shapefile' ## Simple feature collection with 66 features and 2 fields ## Geometry type: MULTIPOLYGON ## Dimension: XY ## Bounding box: xmin: -10044.95 ymin: 477264 xmax: 274945.2 ymax: 631207.8 ## Projected CRS: Korea_2000_Korea_Central_Belt_2010 . # 데이터 확인하기 head(map) . ## Simple feature collection with 6 features and 2 fields ## Geometry type: MULTIPOLYGON ## Dimension: XY ## Bounding box: xmin: 170923.2 ymin: 518463.7 xmax: 254296.8 ymax: 605780.4 ## Projected CRS: Korea_2000_Korea_Central_Belt_2010 ## SGG_NM COL_ADM_SE geometry ## 1 경기도 가평군 41820 MULTIPOLYGON (((239726.3 60... ## 2 경기도 고양시 41280 MULTIPOLYGON (((193799.4 57... ## 3 경기도 과천시 41290 MULTIPOLYGON (((200375.6 54... ## 4 경기도 광명시 41210 MULTIPOLYGON (((188355.1 54... ## 5 경기도 광주시 41610 MULTIPOLYGON (((230605 5485... ## 6 경기도 구리시 41310 MULTIPOLYGON (((213032.4 56... ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EB%A9%80%EB%A6%AC%20%EB%96%A8%EC%96%B4%EC%A7%84%20%EC%A7%80%EC%97%AD%20%EB%B0%95%EC%8A%A4%20%EC%B2%98%EB%A6%AC%ED%95%98%EA%B8%B0.html#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A4%80%EB%B9%84%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EB%A9%80%EB%A6%AC%20%EB%96%A8%EC%96%B4%EC%A7%84%20%EC%A7%80%EC%97%AD%20%EB%B0%95%EC%8A%A4%20%EC%B2%98%EB%A6%AC%ED%95%98%EA%B8%B0.html#데이터-준비하기"
-  },"79": {
+  },"84": {
     "doc": "멀리 떨어진 지역 박스 처리하기",
     "title": "옹진군 지도 그리기",
     "content": "옹진군은 수도권 서부 해안에서 멀리 떨어져 있어 별도의 박스 지도에 표시할 필요가 있습니다. 먼저, 옹진군만 필터링한 데이터를 사용하여 서브 지도를 그립니다. geom_sf를 사용해 지도를 그리고, theme_void와 theme 옵션을 사용해 지도의 배경을 설정합니다. 배경색은 옹진군이 바다에 위치한 특성을 반영해 파란색(“#A5D1F2”)으로 지정했습니다. sub_map &lt;- map %&gt;% filter(SGG_NM == \"인천광역시 옹진군\") %&gt;% ggplot() + geom_sf(color = \"gray40\", fill = \"#F7F7F7\", linewidth = 0.4) + theme_void() + theme( panel.border = element_rect(color = \"gray20\", fill = NA, linewidth = 0.3), panel.background = element_rect(fill = \"#A5D1F2\") ) sub_map . ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EB%A9%80%EB%A6%AC%20%EB%96%A8%EC%96%B4%EC%A7%84%20%EC%A7%80%EC%97%AD%20%EB%B0%95%EC%8A%A4%20%EC%B2%98%EB%A6%AC%ED%95%98%EA%B8%B0.html#%EC%98%B9%EC%A7%84%EA%B5%B0-%EC%A7%80%EB%8F%84-%EA%B7%B8%EB%A6%AC%EA%B8%B0",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EB%A9%80%EB%A6%AC%20%EB%96%A8%EC%96%B4%EC%A7%84%20%EC%A7%80%EC%97%AD%20%EB%B0%95%EC%8A%A4%20%EC%B2%98%EB%A6%AC%ED%95%98%EA%B8%B0.html#옹진군-지도-그리기"
-  },"80": {
+  },"85": {
     "doc": "멀리 떨어진 지역 박스 처리하기",
     "title": "옹진군을 제외한 수도권 지도 그리기",
     "content": "이제 옹진군을 제외한 수도권 육지를 메인 지도로 표시합니다. filter 함수로 옹진군 데이터를 제외한 후, 나머지 데이터를 이용해 지도를 생성합니다. 바다가 아닌 지역도 있지만 메인 지도 또한 시각적 통일성을 위해 배경색을 파란색으로 표현해 주었습니다. base_map &lt;- map %&gt;% filter(SGG_NM != \"인천광역시 옹진군\") %&gt;% ggplot() + geom_sf(color = \"gray40\", fill = \"#F7F7F7\", linewidth = 0.4) + theme_void() + theme( panel.background = element_rect(fill = \"#A5D1F2\") ) base_map . ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EB%A9%80%EB%A6%AC%20%EB%96%A8%EC%96%B4%EC%A7%84%20%EC%A7%80%EC%97%AD%20%EB%B0%95%EC%8A%A4%20%EC%B2%98%EB%A6%AC%ED%95%98%EA%B8%B0.html#%EC%98%B9%EC%A7%84%EA%B5%B0%EC%9D%84-%EC%A0%9C%EC%99%B8%ED%95%9C-%EC%88%98%EB%8F%84%EA%B6%8C-%EC%A7%80%EB%8F%84-%EA%B7%B8%EB%A6%AC%EA%B8%B0",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EB%A9%80%EB%A6%AC%20%EB%96%A8%EC%96%B4%EC%A7%84%20%EC%A7%80%EC%97%AD%20%EB%B0%95%EC%8A%A4%20%EC%B2%98%EB%A6%AC%ED%95%98%EA%B8%B0.html#옹진군을-제외한-수도권-지도-그리기"
-  },"81": {
+  },"86": {
     "doc": "멀리 떨어진 지역 박스 처리하기",
     "title": "하나의 지도로 만들기",
     "content": "이제 cowplot 패키지를 사용해 두 지도를 결합합니다. ggdraw는 빈 캔버스를 생성하고, draw_plot은 플롯을 캔버스 위에 추가하는 역할을 합니다. 서브 지도를 메인 지도의 좌측 상단에 배치하기 위해 x = 0.18, y = 0.37로 지정했습니다. width로 서브 지도의 상대 크기를 설정해 메인 지도와의 비율을 조정합니다. ggdraw(base_map) + draw_plot(sub_map, x = 0.18, y = 0.37, width = 0.2) . 이 방법을 활용하면 지도의 일부 지역을 누락하지 않으면서도, 메인이 되는 지역을 중심에 위치시켜 더 잘 보이도록 구성할 수 있습니다. 데이터의 전체 맥락을 유지하면서도 주요 정보를 강조하고 싶을 때 이 방법을 적극 활용해 보세요! . ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EB%A9%80%EB%A6%AC%20%EB%96%A8%EC%96%B4%EC%A7%84%20%EC%A7%80%EC%97%AD%20%EB%B0%95%EC%8A%A4%20%EC%B2%98%EB%A6%AC%ED%95%98%EA%B8%B0.html#%ED%95%98%EB%82%98%EC%9D%98-%EC%A7%80%EB%8F%84%EB%A1%9C-%EB%A7%8C%EB%93%A4%EA%B8%B0",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EB%A9%80%EB%A6%AC%20%EB%96%A8%EC%96%B4%EC%A7%84%20%EC%A7%80%EC%97%AD%20%EB%B0%95%EC%8A%A4%20%EC%B2%98%EB%A6%AC%ED%95%98%EA%B8%B0.html#하나의-지도로-만들기"
-  },"82": {
+  },"87": {
     "doc": "박스플롯과 산점도 결합차트 그리기",
     "title": "박스플롯과 산점도 결합차트 그리기",
     "content": " ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B0%95%EC%8A%A4%ED%94%8C%EB%A1%AF%EA%B3%BC%20%EC%82%B0%EC%A0%90%EB%8F%84%20%EA%B2%B0%ED%95%A9%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B0%95%EC%8A%A4%ED%94%8C%EB%A1%AF%EA%B3%BC%20%EC%82%B0%EC%A0%90%EB%8F%84%20%EA%B2%B0%ED%95%A9%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html"
-  },"83": {
+  },"88": {
     "doc": "박스플롯과 산점도 결합차트 그리기",
     "title": "개요",
     "content": "이번 글에서는 박스플롯(Boxplot)과 산점도(Scatter plot)를 결합한 차트를 소개합니다. 박스플롯은 데이터의 중앙값, 사분위수(IQR), 이상치 등을 요약적으로 시각화하여 데이터의 전반적인 분포와 중심 경향을 파악할 수 있는 차트입니다. 이를 통해 여러 그룹 간 데이터 분포를 직관적으로 비교하거나 이상치를 탐지하는 데 효과적입니다. 반면 산점도는 개별 데이터 포인트의 위치와 밀집도를 세부적으로 보여주는 차트로, 데이터의 세부적인 분포를 직관적으로 이해할 수 있도록 돕습니다. 박스플롯은 데이터의 요약 정보를 제공하는 데 유용하지만 개별 데이터 포인트의 위치를 직접 보여주지는 않습니다. 이때 산점도를 결합하면 데이터의 요약 정보와 세부 분포를 동시에 확인할 수 있어 데이터 분석에 있어 더 풍부한 통찰을 제공합니다. 이번 글에서는 2023년 기준 시도별 청년인구 비율을 분석하여 이러한 차트를 그려보겠습니다. ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B0%95%EC%8A%A4%ED%94%8C%EB%A1%AF%EA%B3%BC%20%EC%82%B0%EC%A0%90%EB%8F%84%20%EA%B2%B0%ED%95%A9%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html#%EA%B0%9C%EC%9A%94",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B0%95%EC%8A%A4%ED%94%8C%EB%A1%AF%EA%B3%BC%20%EC%82%B0%EC%A0%90%EB%8F%84%20%EA%B2%B0%ED%95%A9%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html#개요"
-  },"84": {
+  },"89": {
     "doc": "박스플롯과 산점도 결합차트 그리기",
     "title": "데이터 준비하기",
     "content": "먼저, 필요한 패키지를 로드하고 차트에 사용할 글꼴을 설정합니다. # 패키지 로드 library(tidyverse) library(readxl) library(ggplot2) library(showtext) library(scales) # 글꼴 설정 font_add(\"kopub\", \"C:/Users/.../AppData/Local/Microsoft/Windows/Fonts/KoPub Dotum Medium.ttf\") showtext_auto() showtext_opts(dpi=300) theme.size = 12 text.size = theme.size / .pt . 2023년 기준 시도별 청년인구 비율을 구하기 위해 통계청의 행정구역(읍면동)별/5세별 주민등록인구(2011년~) 자료를 활용합니다. # 데이터 불러오기 pop &lt;- read_xlsx(\"데이터/시도 인구 특성/5세별주민등록인구_시도_2023.xlsx\") . 청년인구는 만 20~34세로 정의하며, 이를 기준으로 청년인구 수와 전체인구 수를 계산한 후 비율을 구합니다. # 청년 정의 age &lt;- unique(pop$`5세별`) youth &lt;- age[5:6] # 5세별 주민등록인구 데이터 가공하기 pop_sum &lt;- pop %&gt;% rename(시도 = `행정구역(동읍면)별`) %&gt;% mutate(구분 = case_when(`5세별` %in% youth ~ \"청년인구 수\", T ~ \"그 외 인구 수\")) %&gt;% group_by(시도, 구분) %&gt;% summarise(`인구 수` = sum(`2023`, na.rm = T)) %&gt;% pivot_wider(id_cols = 시도, names_from = 구분, values_from = `인구 수`) %&gt;% mutate(`인구 수` = `청년인구 수` + `그 외 인구 수`, `청년인구 비율` = `청년인구 수` / `인구 수`) %&gt;% select(-`그 외 인구 수`) %&gt;% filter(시도 != \"전국\") # 데이터 확인하기 head(pop_sum) . ## # A tibble: 6 × 4 ## # Groups: 시도 [6] ## 시도 `청년인구 수` `인구 수` `청년인구 비율` ## &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; ## 1 강원특별자치도 163610 1527807 0.107 ## 2 경기도 1682138 13630821 0.123 ## 3 경상남도 322711 3251158 0.0993 ## 4 경상북도 248255 2554324 0.0972 ## 5 광주광역시 190905 1419237 0.135 ## 6 대구광역시 282470 2374960 0.119 . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B0%95%EC%8A%A4%ED%94%8C%EB%A1%AF%EA%B3%BC%20%EC%82%B0%EC%A0%90%EB%8F%84%20%EA%B2%B0%ED%95%A9%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A4%80%EB%B9%84%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B0%95%EC%8A%A4%ED%94%8C%EB%A1%AF%EA%B3%BC%20%EC%82%B0%EC%A0%90%EB%8F%84%20%EA%B2%B0%ED%95%A9%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html#데이터-준비하기"
-  },"85": {
+  },"90": {
     "doc": "박스플롯과 산점도 결합차트 그리기",
     "title": "박스플롯 구성요소 이해하기",
     "content": "박스플롯 구성요소로 박스(box), 수염(whisker), 중앙값(median), 이상치(outliers), 끝선(staple), 중앙값 노치(notch) 등이 있습니다. | 박스: 중앙값을 기준으로 1사분위수(Q1)와 3사분위수(Q3) 사이의 범위를 보여줍니다. 이 영역은 데이터의 중간 50%를 나타내며, 사분위 범위(IQR)라고도 합니다. | 수염: 데이터의 주요 범위를 나타냅니다. 수염의 끝은 Q1과 Q3에서 IQR의 1.5배 내외에 위치하는 데이터를 가리킵니다. 기본값은 1.5배지만, coef 파라미터로 조정할 수 있습니다. | 끝선: 수염의 끝에 짧은 선으로 표시되며, 수염의 끝을 명확히 보여줍니다. | 이상치: 수염 바깥에 위치한 데이터 포인트를 점으로 표시합니다. | 중앙값: 박스 안의 굵은 선으로 표시되며, 데이터의 중앙값을 나타냅니다. | 중앙값 노치: 중앙값 주위의 좁아진 영역으로, 그룹 간 중앙값을 시각적으로 비교할 때 유용합니다. | . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B0%95%EC%8A%A4%ED%94%8C%EB%A1%AF%EA%B3%BC%20%EC%82%B0%EC%A0%90%EB%8F%84%20%EA%B2%B0%ED%95%A9%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html#%EB%B0%95%EC%8A%A4%ED%94%8C%EB%A1%AF-%EA%B5%AC%EC%84%B1%EC%9A%94%EC%86%8C-%EC%9D%B4%ED%95%B4%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B0%95%EC%8A%A4%ED%94%8C%EB%A1%AF%EA%B3%BC%20%EC%82%B0%EC%A0%90%EB%8F%84%20%EA%B2%B0%ED%95%A9%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html#박스플롯-구성요소-이해하기"
-  },"86": {
+  },"91": {
     "doc": "박스플롯과 산점도 결합차트 그리기",
     "title": "박스플롯 그리기",
     "content": "가장 기본적인 박스플롯을 먼저 그려봅니다. 박스플롯은 데이터의 중앙값과 사분위수 범위를 요약적으로 보여줍니다. ggplot(pop_sum, aes(x = \"\", y = `청년인구 비율`)) + geom_boxplot() + scale_x_discrete(name = \"청년인구 비율\") + scale_y_continuous(labels = percent_format(accuracy=1)) + theme_minimal(base_size = theme.size, base_family = \"kopub\") + theme( axis.title.y = element_blank(), axis.line = element_line(linewidth = 0.4), axis.ticks = element_line(linewidth = 0.1), panel.grid = element_blank(), ) . 기본 박스플롯에 끝선을 추가하고, 노치를 설정하면 다음과 같이 나타납니다. ggplot(pop_sum, aes(x = \"\", y = `청년인구 비율`)) + geom_boxplot( staplewidth = 0.2, notch = TRUE, notchwidth = 0.4 ) + scale_x_discrete(name = \"청년인구 비율\") + scale_y_continuous(labels = percent_format(accuracy=1)) + theme_minimal(base_size = theme.size, base_family = \"kopub\") + theme( axis.title.y = element_blank(), axis.line = element_line(linewidth = 0.4), axis.ticks = element_line(linewidth = 0.1), panel.grid = element_blank(), ) . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B0%95%EC%8A%A4%ED%94%8C%EB%A1%AF%EA%B3%BC%20%EC%82%B0%EC%A0%90%EB%8F%84%20%EA%B2%B0%ED%95%A9%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html#%EB%B0%95%EC%8A%A4%ED%94%8C%EB%A1%AF-%EA%B7%B8%EB%A6%AC%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B0%95%EC%8A%A4%ED%94%8C%EB%A1%AF%EA%B3%BC%20%EC%82%B0%EC%A0%90%EB%8F%84%20%EA%B2%B0%ED%95%A9%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html#박스플롯-그리기"
-  },"87": {
+  },"92": {
     "doc": "박스플롯과 산점도 결합차트 그리기",
     "title": "산점도 추가하기",
     "content": "박스플롯에 개별 데이터 포인트를 추가하려면 geom_jitter를 사용합니다. 이 함수를 통해 포인트를 박스플롯 위에 적절히 분산 배치할 수 있습니다. width와 height를 기본값으로 두면, 포인트가 80% 범위 내에서 무작위로 분산됩니다. 이 둘을 0.5로 설정하면 포인트가 넓게 퍼져서 범주 간 구분이 어려워질 수 있으므로, 좀더 좁은 범위 내에서 무작위 분산하도록 지정해야 합니다. 본 예제에서는 비교 대상이 되는 다른 그룹이 있는 것은 아니지만, 좀 더 좁은 범위에서 데이터가 표시되도록 width = 0.2로 지정하겠습니다. 또한, 포인트 사이즈를 키우고 색상과 투명도를 조정하겠습니다. ggplot(pop_sum, aes(x = \"\", y = `청년인구 비율`)) + geom_boxplot( staplewidth = 0.2 ) + geom_jitter( width = 0.2, size = 3, color = \"gray20\", alpha = 0.4 ) + scale_x_discrete(name = \"청년인구 비율\") + scale_y_continuous(labels = percent_format(accuracy=1)) + theme_minimal(base_size = theme.size, base_family = \"kopub\") + theme( axis.title.y = element_blank(), axis.line = element_line(linewidth = 0.4), axis.ticks = element_line(linewidth = 0.1), panel.grid = element_blank(), ) . 이처럼 박스플롯과 산점도를 결합하면 데이터의 전체적인 분포와 세부적인 위치를 동시에 파악할 수 있습니다. 박스플롯은 데이터를 요약적으로 보여주고, 산점도는 개별 데이터 포인트를 시각화하므로 서로 보완적인 역할을 합니다. 이 두 차트를 조합하면 그룹 간 분포를 더 효과적으로 비교하고, 데이터의 세부적인 특징을 살펴볼 수 있으니 한 번 활용해 보세요! . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B0%95%EC%8A%A4%ED%94%8C%EB%A1%AF%EA%B3%BC%20%EC%82%B0%EC%A0%90%EB%8F%84%20%EA%B2%B0%ED%95%A9%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html#%EC%82%B0%EC%A0%90%EB%8F%84-%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B0%95%EC%8A%A4%ED%94%8C%EB%A1%AF%EA%B3%BC%20%EC%82%B0%EC%A0%90%EB%8F%84%20%EA%B2%B0%ED%95%A9%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html#산점도-추가하기"
-  },"88": {
+  },"93": {
     "doc": "백분율과 절대값 병기하기",
     "title": "백분율과 절대값 병기하기",
     "content": " ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B0%B1%EB%B6%84%EC%9C%A8%EA%B3%BC%20%EC%A0%88%EB%8C%80%EA%B0%92%20%EB%B3%91%EA%B8%B0%ED%95%98%EA%B8%B0.html",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B0%B1%EB%B6%84%EC%9C%A8%EA%B3%BC%20%EC%A0%88%EB%8C%80%EA%B0%92%20%EB%B3%91%EA%B8%B0%ED%95%98%EA%B8%B0.html"
-  },"89": {
+  },"94": {
     "doc": "백분율과 절대값 병기하기",
     "title": "개요",
     "content": "그래프에서 백분율만 표시하면 데이터의 상대적 분포는 알기 쉬워지지만, 실제 규모를 파악하기 어려운 경우가 있습니다. 이번 글에서는 백분율과 함께 절대값을 병기하는 방법을 소개합니다. 2023년 시도별 시, 군, 구의 주민등록인구 비중 데이터를 사용하여, 주민등록인구 수도 함께 표기하는 과정을 보여드리겠습니다. ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B0%B1%EB%B6%84%EC%9C%A8%EA%B3%BC%20%EC%A0%88%EB%8C%80%EA%B0%92%20%EB%B3%91%EA%B8%B0%ED%95%98%EA%B8%B0.html#%EA%B0%9C%EC%9A%94",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B0%B1%EB%B6%84%EC%9C%A8%EA%B3%BC%20%EC%A0%88%EB%8C%80%EA%B0%92%20%EB%B3%91%EA%B8%B0%ED%95%98%EA%B8%B0.html#개요"
-  },"90": {
+  },"95": {
     "doc": "백분율과 절대값 병기하기",
     "title": "누적막대그래프에 백분율 표기하기",
     "content": "우선, 기존의 누적막대그래프에서 백분율만 표시하는 방법을 복습합니다. 아래 코드는 시도별 주민등록인구 비중 데이터를 사용해 백분율을 그래프에 텍스트로 표시합니다. 자세한 데이터 준비 과정과 그래프에 대한 설명은 누적막대그래프 그리기 글을 참고하세요. ggplot(data = sum2, aes(x = 시도, y = 비율, group = 시도, fill = 구분, label = percent(비율, accuracy = .1, suffix = \"\"))) + geom_col(position = \"stack\", color = \"white\", linewidth = 0.4, width = 0.6) + geom_text_repel(family = \"kopub\", position = position_stack(vjust = 0.5), size = text.size, force = 0.001, force_pull = 1000) + scale_y_continuous(labels = percent_format(accuracy = 1), expand = expansion(mult = c(0, 0.1))) + scale_fill_brewer(palette = \"Pastel2\") + theme_minimal(base_size = theme.size, base_family = \"kopub\") + theme( axis.line.y = element_blank(), axis.line.x = element_line(color = \"#959595\", linewidth = 2), axis.title = element_blank(), axis.text.y = element_blank(), legend.title = element_blank(), legend.position = \"bottom\", legend.box.background = element_rect(color = \"#959595\", linewidth = 1), legend.key.size = unit(theme.size, \"pt\"), panel.grid = element_blank() ) . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B0%B1%EB%B6%84%EC%9C%A8%EA%B3%BC%20%EC%A0%88%EB%8C%80%EA%B0%92%20%EB%B3%91%EA%B8%B0%ED%95%98%EA%B8%B0.html#%EB%88%84%EC%A0%81%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84%EC%97%90-%EB%B0%B1%EB%B6%84%EC%9C%A8-%ED%91%9C%EA%B8%B0%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B0%B1%EB%B6%84%EC%9C%A8%EA%B3%BC%20%EC%A0%88%EB%8C%80%EA%B0%92%20%EB%B3%91%EA%B8%B0%ED%95%98%EA%B8%B0.html#누적막대그래프에-백분율-표기하기"
-  },"91": {
+  },"96": {
     "doc": "백분율과 절대값 병기하기",
     "title": "백분율과 절대값 병기하기",
     "content": "데이터의 의미를 더 명확히 전달하기 위해 백분율과 절대값을 함께 표시하겠습니다. 절대값은 주민등록인구 수를 만 명 단위로 변환해 추가하며, 두 값을 paste0 함수를 사용해 병기합니다. 백분율과 절대값은 서로 다른 정보지만, 함께 표기하면 데이터를 이해하는 데 더욱 유용할 수 있습니다. label을 수정해 백분율과 절대값을 함께 표시할 수 있습니다. 백분율은 percent 함수로 포맷팅하고, 절대값은 comma 함수로 포맷팅합니다. 텍스트 길이가 길어졌기 때문에 geom_text_repel 함수에서 텍스트 크기(size = text.size * 0.8)를 약간 축소해 줍니다. lineheight = 1로 줄 간격을 조정해 줍니다. ggplot(data = sum2, aes(x = 시도, y = 비율, group = 시도, fill = 구분, label = paste0(percent(비율, accuracy = .1), \"\\n(\", comma(주민등록인구수/10000, accuracy = 1, suffix = \"만 명\"), \")\") ) ) + geom_col(position = \"stack\", color = \"white\", linewidth = 0.4, width = 0.6) + geom_text_repel(family = \"kopub\", position = position_stack(vjust = 0.5), size = text.size * 0.8, lineheight = 1.0, force = 0.001, force_pull = 1000) + scale_y_continuous(labels = percent_format(accuracy = 1), expand = expansion(mult = c(0, 0.1))) + scale_fill_brewer(palette = \"Pastel2\") + theme_minimal(base_size = theme.size, base_family = \"kopub\") + theme( axis.line.y = element_blank(), axis.line.x = element_line(color = \"#959595\", linewidth = 2), axis.title = element_blank(), axis.text.y = element_blank(), legend.title = element_blank(), legend.position = \"bottom\", legend.box.background = element_rect(color = \"#959595\", linewidth = 1), legend.key.size = unit(theme.size, \"pt\"), panel.grid = element_blank() ) . 이번 글에서는 그래프에 백분율과 절대값을 함께 표기하는 방법을 소개했습니다. 이 방법은 상대적 비율과 절대적 크기를 모두 보여줘 데이터 전달력을 높이는 데 유용합니다. 백분율과 절대값 병기 같은 작은 디테일도 큰 차이를 만들 수 있으니, 여러분의 데이터 시각화에 꼭 활용해 보세요! . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B0%B1%EB%B6%84%EC%9C%A8%EA%B3%BC%20%EC%A0%88%EB%8C%80%EA%B0%92%20%EB%B3%91%EA%B8%B0%ED%95%98%EA%B8%B0.html",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B0%B1%EB%B6%84%EC%9C%A8%EA%B3%BC%20%EC%A0%88%EB%8C%80%EA%B0%92%20%EB%B3%91%EA%B8%B0%ED%95%98%EA%B8%B0.html"
-  },"92": {
+  },"97": {
     "doc": "범례 위치 설정",
     "title": "범례 위치 설정",
     "content": " ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B2%94%EB%A1%80%20%EC%9C%84%EC%B9%98%20%EC%84%A4%EC%A0%95.html",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B2%94%EB%A1%80%20%EC%9C%84%EC%B9%98%20%EC%84%A4%EC%A0%95.html"
-  },"93": {
+  },"98": {
     "doc": "범례 위치 설정",
     "title": "개요",
     "content": "이번 포스팅에서는 ggplot2를 사용하여 차트에서 범례의 위치를 다양하게 조정하는 방법을 소개합니다. 범례를 패널 안쪽, 패널 바깥의 오른쪽, 아래쪽 등 다양한 위치로 이동시킬 수 있으며, 이를 통해 차트의 가독성과 미적 요소를 동시에 향상시킬 수 있습니다. 이전에 혼합형 그래프 작성 글에서 만든 차트를 활용하겠습니다. # 글꼴 설정 font_add(\"kopub\", \"C:/Users/.../AppData/Local/Microsoft/Windows/Fonts/Kopub dotum medium.ttf\") showtext_auto() showtext_opts(dpi=300) theme.size = 14 # 기본지도 그리기 base &lt;- ggplot(data = data2) + geom_col(aes(x = 년도, y = `승객 수`, fill = \"승객 수\"), width = 0.6) + geom_line(aes(x = 년도, y = `전년 대비 승객 수 증감률` * coeff, color = \"전년 대비 승객 수 증감률\")) + scale_fill_manual(values = \"gray40\") + scale_color_manual(values = \"gray70\") + scale_x_continuous(n.breaks = 12) + scale_y_continuous( name = \"승객 수(천명)\", labels = scales::comma_format(), expand = expansion(mult=c(0, 0.3)), sec.axis = sec_axis(~./coeff, name = \"전년 대비 승객 수 증감률(%)\", labels = scales::percent_format()) ) + theme_bw(base_family=\"kopub\", base_size=theme.size) base . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B2%94%EB%A1%80%20%EC%9C%84%EC%B9%98%20%EC%84%A4%EC%A0%95.html#%EA%B0%9C%EC%9A%94",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B2%94%EB%A1%80%20%EC%9C%84%EC%B9%98%20%EC%84%A4%EC%A0%95.html#개요"
-  },"94": {
+  },"99": {
     "doc": "범례 위치 설정",
     "title": "패널 바깥의 오른쪽에 범례 배치하기",
     "content": "기본적으로 범례는 패널 바깥 오른쪽에 위치합니다. 범례의 시각적 품질을 개선하기 위해 아래 작업을 수행할 수 있습니다. | 범례 제목 제거: 차트의 간결함을 위해 범례 제목을 숨깁니다 | 범례 아이템 높이 조정: 범례 아이템(legend keys)의 높이를 범례 텍스트와 동일하게 설정합니다 | 범례 간 간격 조정: legend.spacing을 사용해 범례 요소 간의 간격을 줄입니다 | . base + theme( legend.title = element_blank(), # 범례 제목 없앰 legend.key.height = unit(rel(0.8), \"pt\"), # 범례 key 높이를 범례 글자 크기와 일치 legend.spacing = unit(3, \"pt\"), # 범례 간 간격 조정 ) . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B2%94%EB%A1%80%20%EC%9C%84%EC%B9%98%20%EC%84%A4%EC%A0%95.html#%ED%8C%A8%EB%84%90-%EB%B0%94%EA%B9%A5%EC%9D%98-%EC%98%A4%EB%A5%B8%EC%AA%BD%EC%97%90-%EB%B2%94%EB%A1%80-%EB%B0%B0%EC%B9%98%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B2%94%EB%A1%80%20%EC%9C%84%EC%B9%98%20%EC%84%A4%EC%A0%95.html#패널-바깥의-오른쪽에-범례-배치하기"
-  },"95": {
+  },"100": {
     "doc": "범례 위치 설정",
     "title": "패널 바깥 아래쪽에 범례 배치하기",
     "content": "범례를 패널 아래로 이동하려면 legend.position = \"bottom\"을 사용하면 됩니다. 추가적인 설정 없이도 범례가 아래쪽에 깔끔하게 정렬됩니다. 필요한 경우 위의 범례 설정을 함께 사용해 시각적 완성도를 높일 수 있습니다. base + theme( legend.title = element_blank(), # 범례 제목 없앰 legend.key.height = unit(rel(0.8), \"pt\"), # 범례 아이템 크기를 범례 글자 크기와 일치 legend.spacing = unit(3, \"pt\"), # 범례 간 간격 조정 legend.position = \"bottom\" ) . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B2%94%EB%A1%80%20%EC%9C%84%EC%B9%98%20%EC%84%A4%EC%A0%95.html#%ED%8C%A8%EB%84%90-%EB%B0%94%EA%B9%A5-%EC%95%84%EB%9E%98%EC%AA%BD%EC%97%90-%EB%B2%94%EB%A1%80-%EB%B0%B0%EC%B9%98%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B2%94%EB%A1%80%20%EC%9C%84%EC%B9%98%20%EC%84%A4%EC%A0%95.html#패널-바깥-아래쪽에-범례-배치하기"
-  },"96": {
+  },"101": {
     "doc": "범례 위치 설정",
     "title": "패널 안쪽 왼편 위에 범례 배치하기",
     "content": "범례를 패널 내부로 이동하려면 legend.position을 “inside”로 설정하고, legend.justification으로 상대적인 위치를 지정해야 합니다. base + theme( legend.title = element_blank(), # 범례 제목 없앰 legend.key.height = unit(rel(0.8), \"pt\"), # 범례 key 높이를 범례 글자 크기와 일치 legend.spacing = unit(3, \"pt\"), # 범례 간 간격 조정 legend.position = \"inside\", legend.justification = c(0.05, 0.95), ) . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B2%94%EB%A1%80%20%EC%9C%84%EC%B9%98%20%EC%84%A4%EC%A0%95.html#%ED%8C%A8%EB%84%90-%EC%95%88%EC%AA%BD-%EC%99%BC%ED%8E%B8-%EC%9C%84%EC%97%90-%EB%B2%94%EB%A1%80-%EB%B0%B0%EC%B9%98%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B2%94%EB%A1%80%20%EC%9C%84%EC%B9%98%20%EC%84%A4%EC%A0%95.html#패널-안쪽-왼편-위에-범례-배치하기"
-  },"97": {
+  },"102": {
     "doc": "범례 위치 설정",
     "title": "범례 배경색 없애기",
     "content": "범례 배경색 기본은 흰색으로 지정되어 있습니다. 배경색을 제거하고 투명하게 만들기 위해, legend.background = element_rect(fill=NA)를 추가합니다. 이렇게 하면, 차트의 배경과 범례가 자연스럽게 어우러질 수 있습니다. base + theme( legend.title = element_blank(), # 범례 제목 없앰 legend.key.height = unit(rel(0.8), \"pt\"), # 범례 key 높이를 범례 글자 크기와 일치 legend.spacing = unit(3, \"pt\"), # 범례 간 간격 조정 legend.position = \"inside\", legend.justification = c(0.05, 0.95), legend.background = element_rect(fill=NA), ) . 이번 글을 통해 기본적인 범례 위치 설정과 함께, 범례 아이템의 높이 조정, 범례 간 간격 조절, 배경색 변경 등 다양한 세부 설정 방법을 익히셨을 겁니다. 차트를 제작하며 시각적으로 균형 잡힌 그래프를 만들어 보세요. 추가적인 스타일 설정이 궁금하다면, theme 함수 이해하기 포스팅을 참고해 보세요! . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B2%94%EB%A1%80%20%EC%9C%84%EC%B9%98%20%EC%84%A4%EC%A0%95.html#%EB%B2%94%EB%A1%80-%EB%B0%B0%EA%B2%BD%EC%83%89-%EC%97%86%EC%95%A0%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EB%B2%94%EB%A1%80%20%EC%9C%84%EC%B9%98%20%EC%84%A4%EC%A0%95.html#범례-배경색-없애기"
-  },"98": {
+  },"103": {
     "doc": "비율 계산",
     "title": "비율 계산",
     "content": " ",
     "url": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EB%B9%84%EC%9C%A8%20%EA%B3%84%EC%82%B0.html",
     
     "relUrl": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EB%B9%84%EC%9C%A8%20%EA%B3%84%EC%82%B0.html"
-  },"99": {
+  },"104": {
     "doc": "비율 계산",
     "title": "데이터 준비",
     "content": "이번 글에서는 2023년 시군구별 주민등록인구 데이터를 활용해서 각 시도에서 시, 군, 구가 차지하는 인구 비중을 계산하는 방법을 알아보겠습니다. 또한, 데이터를 정리해서 보고서에 바로 활용할 수 있는 표 형태로 변환하는 과정도 다룰 예정입니다. 분석에 사용할 데이터는 통계청의 시군구별 주민등록인구 데이터입니다. 이 데이터는 시도, 시군구, 주민등록인구수로 구성되어 있습니다. 데이터를 불러오고 나서 간단히 확인한 후, 정리 작업을 진행하겠습니다. # 패키지 로드 library(tidyverse) library(readxl) # 데이터 로드 data &lt;- read_xlsx(\"데이터/주민등록인구_시도_시군구_2023.xlsx\", skip=1) # 데이터 확인 head(data) . ## # A tibble: 6 × 3 ## `행정구역별(1)` `행정구역별(2)` `계 (명)` ## &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; ## 1 전국 소계 51325329 ## 2 서울특별시 소계 9386034 ## 3 서울특별시 종로구 139417 ## 4 서울특별시 중구 121312 ## 5 서울특별시 용산구 213151 ## 6 서울특별시 성동구 277361 . 열 이름을 알기 쉽게 바꾸고, 전국 데이터를 제외하며, 불필요한 ‘소계’ 데이터를 제거합니다. 마지막으로, 각 시군구가 시, 군, 구 중 어디에 해당하는지 구분을 추가합니다. data2 &lt;- data %&gt;% rename(시도 = `행정구역별(1)`, 시군구 = `행정구역별(2)`, 주민등록인구수 = `계 (명)`) %&gt;% filter(시도 != \"전국\", (시도 == \"세종특별자치시\")|(시군구 != \"소계\")) %&gt;% mutate(시군구 = case_when(시도 == \"세종특별자치시\" ~ \"세종특별자치시\", T ~ 시군구), 구분 = case_when(grepl(\"시$\", 시군구) ~ \"시\", grepl(\"군$\", 시군구) ~ \"군\", grepl(\"구$\", 시군구) ~ \"구\")) head(data2) . ## # A tibble: 6 × 4 ## 시도 시군구 주민등록인구수 구분 ## &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt; ## 1 서울특별시 종로구 139417 구 ## 2 서울특별시 중구 121312 구 ## 3 서울특별시 용산구 213151 구 ## 4 서울특별시 성동구 277361 구 ## 5 서울특별시 광진구 335554 구 ## 6 서울특별시 동대문구 341149 구 . ",
     "url": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EB%B9%84%EC%9C%A8%20%EA%B3%84%EC%82%B0.html#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A4%80%EB%B9%84",
     
     "relUrl": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EB%B9%84%EC%9C%A8%20%EA%B3%84%EC%82%B0.html#데이터-준비"
-  },"100": {
+  },"105": {
     "doc": "비율 계산",
     "title": "시도별 주민등록인구 비율 계산하기",
     "content": "각 시도에서 시, 군, 구가 차지하는 인구 비중을 계산해보겠습니다. 이 작업을 통해 각 시도에서 어떤 지역 유형(시, 군, 구)이 인구의 대부분을 차지하고 있는지 쉽게 파악할 수 있습니다. 먼저, 시도와 구분별로 인구수를 합산하고, 시도별 전체 인구에서 각 시, 군, 구가 차지하는 비율을 계산합니다. sum &lt;- data2 %&gt;% group_by(시도, 구분) %&gt;% summarise(주민등록인구수 = sum(주민등록인구수, na.rm = TRUE)) %&gt;% group_by(시도) %&gt;% mutate(비율 = 주민등록인구수 / sum(주민등록인구수, na.rm = TRUE)) head(sum) . ## # A tibble: 6 × 4 ## # Groups: 시도 [3] ## 시도 구분 주민등록인구수 비율 ## &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; ## 1 강원특별자치도 군 398407 0.261 ## 2 강원특별자치도 시 1129400 0.739 ## 3 경기도 군 229124 0.0168 ## 4 경기도 시 13401697 0.983 ## 5 경상남도 군 446562 0.137 ## 6 경상남도 시 2804596 0.863 . ",
     "url": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EB%B9%84%EC%9C%A8%20%EA%B3%84%EC%82%B0.html#%EC%8B%9C%EB%8F%84%EB%B3%84-%EC%A3%BC%EB%AF%BC%EB%93%B1%EB%A1%9D%EC%9D%B8%EA%B5%AC-%EB%B9%84%EC%9C%A8-%EA%B3%84%EC%82%B0%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EB%B9%84%EC%9C%A8%20%EA%B3%84%EC%82%B0.html#시도별-주민등록인구-비율-계산하기"
-  },"101": {
+  },"106": {
     "doc": "비율 계산",
     "title": "보고용 표 만들기",
     "content": "분석 결과를 정리해서 보고서에 활용할 수 있는 표를 만들어보겠습니다. 보고용 표를 만드는 방법은 데이터를 표현하는 목적과 가독성에 따라 달라질 수 있습니다. 이번에는 세 가지 방식으로 데이터를 정리하는 방법을 제안합니다. | 수와 비율을 세로로 정렬하고 합계 추가하기: 인구 수와 비율을 세로로 나열해 데이터를 직관적으로 보여줍니다 | 수와 비율을 가로로 정렬하고 합계 추가하기: 데이터를 가로로 배열해 열 공간을 효율적으로 사용합니다 | 하나의 셀에 수와 비율을 병기하고 합계 추가하기: 하나의 셀에 수치와 비율을 함께 표시해 요약 정보를 간결하게 제공합니다 | . 수와 비율을 세로로 정렬하고 합계 추가하기 . 주민등록인구 수와 비율을 세로로 배열하고, 마지막에 합계를 추가해 보고용 표를 만듭니다. | 변수 이름 변경: rename | 숫자 포맷팅: comma, percent | 시군구 정렬: mutate, factor | 데이터 변환: pivot_longer, pivot_wider | 세부 데이터와 합계 데이터 통합: left_join | . library(scales) rpt1_sebu &lt;- sum %&gt;% rename(`인구 수(명)` = 주민등록인구수, `비율(%)` = 비율) %&gt;% mutate(구분 = factor(구분, levels = c(\"시\", \"군\", \"구\")), `인구 수(명)` = comma(`인구 수(명)`), `비율(%)` = percent(`비율(%)`, suffix = \"\", accuracy = .1)) %&gt;% pivot_longer(cols = `인구 수(명)`:`비율(%)`, names_to = \"구분2\", values_to = \"값\") %&gt;% pivot_wider(id_cols = c(시도, 구분2), names_from = 구분, values_from = 값, names_sort = TRUE) rpt1_sum &lt;- sum %&gt;% group_by(시도) %&gt;% summarise(`인구 수(명)` = sum(주민등록인구수, na.rm = TRUE), `비율(%)` = sum(비율, na.rm = TRUE)) %&gt;% mutate(`인구 수(명)` = comma(`인구 수(명)`), `비율(%)` = percent(`비율(%)`, suffix = \"\", accuracy = .1)) %&gt;% pivot_longer(cols=-시도, names_to = \"구분2\", values_to = \"합계\") rpt1 &lt;- rpt1_sebu %&gt;% left_join(rpt1_sum, by=c(\"시도\", \"구분2\")) %&gt;% rename(구분 = 구분2) head(rpt1) . ## # A tibble: 6 × 6 ## # Groups: 시도 [3] ## 시도 구분 시 군 구 합계 ## &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; ## 1 강원특별자치도 인구 수(명) 1,129,400 398,407 &lt;NA&gt; 1,527,807 ## 2 강원특별자치도 비율(%) 73.9 26.1 &lt;NA&gt; 100.0 ## 3 경기도 인구 수(명) 13,401,697 229,124 &lt;NA&gt; 13,630,821 ## 4 경기도 비율(%) 98.3 1.7 &lt;NA&gt; 100.0 ## 5 경상남도 인구 수(명) 2,804,596 446,562 &lt;NA&gt; 3,251,158 ## 6 경상남도 비율(%) 86.3 13.7 &lt;NA&gt; 100.0 . 수와 비율을 가로로 정렬하고 합계 추가하기 . 주민등록인구 수와 비율을 가로로 배열하고, 마지막에 합계를 추가해 보고용 표를 만듭니다. | 변수 이름 변경: rename | 숫자 포맷팅: comma, percent | 시군구 및 합계 정렬: mutate, factor | 데이터 변환: pivot_longer, pivot_wider | 세부 데이터와 합계 데이터 통합: bind_rows | . rpt2_sebu &lt;- sum %&gt;% rename(`인구 수(명)` = 주민등록인구수, `비율(%)` = 비율) rpt2_sum &lt;- sum %&gt;% group_by(시도) %&gt;% summarise(`인구 수(명)` = sum(주민등록인구수, na.rm = TRUE), `비율(%)` = sum(비율, na.rm = TRUE)) %&gt;% mutate(구분 = \"합계\") rpt2 &lt;- rpt2_sebu %&gt;% bind_rows(rpt2_sum) %&gt;% mutate(구분 = factor(구분, levels = c(\"시\", \"군\", \"구\", \"합계\")), `인구 수(명)` = comma(`인구 수(명)`), `비율(%)` = percent(`비율(%)`, suffix = \"\", accuracy = .1)) %&gt;% pivot_wider(id_cols = 시도, names_from = 구분, values_from = `인구 수(명)`:`비율(%)`, names_glue = \"{구분}_{.value}\", names_vary = \"slowest\", names_sort = TRUE) head(rpt2) . ## # A tibble: 6 × 9 ## # Groups: 시도 [6] ## 시도 `시_인구 수(명)` `시_비율(%)` `군_인구 수(명)` `군_비율(%)` ## &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; ## 1 강원특별자치도 1,129,400 73.9 398,407 26.1 ## 2 경기도 13,401,697 98.3 229,124 1.7 ## 3 경상남도 2,804,596 86.3 446,562 13.7 ## 4 경상북도 2,065,707 80.9 488,617 19.1 ## 5 광주광역시 &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; ## 6 대구광역시 &lt;NA&gt; &lt;NA&gt; 285,072 12.0 ## # ℹ 4 more variables: `구_인구 수(명)` &lt;chr&gt;, `구_비율(%)` &lt;chr&gt;, ## # `합계_인구 수(명)` &lt;chr&gt;, `합계_비율(%)` &lt;chr&gt; . 하나의 셀에 수와 비율을 병기하고 합계 추가하기 . 주민등록인구 수와 비율을 하나의 셀에 병기하고, 마지막에 합계를 추가해 보고용 표를 만듭니다. | 변수 이름 변경: rename | 숫자 포맷팅: comma, percent | 수 및 비율 병기: mutate, paste0 | 시군구 및 합계 정렬: mutate, factor | 데이터 변환: pivot_wider | 세부 데이터와 합계 데이터 통합: bind_rows | . rpt3_sebu &lt;- sum %&gt;% rename(`인구 수(명)` = 주민등록인구수, `비율(%)` = 비율) %&gt;% mutate(`인구 수(명)` = comma(`인구 수(명)`), `비율(%)` = percent(`비율(%)`, suffix = \"\", accuracy = .1)) %&gt;% mutate(`인구 수(비율)` = paste0(`인구 수(명)`, \"\\n(\", `비율(%)`, \")\")) rpt3_sum &lt;- sum %&gt;% group_by(시도) %&gt;% summarise(`인구 수(명)` = sum(주민등록인구수, na.rm = TRUE), `비율(%)` = sum(비율, na.rm = TRUE)) %&gt;% mutate(`인구 수(명)` = comma(`인구 수(명)`), `비율(%)` = percent(`비율(%)`, suffix = \"\", accuracy = .1), `인구 수(비율)` = paste0(`인구 수(명)`, \"\\n(\", `비율(%)`, \")\"), 구분 = \"합계\") rpt3 &lt;- rpt3_sebu %&gt;% bind_rows(rpt3_sum) %&gt;% mutate(구분 = factor(구분, levels = c(\"시\", \"군\", \"구\", \"합계\"))) %&gt;% pivot_wider(id_cols = 시도, names_from = 구분, values_from = `인구 수(비율)`, names_sort = TRUE) head(rpt3) . ## # A tibble: 6 × 5 ## # Groups: 시도 [6] ## 시도 시 군 구 합계 ## &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; ## 1 강원특별자치도 \"1,129,400\\n(73.9)\" \"398,407\\n(26.1)\" &lt;NA&gt; \"1,5… ## 2 경기도 \"13,401,697\\n(98.3)\" \"229,124\\n(1.7)\" &lt;NA&gt; \"13,… ## 3 경상남도 \"2,804,596\\n(86.3)\" \"446,562\\n(13.7)\" &lt;NA&gt; \"3,2… ## 4 경상북도 \"2,065,707\\n(80.9)\" \"488,617\\n(19.1)\" &lt;NA&gt; \"2,5… ## 5 광주광역시 &lt;NA&gt; &lt;NA&gt; \"1,419,237\\n(100.… \"1,4… ## 6 대구광역시 &lt;NA&gt; \"285,072\\n(12.0)\" \"2,089,888\\n(88.0… \"2,3… . 이번 시간에는 2023년 시군구별 주민등록인구 데이터를 활용해서 시도별 인구 비중을 계산하고, 다양한 형식으로 보고용 표를 만들어보았습니다. 이 과정을 통해 데이터를 더 직관적으로 정리하고 분석결과를 효과적으로 전달할 수 있는 방법을 배웠기를 바랍니다. 다른 데이터셋에도 한 번 응용해보세요! . ",
     "url": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EB%B9%84%EC%9C%A8%20%EA%B3%84%EC%82%B0.html#%EB%B3%B4%EA%B3%A0%EC%9A%A9-%ED%91%9C-%EB%A7%8C%EB%93%A4%EA%B8%B0",
     
     "relUrl": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EB%B9%84%EC%9C%A8%20%EA%B3%84%EC%82%B0.html#보고용-표-만들기"
-  },"102": {
+  },"107": {
     "doc": "색상 설정",
     "title": "색상 설정",
     "content": " ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%83%89%EC%83%81%20%EC%84%A4%EC%A0%95.html",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%83%89%EC%83%81%20%EC%84%A4%EC%A0%95.html"
-  },"103": {
+  },"108": {
     "doc": "색상 설정",
     "title": "기본 그래프 준비하기",
     "content": "데이터 시각화를 할 때 색상은 데이터를 이해하고 구분하는 데 중요한 역할을 합니다. 이번 글에서는 ggplot2 패키지를 사용해 그래프를 그리는 기본 방법부터, RColorBrewer 팔레트를 활용하는 방법과 직접 색상을 지정하는 방법까지 차례로 알아보겠습니다. 이번 시간에는 둘 이상의 속성 시각화 글에서 그린 차트를 활용합니다. 아래 코드를 보면, fill 속성을 기준으로 자동으로 색상이 지정됩니다. 기본 색상으로도 충분하지만, 상황에 따라 특정 색상을 사용해야 할 수도 있습니다. 이 경우 RColorBrewer와 같은 색상 팔레트나 직접 지정하는 방법을 활용하면 됩니다. # 패키지 로드 library(showtext) # 글꼴 설정 font_add(\"kopub\", \"C:/Users/.../AppData/Local/Microsoft/Windows/Fonts/KoPub Dotum Medium.ttf\") showtext_auto() showtext_opts(dpi=300) theme.size = 14 text.size = theme.size / .pt # 차트 그리기 base &lt;- ggplot(data = data2, aes(x = 구분, y = 값, group = 종류, fill = 종류)) + geom_col(position=position_dodge(width = 0.7), width = 0.6) + geom_text(aes(label=scales::comma(값, accuracy = .1)), position=position_dodge(width = 0.7), vjust = -0.5, family = \"kopub\", size = text.size) + scale_y_continuous(name = \"길이(단위: cm)\", expand = expansion(mult = c(0, 0.3))) + theme_bw(base_family = \"kopub\", base_size = theme.size) + theme( axis.title.x = element_blank(), legend.title = element_blank(), legend.key.height = unit(theme.size, \"pt\"), legend.key.spacing.y = unit(3, \"pt\") ) base . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%83%89%EC%83%81%20%EC%84%A4%EC%A0%95.html#%EA%B8%B0%EB%B3%B8-%EA%B7%B8%EB%9E%98%ED%94%84-%EC%A4%80%EB%B9%84%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%83%89%EC%83%81%20%EC%84%A4%EC%A0%95.html#기본-그래프-준비하기"
-  },"104": {
+  },"109": {
     "doc": "색상 설정",
     "title": "RColorBrewer 색상 팔레트 활용하기",
     "content": "RColorBrewer 패키지는 데이터의 특성과 목적에 따라 적합한 색상을 선택할 수 있도록 다양한 색상 팔레트를 제공합니다. 이 팔레트는 크게 세 가지 유형으로 나뉩니다. 첫 번째로 연속형 팔레트는 낮은 값에서 높은 값으로 순차적으로 진행되는 데이터를 표현할 때 사용됩니다. 온도, 판매량, 인구 수와 같은 연속형 데이터를 시각화할 때 유용하죠. 두 번째로 발산형 팔레트는 중간값(임계값)을 기준으로 데이터의 극단적인 값을 강조할 때 적합합니다. 예를 들어, 0을 기준으로 음수와 양수를 구분하거나, 손익 데이터를 표현할 때 활용할 수 있습니다. 마지막으로 명목형 팔레트는 범주형 데이터를 시각화할 때 사용되며, 꽃의 종류나 고객 유형처럼 데이터 간의 순서가 없는 경우 적합합니다. RColorBrewer 도움말 문서를 참고하여 각 유형에 대한 설명과 세부적인 팔레트명을 표로 정리했습니다. | 유형 | 설명 | 팔레트명 | . | 연속형 팔레트 | 데이터 값이 낮은 값에서 높은 값으로 순차적으로 진행되는 경우 활용하며, 낮은 값은 밝은 색, 높은 값은 어두운 색으로 표시함 | Blues, BuGn, BuPu, GnBu, Greens, Greys, Oranges, OrRd, PuBu, PuBuGn, PuRd, Purples, RdPu, Reds, YlGn, YlGnBu, YlOrBr, YlOrRd | . | 발산형 팔레트 | 중간값(임계값)과 데이터 범위 양쪽 끝의 극단적인 값을 강조할 때 사용하며, 중간 값은 밝은 색으로, 양쪽 극단 값은 어둡지만 대비되는 색상으로 표시함 | BrBG, PiYG, PRGn, PuOr, RdBu, RdGy, RdYlBu, RdYlGn, Spectral | . | 명목형 팔레트 | 명목형 또는 범주형 데이터를 표현할 때 사용함 | Accent, Dark2, Paired, Pastel1, Pastel2, Set1, Set2, Set3 | . 팔레트명을 보고 색상을 바로 알기 어렵다면, display.brewer.all 함수를 사용하면 됩니다. 이 함수는 RColorBrewer에서 제공하는 모든 팔레트를 그래픽 창에 표시해 주며, 각 팔레트의 색상과 이름을 한눈에 확인할 수 있습니다. 또한, colorbrewer2 웹사이트를 방문하면 팔레트를 더 직관적으로 탐색할 수 있습니다. # 패키지 로드 library(RColorBrewer) # 팔레트 보기 display.brewer.all() . Iris 데이터셋에서 꽃의 종류인 setosa, versicolor, virginica를 구분하기 위해 명목형 데이터에 적합한 정성형 팔레트를 사용해 보겠습니다. Pastel2 팔레트를 활용하겠습니다. base + scale_fill_brewer(palette = \"Pastel2\") . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%83%89%EC%83%81%20%EC%84%A4%EC%A0%95.html#rcolorbrewer-%EC%83%89%EC%83%81-%ED%8C%94%EB%A0%88%ED%8A%B8-%ED%99%9C%EC%9A%A9%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%83%89%EC%83%81%20%EC%84%A4%EC%A0%95.html#rcolorbrewer-색상-팔레트-활용하기"
-  },"105": {
+  },"110": {
     "doc": "색상 설정",
     "title": "직접 색상 지정하기",
     "content": "경우에 따라 팔레트 대신 직접 색상을 설정해야 할 때가 있습니다. 보고서나 발표자료 서식 테마에 맞는 색을 사용해야 할 때가 대표적입니다. 이런 경우 scale_fill_manual 함수를 사용하면 데이터를 원하는 색으로 자유롭게 지정할 수 있습니다. setosa를 보라색(#C072ED), versicolor를 황토색(#EDC272), virginica를 민트색(#72EDAC)으로 설정해 보겠습니다. base + scale_fill_manual(values=c(\"setosa\" = \"#C072ED\", \"versicolor\" = \"#EDC272\", \"virginica\" = \"#72EDAC\" ) ) . 이 글에서는 ggplot2에서 색상을 설정하는 방법에 대해 살펴보았습니다. 자동으로 제공되는 기본 색상부터 RColorBrewer 팔레트를 활용하는 방법, 그리고 직접 색상을 설정하는 방법까지 다뤘습니다. 데이터의 특성과 시각화 목적에 따라 적합한 색상을 선택하면, 그래프의 가독성과 전달력을 더욱 높일 수 있습니다. 지금까지 배운 방법을 활용해 나만의 스타일로 데이터를 시각화해 보세요! . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%83%89%EC%83%81%20%EC%84%A4%EC%A0%95.html#%EC%A7%81%EC%A0%91-%EC%83%89%EC%83%81-%EC%A7%80%EC%A0%95%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%83%89%EC%83%81%20%EC%84%A4%EC%A0%95.html#직접-색상-지정하기"
-  },"106": {
+  },"111": {
     "doc": "색상으로 특정 값 강조하기",
     "title": "색상으로 특정 값 강조하기",
     "content": " ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%83%89%EC%83%81%EC%9C%BC%EB%A1%9C%20%ED%8A%B9%EC%A0%95%20%EA%B0%92%20%EA%B0%95%EC%A1%B0%ED%95%98%EA%B8%B0.html",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%83%89%EC%83%81%EC%9C%BC%EB%A1%9C%20%ED%8A%B9%EC%A0%95%20%EA%B0%92%20%EA%B0%95%EC%A1%B0%ED%95%98%EA%B8%B0.html"
-  },"107": {
+  },"112": {
     "doc": "색상으로 특정 값 강조하기",
     "title": "개요",
     "content": "막대그래프를 통해 데이터를 시각화할 때, 특정 값을 강조하여 메시지를 효과적으로 전달하고자 할 때가 있습니다. 예를 들어, 상위 3개 값을 녹색으로 표시하거나, 하위 3개 값을 따로 강조하고 싶을 수 있습니다. 이번 글에서는 특정 조건에 해당하는 값을 색상으로 구분하여 강조하는 방법을 소개합니다. 이 방법은 단순히 상하위 n개의 값을 구분하는 데 그치지 않고, 다양한 조건에 따라 특정 값을 강조하는 데 활용될 수 있습니다. ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%83%89%EC%83%81%EC%9C%BC%EB%A1%9C%20%ED%8A%B9%EC%A0%95%20%EA%B0%92%20%EA%B0%95%EC%A1%B0%ED%95%98%EA%B8%B0.html#%EA%B0%9C%EC%9A%94",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%83%89%EC%83%81%EC%9C%BC%EB%A1%9C%20%ED%8A%B9%EC%A0%95%20%EA%B0%92%20%EA%B0%95%EC%A1%B0%ED%95%98%EA%B8%B0.html#개요"
-  },"108": {
+  },"113": {
     "doc": "색상으로 특정 값 강조하기",
     "title": "데이터 준비하기",
     "content": "2023년 기준 서울특별시 25개 구의 주민등록인구 데이터를 활용하여 막대그래프를 그리겠습니다. 우선, 필요한 패키지를 로드하고 차트에서 사용할 글꼴을 설정합니다. # 패키지 로드 library(readxl) library(tidyverse) library(ggplot2) library(showtext) library(scales) # 차트 글꼴 설정 font_add(\"kopub\", \"C:/Users/.../AppData/Local/Microsoft/Windows/Fonts/KoPub Dotum Medium.ttf\") showtext_auto() showtext_opts(dpi=300) theme.size = 12 text.size = theme.size / .pt . 데이터는 통계청의 시군구별 주민등록인구 데이터를 활용합니다. 데이터를 로드한 후, 서울특별시 데이터만 추출합니다. # 데이터 로드 data &lt;- read_xlsx(\"데이터/주민등록인구_시도_시군구_2023.xlsx\", skip=1) # 서울 데이터만 추출 seoul &lt;- data %&gt;% rename(시도 = `행정구역별(1)`, 구 = `행정구역별(2)`, 인구수 = `계 (명)`) %&gt;% filter(시도 == \"서울특별시\", 구 != \"소계\") # 데이터 확인 head(seoul) . ## # A tibble: 6 × 3 ## 시도 구 인구수 ## &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; ## 1 서울특별시 종로구 139417 ## 2 서울특별시 중구 121312 ## 3 서울특별시 용산구 213151 ## 4 서울특별시 성동구 277361 ## 5 서울특별시 광진구 335554 ## 6 서울특별시 동대문구 341149 . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%83%89%EC%83%81%EC%9C%BC%EB%A1%9C%20%ED%8A%B9%EC%A0%95%20%EA%B0%92%20%EA%B0%95%EC%A1%B0%ED%95%98%EA%B8%B0.html#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A4%80%EB%B9%84%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%83%89%EC%83%81%EC%9C%BC%EB%A1%9C%20%ED%8A%B9%EC%A0%95%20%EA%B0%92%20%EA%B0%95%EC%A1%B0%ED%95%98%EA%B8%B0.html#데이터-준비하기"
-  },"109": {
+  },"114": {
     "doc": "색상으로 특정 값 강조하기",
     "title": "내림차순 정렬 막대그래프 그리기",
     "content": "서울특별시 구별 주민등록인구 수를 내림차순으로 정렬하여 막대그래프를 그립니다. 인구수 단위를 ‘만 명’으로 바꾸고, 그래프에 적절한 축 레이블을 추가합니다. seoul %&gt;% ggplot(aes(x = reorder(구, -인구수), y = 인구수 / 10000)) + geom_col(width = 0.6) + scale_x_discrete(name = \"\") + scale_y_continuous(name = \"주민등록인구 수(만 명)\", expand = expansion(mult = c(0, 0.1))) + theme_minimal(base_size = theme.size, base_family = \"kopub\") . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%83%89%EC%83%81%EC%9C%BC%EB%A1%9C%20%ED%8A%B9%EC%A0%95%20%EA%B0%92%20%EA%B0%95%EC%A1%B0%ED%95%98%EA%B8%B0.html#%EB%82%B4%EB%A6%BC%EC%B0%A8%EC%88%9C-%EC%A0%95%EB%A0%AC-%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84-%EA%B7%B8%EB%A6%AC%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%83%89%EC%83%81%EC%9C%BC%EB%A1%9C%20%ED%8A%B9%EC%A0%95%20%EA%B0%92%20%EA%B0%95%EC%A1%B0%ED%95%98%EA%B8%B0.html#내림차순-정렬-막대그래프-그리기"
-  },"110": {
+  },"115": {
     "doc": "색상으로 특정 값 강조하기",
     "title": "특정 값을 색상으로 강조하기",
     "content": "인구수 기준으로 상위 3개 구를 강조하고 나머지 구는 기본 색상으로 표시합니다. 이를 위해 데이터프레임에 순위와 색상 컬럼을 추가하고, ggplot에서 fill로 색상을 지정합니다. scale_fill_identity를 사용하면 데이터프레임에 정의된 색상을 그래프에 그대로 적용할 수 있습니다. seoul_clr &lt;- seoul %&gt;% mutate(순위 = rank(-인구수), 색상 = case_when(순위 &lt; 4 ~ \"#027453\", T ~ \"#D9D8D6\")) seoul_clr %&gt;% ggplot(aes(x = reorder(구, -인구수), y = 인구수 / 10000, fill = 색상)) + geom_col(width = 0.6) + scale_x_discrete(name = \"\") + scale_y_continuous(name = \"주민등록인구 수(만 명)\", expand = expansion(mult = c(0, 0.1))) + scale_fill_identity() + theme_minimal(base_size = theme.size, base_family = \"kopub\") . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%83%89%EC%83%81%EC%9C%BC%EB%A1%9C%20%ED%8A%B9%EC%A0%95%20%EA%B0%92%20%EA%B0%95%EC%A1%B0%ED%95%98%EA%B8%B0.html#%ED%8A%B9%EC%A0%95-%EA%B0%92%EC%9D%84-%EC%83%89%EC%83%81%EC%9C%BC%EB%A1%9C-%EA%B0%95%EC%A1%B0%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%83%89%EC%83%81%EC%9C%BC%EB%A1%9C%20%ED%8A%B9%EC%A0%95%20%EA%B0%92%20%EA%B0%95%EC%A1%B0%ED%95%98%EA%B8%B0.html#특정-값을-색상으로-강조하기"
-  },"111": {
+  },"116": {
     "doc": "색상으로 특정 값 강조하기",
     "title": "차트를 세련되게 다듬기",
     "content": "차트를 세련되게 만들기 위해 막대의 경계선을 뚜렷하게 만들고, 글꼴 색상을 수정하고, 중요한 그리드만 남기고, 축의 굵기를 조절해 줍니다. 또한, 데이터를 더욱 직관적으로 전달하기 위해 인구수를 표시하는 텍스트를 추가합니다. seoul_clr %&gt;% ggplot(aes(x = reorder(구, -인구수), y = 인구수 / 10000, fill = 색상)) + geom_col(width = 0.6, color = \"gray10\", linewidth = 0.2) + geom_text(aes(label = comma(인구수 / 10000, accuracy = 1)), family = \"kopub\", size = text.size, color = \"gray10\", vjust = -1) + scale_x_discrete(name = \"\") + scale_y_continuous(name = \"주민등록인구 수(만 명)\", expand = expansion(mult = c(0, 0.1))) + scale_fill_identity() + theme_minimal(base_size = theme.size, base_family = \"kopub\") + theme( axis.line.x = element_line(linewidth = 0.8, color = \"gray10\"), panel.grid.major.x = element_blank(), panel.grid.minor.x = element_blank(), panel.grid.minor.y = element_blank(), panel.grid.major.y = element_line(linewidth = 0.2, color = \"gray40\"), axis.text = element_text(color = \"gray10\"), axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1) ) . 이 방법을 활용하면 상하위 n개의 값을 강조하는 데 그치지 않고, 다양한 조건에 따라 원하는 데이터를 유연하게 강조할 수 있습니다. 예를 들어, 특정 기준을 초과하거나 미달하는 값을 강조하거나, 특정 지역이나 범주에 속한 데이터를 구분할 수도 있습니다. 전달하고자 하는 메시지에 맞춰 조건을 설정해 데이터를 효과적으로 시각화해 보세요! . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%83%89%EC%83%81%EC%9C%BC%EB%A1%9C%20%ED%8A%B9%EC%A0%95%20%EA%B0%92%20%EA%B0%95%EC%A1%B0%ED%95%98%EA%B8%B0.html#%EC%B0%A8%ED%8A%B8%EB%A5%BC-%EC%84%B8%EB%A0%A8%EB%90%98%EA%B2%8C-%EB%8B%A4%EB%93%AC%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%83%89%EC%83%81%EC%9C%BC%EB%A1%9C%20%ED%8A%B9%EC%A0%95%20%EA%B0%92%20%EA%B0%95%EC%A1%B0%ED%95%98%EA%B8%B0.html#차트를-세련되게-다듬기"
-  },"112": {
+  },"117": {
     "doc": "선 그래프 끝 지점에 텍스트 추가하기",
     "title": "선 그래프 끝 지점에 텍스트 추가하기",
     "content": " ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%84%A0%20%EA%B7%B8%EB%9E%98%ED%94%84%20%EB%81%9D%20%EC%A7%80%EC%A0%90%EC%97%90%20%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0.html",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%84%A0%20%EA%B7%B8%EB%9E%98%ED%94%84%20%EB%81%9D%20%EC%A7%80%EC%A0%90%EC%97%90%20%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0.html"
-  },"113": {
+  },"118": {
     "doc": "선 그래프 끝 지점에 텍스트 추가하기",
     "title": "개요",
     "content": "이번 글에서는 선 그래프에서 각 선이 어떤 그룹(시도)을 나타내는지 보다 직관적으로 표시하는 방법을 소개합니다. 일반적으로 선 그래프는 색상(color), 선 타입(linetype), 모양(shape) 등을 활용하여 그룹을 구분하고, 범례를 통해 그룹명을 표시합니다. 하지만 그룹 수가 많아질수록 범례만으로는 각각의 선이 무엇을 나타내는지 파악하기 어려워집니다. 이를 해결하기 위해, 선 그래프의 끝 지점에 각 그룹명을 텍스트로 표기하는 방법을 활용하면 해석이 훨씬 쉬워집니다. 이 글에서는 1995년부터 2023년까지의 시도별 주민등록인구 데이터를 선 그래프로 시각화하고, 선의 끝 부분에 해당하는 그룹명을 텍스트로 표기하여 보다 직관적으로 데이터를 표현하는 방법을 다룹니다. ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%84%A0%20%EA%B7%B8%EB%9E%98%ED%94%84%20%EB%81%9D%20%EC%A7%80%EC%A0%90%EC%97%90%20%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0.html#%EA%B0%9C%EC%9A%94",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%84%A0%20%EA%B7%B8%EB%9E%98%ED%94%84%20%EB%81%9D%20%EC%A7%80%EC%A0%90%EC%97%90%20%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0.html#개요"
-  },"114": {
+  },"119": {
     "doc": "선 그래프 끝 지점에 텍스트 추가하기",
     "title": "데이터 준비하기",
     "content": "먼저, 필요한 패키지를 로드하고 차트에서 사용할 글꼴을 설정합니다. ggplot2를 활용해 선 그래프를 그릴 것이며, 텍스트가 겹치는 문제를 해결하기 위해 ggrepel 패키지를 사용합니다. # 패키지 로드 library(readxl) library(tidyverse) library(ggplot2) library(showtext) library(scales) library(lubridate) library(ggrepel) # 차트 글꼴 설정 font_add(\"kopub\", \"C:/Users/.../AppData/Local/Microsoft/Windows/Fonts/KoPub Dotum Medium.ttf\") showtext_auto() showtext_opts(dpi=300) theme.size = 12 text.size = theme.size / .pt . 통계청에서 다운받은 1995~2023년 시도별 주민등록인구 데이터를 로드합니다. 칼럼명을 수정하고 전국 데이터를 제거하는 등 분석에 적합한 형태로 데이터를 가공합니다. # 데이터 로드 data &lt;- read_xlsx(\"데이터/주민등록인구_시도_1995-2023.xlsx\") # 데이터 가공 data &lt;- data %&gt;% rename(시도 = 행정구역별, 주민등록인구수 = `계 (명)`) %&gt;% filter(시도 != \"전국\") %&gt;% mutate(시점 = as.character(시점), 주민등록인구수 = as.numeric(주민등록인구수)) # 데이터 확인 head(data) . ## # A tibble: 6 × 3 ## 시도 시점 주민등록인구수 ## &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; ## 1 서울특별시 1995 10550871 ## 2 서울특별시 1996 10418076 ## 3 서울특별시 1997 10336134 ## 4 서울특별시 1998 10270506 ## 5 서울특별시 1999 10264260 ## 6 서울특별시 2000 10311314 . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%84%A0%20%EA%B7%B8%EB%9E%98%ED%94%84%20%EB%81%9D%20%EC%A7%80%EC%A0%90%EC%97%90%20%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0.html#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A4%80%EB%B9%84%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%84%A0%20%EA%B7%B8%EB%9E%98%ED%94%84%20%EB%81%9D%20%EC%A7%80%EC%A0%90%EC%97%90%20%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0.html#데이터-준비하기"
-  },"115": {
+  },"120": {
     "doc": "선 그래프 끝 지점에 텍스트 추가하기",
     "title": "선그래프 그리기",
     "content": "1995년부터 2023년까지의 주민등록인구 변화를 선 그래프로 시각화합니다. 이를 위해, 데이터의 시점을 X축에, 주민등록인구수를 Y축에 매핑하고, 시도를 그룹화하여 선을 그립니다. 또한, 색상을 시도에 따라 다르게 지정해 각 선을 구분합니다. geom_line 함수로 선을 그린 뒤, geom_point를 추가하여 데이터 포인트를 강조합니다. data %&gt;% ggplot(aes(x = 시점, y = 주민등록인구수, group = 시도, color = 시도)) + geom_line(linewidth = 0.4) + geom_point(size = 3) + scale_x_discrete(name = \"\") + scale_y_continuous(name = \"주민등록인구 수(명)\", expand = expansion(mult = c(0, 0.1))) + theme_minimal(base_size = theme.size, base_family = \"kopub\") + theme( axis.line = element_line(linewidth = 0.5, color = \"gray10\"), axis.ticks = element_line(linewidth = 0.1, color = \"gray10\"), panel.grid.minor = element_blank(), axis.text = element_text(color = \"gray10\") ) . 하지만 기본적으로 y축 값이 커 과학적 표기법(예: 1e+07)으로 표시되어 직관적으로 이해하기 어려운 문제가 있습니다. 이를 해결하기 위해, y축 단위를 ’만 명’으로 변환하여 보다 읽기 쉽게 조정합니다. 또한, 서울특별시와 경기도의 주민등록인구수가 다른 시도들에 비해 매우 높아 다른 시도의 데이터를 제대로 관찰하기 어려운 점을 감안하여, 서울특별시와 경기도를 제외하겠습니다. 서울특별시와 경기도를 제외한 다른 시도의 주민등록인구 변화를 선 그래프로 나타내기 위해 데이터를 필터링합니다. 또한, 그래프를 더욱 명확히 하기 위해 몇 가지 사항을 조정합니다. 먼저, 선 그래프에 범례를 표시하지 않도록 show.legend = FALSE 옵션을 사용합니다. 이는 시도의 개수가 많아 범례가 그래프의 가독성을 저해할 수 있기 때문입니다. 또한, y축 값을 ‘명’ 단위에서 ‘만 명’ 단위로 변환하여 보다 직관적으로 데이터를 해석할 수 있도록 조정합니다. x축 텍스트가 겹치는 문제는 45도 회전으로 해결해줍니다. data %&gt;% filter(!시도 %in% c(\"서울특별시\", \"경기도\")) %&gt;% ggplot(aes(x = 시점, y = 주민등록인구수 / 10000, group = 시도, color = 시도)) + geom_line(linewidth = 0.4, show.legend = FALSE) + geom_point(size = 3, show.legend = FALSE) + scale_x_discrete(name = \"\") + scale_y_continuous(name = \"주민등록인구 수(만 명)\", labels = comma_format(accuracy = 1), expand = expansion(mult = 0.1)) + theme_minimal(base_size = theme.size, base_family = \"kopub\") + theme( axis.line = element_line(linewidth = 0.5, color = \"gray10\"), axis.ticks = element_line(linewidth = 0.1, color = \"gray10\"), panel.grid.minor = element_blank(), axis.text = element_text(color = \"gray10\"), axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1) ) . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%84%A0%20%EA%B7%B8%EB%9E%98%ED%94%84%20%EB%81%9D%20%EC%A7%80%EC%A0%90%EC%97%90%20%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0.html#%EC%84%A0%EA%B7%B8%EB%9E%98%ED%94%84-%EA%B7%B8%EB%A6%AC%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%84%A0%20%EA%B7%B8%EB%9E%98%ED%94%84%20%EB%81%9D%20%EC%A7%80%EC%A0%90%EC%97%90%20%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0.html#선그래프-그리기"
-  },"116": {
+  },"121": {
     "doc": "선 그래프 끝 지점에 텍스트 추가하기",
     "title": "선 그래프 우측에 텍스트 표기하기",
     "content": "이번 단계에서는 선 그래프의 끝 지점에 각 선이 어떤 시도를 나타내는지 텍스트로 표기하여 그래프의 가독성을 높여보겠습니다. 텍스트가 촘촘히 겹치는 문제를 해결하기 위해 geom_text_repel 함수를 활용합니다. 이 함수는 텍스트가 겹치지 않도록 자동으로 위치를 조정하며, 시각적으로 깔끔한 그래프를 만들 수 있도록 돕습니다. 또한, 시도명을 축약형으로 표기하겠습니다. | 텍스트 정렬: hjust = 0으로 설정하여 텍스트가 좌측 정렬되도록 지정합니다. | 위치 조정: nudge_x = 3을 사용하여 텍스트가 선의 끝 지점으로부터 일정 거리만큼 떨어지도록 설정합니다. | 텍스트 위치 조정 방향: direction = \"y\"로 지정하여 텍스트가 위아래로 이동하며 겹치지 않도록 조정합니다. | 연결선 색상 조정: 연결선 색상을 segment.color = \"gray80\"으로 좀 더 흐린색으로 변경합니다. | . sido_text &lt;- data %&gt;% mutate(시도 = case_when(grepl(\"(특별시)|(광역시)|(자치시)|(특별자치도)$\", 시도) ~ substr(시도, 1, 2), 시도 == \"경기도\" ~ \"경기\", T ~ paste0(substr(시도, 1, 1), substr(시도, 3, 3)) )) %&gt;% filter(시점 == \"2023\", !시도 %in% c(\"서울\", \"경기\")) data %&gt;% filter(!시도 %in% c(\"서울특별시\", \"경기도\")) %&gt;% ggplot(aes(x = 시점, y = 주민등록인구수 / 10000, group = 시도, color = 시도)) + geom_line(linewidth = 0.4, show.legend = FALSE) + geom_point(size = 3, show.legend = FALSE) + geom_text_repel(data = sido_text, aes(x = 시점, y = 주민등록인구수 / 10000, label = 시도), color = \"gray10\", hjust = 0, nudge_x = 3, direction = \"y\", segment.color = \"gray80\", family = \"kopub\", size = text.size ) + scale_x_discrete(name = \"\") + scale_y_continuous(name = \"주민등록인구 수(만 명)\", labels = comma_format(accuracy = 1), expand = expansion(mult = 0.1)) + theme_minimal(base_size = theme.size, base_family = \"kopub\") + theme( axis.line = element_line(linewidth = 0.5, color = \"gray10\"), axis.ticks = element_line(linewidth = 0.1, color = \"gray10\"), panel.grid.minor = element_blank(), axis.text = element_text(color = \"gray10\"), axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1) ) . 선 그래프에 텍스트를 추가하면 범례 없이도 각 선이 무엇을 나타내는지 쉽게 이해할 수 있어, 그래프를 훨씬 직관적으로 만들 수 있습니다. 특히 여러 그룹이 있는 복잡한 데이터에서도 텍스트를 활용하면 가독성을 높이고, 필요한 정보를 명확하게 전달할 수 있습니다. 이번에 사용한 geom_text_repel 함수는 텍스트가 겹치지 않도록 도와주어 깔끔한 차트를 만드는 데 도움을 줍니다. 데이터에 맞게 텍스트의 위치와 스타일을 조정하면서 활용해 보시면 더욱 효과적인 시각화를 만들 수 있을 거예요. 선 그래프와 텍스트를 결합해, 데이터를 더 이해하기 쉽게 표현해 보세요! . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%84%A0%20%EA%B7%B8%EB%9E%98%ED%94%84%20%EB%81%9D%20%EC%A7%80%EC%A0%90%EC%97%90%20%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0.html#%EC%84%A0-%EA%B7%B8%EB%9E%98%ED%94%84-%EC%9A%B0%EC%B8%A1%EC%97%90-%ED%85%8D%EC%8A%A4%ED%8A%B8-%ED%91%9C%EA%B8%B0%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%84%A0%20%EA%B7%B8%EB%9E%98%ED%94%84%20%EB%81%9D%20%EC%A7%80%EC%A0%90%EC%97%90%20%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0.html#선-그래프-우측에-텍스트-표기하기"
-  },"117": {
+  },"122": {
     "doc": "숫자 포맷팅",
     "title": "숫자 포맷팅",
     "content": " ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%88%AB%EC%9E%90%20%ED%8F%AC%EB%A7%B7%ED%8C%85.html",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%88%AB%EC%9E%90%20%ED%8F%AC%EB%A7%B7%ED%8C%85.html"
-  },"118": {
+  },"123": {
     "doc": "숫자 포맷팅",
     "title": "데이터 준비",
     "content": "숫자 데이터를 효과적으로 시각화하기 위해 콤마 표기, 백분율 변환, 소수점 조정 등 다양한 포맷팅 기법을 활용할 수 있습니다. 이번 포스팅에서는 항공 승객 데이터를 사용해 포맷팅 주요 팁을 정리하였습니다. AirPassengers 데이터를 데이터프레임으로 변환하여 연도별 승객 수를 계산합니다. 이후, 전년 대비 승객 수 증감률을 추가합니다. # 패키지 로드 library(tidyverse) # 데이터 준비 data &lt;- data.frame(matrix(AirPassengers, ncol = 12, byrow = TRUE)) colnames(data) &lt;- seq(1, 12) data &lt;- data %&gt;% mutate(년도 = seq(1949, 1960)) data2 &lt;- data %&gt;% mutate( `승객 수` = rowSums(across(1:12)), `전년 대비 승객 수 증감률` = (`승객 수` - lag(`승객 수`)) / lag(`승객 수`) ) %&gt;% select(년도, `승객 수`, `전년 대비 승객 수 증감률`) . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%88%AB%EC%9E%90%20%ED%8F%AC%EB%A7%B7%ED%8C%85.html#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A4%80%EB%B9%84",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%88%AB%EC%9E%90%20%ED%8F%AC%EB%A7%B7%ED%8C%85.html#데이터-준비"
-  },"119": {
+  },"124": {
     "doc": "숫자 포맷팅",
     "title": "콤마 표기하기",
     "content": "세 자리마다 콤마를 추가하려면 scales 패키지의 comma 함수를 활용하면 됩니다. # 패키지 로드 library(scales) # 그래프 작성 ggplot(data = data2, aes(x = 년도, y = `승객 수`, label = comma(`승객 수`)) ) + geom_col(width = 0.6) + geom_text(vjust = -1) + theme_bw() . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%88%AB%EC%9E%90%20%ED%8F%AC%EB%A7%B7%ED%8C%85.html#%EC%BD%A4%EB%A7%88-%ED%91%9C%EA%B8%B0%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%88%AB%EC%9E%90%20%ED%8F%AC%EB%A7%B7%ED%8C%85.html#콤마-표기하기"
-  },"120": {
+  },"125": {
     "doc": "숫자 포맷팅",
     "title": "백분율 표기 및 소수점 조정하기",
     "content": "전년 대비 승객 수 증감률을 백분율로 변환하고, 소수점 한 자리까지만 표시합니다. ggplot(data = data2, aes(x = 년도, y = `전년 대비 승객 수 증감률`, label = percent(`전년 대비 승객 수 증감률`, accuracy = 0.1)) ) + geom_line(size = 1) + geom_text(vjust = -1) + theme_bw() . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%88%AB%EC%9E%90%20%ED%8F%AC%EB%A7%B7%ED%8C%85.html#%EB%B0%B1%EB%B6%84%EC%9C%A8-%ED%91%9C%EA%B8%B0-%EB%B0%8F-%EC%86%8C%EC%88%98%EC%A0%90-%EC%A1%B0%EC%A0%95%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%88%AB%EC%9E%90%20%ED%8F%AC%EB%A7%B7%ED%8C%85.html#백분율-표기-및-소수점-조정하기"
-  },"121": {
+  },"126": {
     "doc": "숫자 포맷팅",
     "title": "그래프 완성하기",
     "content": "위에서 소개한 내용을 모두 적용한 그래프를 작성합니다. 추가적으로 선 그래프 위에 점을 추가하고, 그래프의 미적 요소를 개선합니다. # 패키지 로드 library(showtext) # 글꼴 설정 font_add_google(\"Noto Sans KR\", \"noto\") showtext_auto() showtext_opts(dpi = 300) theme.size = 10 geom.text.size = theme.size/.pt # 혼합형 그래프 작성을 위한 상수 계산 coeff &lt;- data2[2, \"승객 수\"] / data2[2, \"전년 대비 승객 수 증감률\"] * 0.8 # 그래프 작성 ggplot(data = data2, aes(x = 년도)) + geom_col(aes(y = `승객 수`, fill = \"승객 수\"), width = 0.6) + geom_text(aes(y = `승객 수`, label = comma(`승객 수`)), vjust = -1, family = \"noto\", size = 3) + geom_line(aes(y = `전년 대비 승객 수 증감률` * coeff, color = \"전년 대비 승객 수 증감률\"), size = 1) + geom_point(aes(y = `전년 대비 승객 수 증감률` * coeff, color = \"전년 대비 승객 수 증감률\"), size = 2) + geom_text(aes(y = `전년 대비 승객 수 증감률` * coeff, label = percent(`전년 대비 승객 수 증감률`, accuracy = 0.1, suffix = \"\")), vjust = -1, family = \"noto\", size = 3) + scale_fill_manual(values = \"#9AD1F5\") + scale_color_manual(values = \"#e25a6c\") + scale_x_continuous(n.breaks = 12) + scale_y_continuous( name = \"승객 수(천 명)\", labels = comma_format(), expand = expansion(mult = c(0, 0.1)), sec.axis = sec_axis(~./coeff, name = \"전년 대비 승객 수 증감률(%)\", labels = percent_format(suffix = \"\")) ) + theme_bw(base_family = \"noto\") + theme( panel.grid = element_blank(), legend.title = element_blank(), legend.background=element_blank(), legend.key.size=unit(geom.text.size, \"mm\"), legend.text=element_text(size=rel(1)), legend.position=c(0.20, 0.90), legend.margin=margin(0, 0, 0, 0) ) . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%88%AB%EC%9E%90%20%ED%8F%AC%EB%A7%B7%ED%8C%85.html#%EA%B7%B8%EB%9E%98%ED%94%84-%EC%99%84%EC%84%B1%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%88%AB%EC%9E%90%20%ED%8F%AC%EB%A7%B7%ED%8C%85.html#그래프-완성하기"
-  },"122": {
+  },"127": {
     "doc": "스파이더차트 그리기",
     "title": "스파이더차트 그리기",
     "content": " ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%8A%A4%ED%8C%8C%EC%9D%B4%EB%8D%94%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%8A%A4%ED%8C%8C%EC%9D%B4%EB%8D%94%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html"
-  },"123": {
+  },"128": {
     "doc": "스파이더차트 그리기",
     "title": "개요",
     "content": "이번 글에서는 여러 변수의 특성을 비교할 때 유용한 스파이더차트(Spider chart) 또는 레이더차트(Radar chart)를 ggplot2를 사용해 직접 그리는 방법을 소개합니다. 이 차트는 데이터를 중심에서 뻗어나가는 축에 배치하여 각 그룹의 상대적 강점과 약점을 한눈에 파악할 수 있도록 도와줍니다. 2023년 기준 시도별 인구 특성을 나타내는 실제 데이터를 사용하며, 데이터를 처리하고 좌표를 계산하여 스파이더차트를 구현하는 전 과정을 다룹니다. 이번 글은 How to Make a Spider Chart in R Using ggplot2을 참고해 작성되었으며, 더 이해하기 쉽고 실용적으로 수정된 코드를 제공합니다. 다만, 이 글에서는 삼각함수를 활용해 각도를 계산하고, 데이터를 변환해 좌표를 직접 지정하는 과정을 상세히 다루기 때문에, 복잡하게 느껴질 수 있습니다. 하지만 과정을 하나씩 따라가며 이해하면, 스파이더차트를 활용한 데이터 시각화의 강력한 가능성을 느낄 수 있을 것입니다. ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%8A%A4%ED%8C%8C%EC%9D%B4%EB%8D%94%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html#%EA%B0%9C%EC%9A%94",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%8A%A4%ED%8C%8C%EC%9D%B4%EB%8D%94%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html#개요"
-  },"124": {
+  },"129": {
     "doc": "스파이더차트 그리기",
     "title": "데이터 준비하기",
     "content": "시도별 청년인구 비율, 고령인구 비율, 전입/전출 비율, 출생아 비율, 사망자 비율을 계산한 데이터를 사용하려고 합니다. 아래 원자료를 가공해 각 변수를 구하고 스파이더차트를 그릴 준비를 합니다. | 데이터 | 출처 | . | 청년인구, 고령인구 수 | 행정구역(읍면동)별/5세별 주민등록인구(2011년~) | . | 전입인구 수 | 전입인구(시도/시/군/구) | . | 전출인구 수 | 전출인구(시도/시/군/구) | . | 출생아 수 | 출생아수(시도/시/군/구) | . | 사망자 수 | 사망자수(시도/시/군/구) | . # 패키지 로드 library(tidyverse) library(readxl) library(ggplot2) library(showtext) library(scales) # 글꼴 설정 font_add(\"kopub\", \"C:/Users/.../AppData/Local/Microsoft/Windows/Fonts/KoPub Dotum Medium.ttf\") showtext_auto() showtext_opts(dpi=300) theme.size = 12 text.size = theme.size / .pt # 데이터 불러오기 pop &lt;- read_xlsx(\"데이터/시도 인구 특성/5세별주민등록인구_시도_2023.xlsx\") in_pop &lt;- read_xlsx(\"데이터/시도 인구 특성/전입인구_시도_2023.xlsx\") out_pop &lt;- read_xlsx(\"데이터/시도 인구 특성/전출인구_시도_2023.xlsx\") births &lt;- read_xlsx(\"데이터/시도 인구 특성/출생아수_시도_2023.xlsx\", skip=1) deaths &lt;- read_xlsx(\"데이터/시도 인구 특성/사망자수_시도_2023.xlsx\") . 5세별 주민등록인구 데이터를 가공하여 시도별 전체 인구 수, 청년인구 수, 고령인구 수를 계산합니다. 청년인구는 만 20~34세, 고령인구는 만 65세 이상으로 정의했습니다. 출생아 수와 사망자 수를 나타낸 데이터의 일부 지역명을 수정하여 데이터 간 지역명을 일치시켜줍니다. 모든 데이터를 하나로 통합한 후 비율을 계산하고 데이터를 정리하여 완성합니다. # 연령 정의 age &lt;- unique(pop$`5세별`) youth &lt;- age[5:6] senior &lt;- age[-(1:13)] # 시도 순서 sido_order &lt;- unique(pop$`행정구역(동읍면)별`)[-1] # 5세별 주민등록인구 데이터 정리하기 pop_sum &lt;- pop %&gt;% rename(시도 = `행정구역(동읍면)별`) %&gt;% mutate(구분 = case_when(`5세별` %in% youth ~ \"청년인구 수\", `5세별` %in% senior ~ \"고령인구 수\", T ~ \"그 외 인구 수\")) %&gt;% group_by(시도, 구분) %&gt;% summarise(`인구 수` = sum(`2023`, na.rm = T)) %&gt;% pivot_wider(id_cols = 시도, names_from = 구분, values_from = `인구 수`) %&gt;% mutate(`인구 수` = `청년인구 수` + `고령인구 수` + `그 외 인구 수`) %&gt;% select(-`그 외 인구 수`) %&gt;% filter(시도 != \"전국\") # 시군구 명칭 통일시키기 births &lt;- births %&gt;% mutate(시군구별 = case_when(시군구별 == \"전라북도\" ~ \"전북특별자치도\", T ~ 시군구별)) deaths &lt;- deaths %&gt;% mutate(시군구별 = case_when(시군구별 == \"강원도\" ~ \"강원특별자치도\", 시군구별 == \"전라북도\" ~ \"전북특별자치도\", 시군구별 == \"제주도\" ~ \"제주특별자치도\", T ~ 시군구별)) # 비율 계산하기 data &lt;- pop_sum %&gt;% left_join(in_pop, by=c(\"시도\"=\"행정구역(시군구)별(1)\")) %&gt;% select(-`성별(1)`) %&gt;% rename(`전입인구 수` = `2023`) %&gt;% left_join(out_pop, by=c(\"시도\"=\"행정구역(시군구)별(1)\")) %&gt;% select(-`성별(1)`) %&gt;% rename(`전출인구 수` = `2023`) %&gt;% left_join(births, by=c(\"시도\"=\"시군구별\")) %&gt;% rename(`출생아 수` = `계 (명)`) %&gt;% left_join(deaths, by=c(\"시도\"=\"시군구별\")) %&gt;% select(-성별) %&gt;% rename(`사망자 수` = `2023`) %&gt;% mutate(`고령인구 비율` = `고령인구 수`/`인구 수`, `청년인구 비율` = `청년인구 수`/`인구 수`, `전입인구 비율` = `전입인구 수`/`인구 수`, `전출인구 비율` = `전출인구 수`/`인구 수`, `출생아 비율` = `출생아 수`/`인구 수`, `사망자 비율` = `사망자 수`/`인구 수`, 시도 = factor(시도, levels = sido_order)) %&gt;% select(시도, contains(\"비율\")) # 데이터 확인하기 head(data) . ## # A tibble: 6 × 7 ## # Groups: 시도 [6] ## 시도 `고령인구 비율` `청년인구 비율` `전입인구 비율` `전출인구 비율` ## &lt;fct&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; ## 1 강원특별자치도 0.240 0.107 0.113 0.114 ## 2 경기도 0.156 0.123 0.123 0.120 ## 3 경상남도 0.206 0.0993 0.0924 0.0974 ## 4 경상북도 0.247 0.0972 0.0996 0.103 ## 5 광주광역시 0.165 0.135 0.115 0.121 ## 6 대구광역시 0.196 0.119 0.125 0.127 ## # ℹ 2 more variables: `출생아 비율` &lt;dbl&gt;, `사망자 비율` &lt;dbl&gt; . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%8A%A4%ED%8C%8C%EC%9D%B4%EB%8D%94%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A4%80%EB%B9%84%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%8A%A4%ED%8C%8C%EC%9D%B4%EB%8D%94%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html#데이터-준비하기"
-  },"125": {
+  },"130": {
     "doc": "스파이더차트 그리기",
     "title": "스파이더차트의 기본 원리",
     "content": "ggradar 함수를 이용하면 스파이더차트를 간편하게 그릴 수 있습니다. 하지만, 차트의 세부요소를 조정하기 쉽지 않다는 단점이 있습니다. 이보다 복잡하지만 ggplot2를 이용해 직접 차트를 그리면 세부요소를 마음대로 조정할 수 있어서 이번 시간에는 ggplot2를 이용하는 방법을 알려드리겠습니다. 스파이더차트에서 각 변수는 중심에서 뻗어나가는 축을 따라 배치됩니다. 점의 위치는 반지름(r)과 각도(θ)를 기반으로 계산할 수 있습니다. 점의 좌표를 구하는 공식은 x = r·cos(θ), y = r·sin(θ)이며, 원리는 아래 도표와 같습니다. 스파이더차트를 그리기 위해서는 각 변수의 값이 동일한 범위(예: 0~100%)로 변환되어야 합니다. 사실 이번 예제에서 사용할 데이터는 모두 비율 데이터로 0~100% 사이의 값을 지녀, 값을 변환할 필요가 없습니다. 하지만, 고령인구 비율이 11.0~26.1% 사이의 값인 반면 출생아 비율은 0.4~0.7% 사이의 값을 지니기 때문에 축의 범위를 0~100%로 동일하게 설정했을 때 지역 간 출생아 비율 차이를 파악하기 쉽지 않습니다. 따라서, 최소값은 차트의 r = 0.2에 대응하고 최대값은 r = 1에 대응하도록 아래 수식을 이용하여 변수별로 범위를 조정할 필요가 있습니다. scaled = (x - xmin)/(xmax - xmin)·(1 - 0.2) + 0.2 . 이렇게 변환된 값을 기준으로 각 변수의 좌표를 계산합니다. 원의 한 바퀴는 360도이며 이를 라디안으로 표현하면 2π입니다. 만약 n개의 변수가 있다면, 변수 하나가 차지하는 각도는 2π/n이 됩니다. 이를 코드로 구현하면 seq(0, 2 * pi, length.out = n + 1)이 됩니다. n + 1을 하는 이유는 원의 시작점(theta)에서 다시 원의 시작점(2 * pi)까지 총 n + 1개 요소를 뽑기 때문입니다. 원의 시작점이 요소에 포함되기 때문에 n + 1개 요소를 뽑도록 지정해 주어야 합니다. 아래 그림은 n=6일 때, 스파이더차트가 어떻게 구성되는지를 보여줍니다. r과 n의 조합으로 각 점의 특정할 수 있습니다. ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%8A%A4%ED%8C%8C%EC%9D%B4%EB%8D%94%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html#%EC%8A%A4%ED%8C%8C%EC%9D%B4%EB%8D%94%EC%B0%A8%ED%8A%B8%EC%9D%98-%EA%B8%B0%EB%B3%B8-%EC%9B%90%EB%A6%AC",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%8A%A4%ED%8C%8C%EC%9D%B4%EB%8D%94%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html#스파이더차트의-기본-원리"
-  },"126": {
+  },"131": {
     "doc": "스파이더차트 그리기",
     "title": "스파이더차트의 배경 그리기",
     "content": ". | 차트에서 표현할 변수의 축 개수를 구합니다. | 변수명을 추출하고 변수의 순서를 지정합니다. | 차트의 중심이 0이고 축의 길이를 1로 가정하며, 그리드 간격을 0.2로 설정합니다. | 각 변수의 최소값과 최대값이 0.2와 1에 대응하도록 변환하는 함수(scaling)를 정의합니다. | 반지름(r)과 변수 개수(n_axis)를 입력하면, 특정 반지름에 해당하는 점 좌표를 변수 개수만큼 생성하는 함수(gen_coords)를 정의합니다. | 변수 벡터(x), 그리드 간격(offset)를 입력하면, 해당 변수를 축에 표현할 때 그리드가 그려지는 지점의 실제값과 해당 위치의 반지름(r)을 반환하는 함수(axis_text)를 정의합니다. | . # 변수 개수 n_axis &lt;- ncol(data) - 1 # 변수 순서 vars_nth &lt;- tibble(구분 = colnames(data)[-1], n = 1:n_axis) # 그리드 간격 offset &lt;- 0.2 # 데이터 스케일링 함수(최소값이 0.2, 최대값이 1에 대응하도록 스케일링하는 함수) scaling &lt;- function(x, min_val = offset, max_val = 1){ x_min &lt;- min(x, na.rm = T) x_max &lt;- max(x, na.rm = T) scaled &lt;- (x - x_min) / (x_max - x_min) * (max_val - min_val) + min_val return(scaled) } # 데이터 좌표 계산하는 함수 정의 gen_coords &lt;- function(r, n_axis, closed = FALSE){ angles &lt;- seq(0, 2 * pi, length.out = n_axis + 1) + pi / 2 if(closed==FALSE){ angles &lt;- angles[-length(angles)] } x &lt;- r * cos(angles) y &lt;- r * sin(angles) n &lt;- 1:length(angles) tibble(x, y, r, n) } # 변수별 축 텍스트 함수 axis_text &lt;- function(x, offset){ min &lt;- min(x, na.rm = T) max &lt;- max(x, na.rm = T) label &lt;- seq(min, max, length.out = 1 / offset) r &lt;- seq(offset, 1, by = offset) # 최소값이 차트 반지름 0.2에 대응, 최대값이 차트 반지름 1에 대응 tibble(label, r) } . 스파이더차트의 배경은 외곽배경, 그리드선, 축선, 축선에 표시될 축 타이틀과 텍스트로 구성됩니다. 아래 코드는 스파이더차트의 외곽배경, 그리드선, 축선을 만드는 과정을 보여줍니다. panel_data는 스파이더차트를 구성하는 배경 점 좌표를 계산하여 저장한 데이터프레임입니다. seq(0, 1, by = offset)[-1]은 차트의 중심에서 외곽까지의 반지름 값을 나타내고, 각 반지름 값에 대해 gen_coords 함수를 호출하여 점 좌표를 계산합니다. 함수의 결과는 모든 반지름 값에 대한 좌표를 하나의 데이터프레임으로 결합한 형태가 됩니다. # 배경 점 좌표 panel_data &lt;- map_df( seq(0, 1, by = offset)[-1], ~gen_coords(.x, n_axis, closed=T) ) . panel_bg는 생성된 배경 좌표 데이터를 이용해 차트를 그린 결과물입니다. geom_polygon을 사용해 반지름 값이 1인 외곽선으로 구성된 폴리곤을 회색으로 채우고, 투명도를 조절해 배경의 기본 윤곽을 만듭니다. geom_path를 통해 각 반지름 값을 따라 점선을 그려 그리드를 완성합니다. 마지막으로 geom_line을 이용해 중심에서 각 축 끝까지 선을 그려 변수를 표현할 축을 추가합니다. 불필요한 시각적 요소는 theme_void를 통해 제거하여 차트를 깔끔하게 정리합니다. # 배경 그리기 panel_bg &lt;- ggplot() + # 외곽 배경(r = 1) geom_polygon(data = panel_data %&gt;% filter(r == 1), aes(x, y), fill = \"gray\", alpha = 0.2) + # 점선 그리드 geom_path(data = panel_data, aes(x, y, group = r), linetype = \"dotted\", color = \"gray\") + # 축 추가 geom_line(data = panel_data, aes(x = x, y = y, group = n), color = \"gray\") + coord_fixed(ratio = 1, clip = \"off\") + theme_void() panel_bg . 다음으로, 축에 변수명과 텍스트를 추가하겠습니다. axis_text_data는 각 축에 표시될 값인 축 텍스트를 계산한 결과를 담고 있습니다. pivot_longer 함수를 이용해 데이터를 길게 변환하고, axis_text 함수를 호출해 각 변수별로 축 텍스트에 해당하는 값과 반지름을 계산합니다. 그리고, vars_nth와 panel_data 데이터를 결합하여 변수의 순서와 텍스트를 배치할 좌표를 구합니다. # 축 텍스트 데이터 axis_text_data &lt;- data %&gt;% pivot_longer(cols = -시도, names_to = \"구분\", values_to = \"실제값\") %&gt;% group_by(구분) %&gt;% # 변수별 축 데이터 실제값 구하기 reframe(axis_text(실제값, offset)) %&gt;% # 변수 순서 지정하기 left_join(vars_nth, by = \"구분\") %&gt;% # 좌표 추가하기 left_join(panel_data, by = c(\"r\", \"n\")) # 데이터 확인하기 head(axis_text_data) . ## # A tibble: 6 × 6 ## 구분 label r n x y ## &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; ## 1 고령인구 비율 0.110 0.2 1 1.22e-17 0.2 ## 2 고령인구 비율 0.148 0.4 1 2.45e-17 0.4 ## 3 고령인구 비율 0.186 0.6 1 3.67e-17 0.6 ## 4 고령인구 비율 0.223 0.8 1 4.90e-17 0.8 ## 5 고령인구 비율 0.261 1 1 6.12e-17 1 ## 6 사망자 비율 0.00413 0.2 6 1.73e- 1 0.100 . 변수명을 축의 끝부분에 배치하기 위해 좌표를 새로 계산해야 합니다. gen_coords 함수를 이용하여, 반지름 1.15, 변수 6개에 대한 좌표를 계산하고 axis_title_coords에 저장합니다. 이후 변수명에 변수의 순서(vars_nth)와 좌표(axis_title_coords)를 결합하여 axis_title_data를 만듭니다. # 축 타이틀 좌표 axis_title_coords &lt;- gen_coords(1.15, 6) # 축 타이틀 데이터 axis_title_data &lt;- data %&gt;% pivot_longer(cols = -시도, names_to = \"구분\", values_to = \"실제값\") %&gt;% group_by(구분) %&gt;% summarise() %&gt;% # 변수 순서 지정하기 left_join(vars_nth, by = \"구분\") %&gt;% # 좌표 추가하기 left_join(axis_title_coords, by = c(\"n\")) %&gt;% mutate(hjust = case_when(x &gt; 0.01 ~ 0, x &lt; -0.01 ~ 1, T ~ 0.5)) . 위 데이터를 활용하여 스파이더차트에 축 텍스트와 변수명을 추가해줍니다. panel_bg_with_axis &lt;- panel_bg + # 축 텍스트 표기 geom_text(data = axis_text_data, aes(x, y, label = percent(label, accuracy = .01, suffix = \"\")), color = \"gray30\", family = \"kopub\", size = text.size * 0.8) + # 축 변수명 표기 geom_text(data = axis_title_data, aes(x, y, label = paste0(구분, \"(%)\")), family = \"kopub\", size = text.size, hjust = axis_title_data*hjust) panel_bg_with_axis . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%8A%A4%ED%8C%8C%EC%9D%B4%EB%8D%94%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html#%EC%8A%A4%ED%8C%8C%EC%9D%B4%EB%8D%94%EC%B0%A8%ED%8A%B8%EC%9D%98-%EB%B0%B0%EA%B2%BD-%EA%B7%B8%EB%A6%AC%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%8A%A4%ED%8C%8C%EC%9D%B4%EB%8D%94%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html#스파이더차트의-배경-그리기"
-  },"127": {
+  },"132": {
     "doc": "스파이더차트 그리기",
     "title": "배경에 데이터 추가하기",
     "content": "각 데이터 포인트를 좌표로 변환하고 경로가 닫히도록 시도별 첫번째 행을 복사해서 행에 추가해 줍니다. # 데이터 가공 tmp &lt;- data %&gt;% pivot_longer(cols = -시도, names_to = \"구분\", values_to = \"실제값\") %&gt;% # 실제값을 스케일링하기 group_by(구분) %&gt;% mutate(변환값 = scaling(실제값)) %&gt;% # 변환값의 좌표 구하기 group_by(시도) %&gt;% mutate(coords = gen_coords(변환값, n_axis)) %&gt;% unnest(cols = c(coords)) %&gt;% # 부산, 울산, 경남만 추출하기 filter(시도 %in% c(\"부산광역시\", \"울산광역시\", \"경상남도\")) # geom_path 사용 시 닫힌 경로 만들기 위해 시도별 첫번째 행 복사하기 tmp_first_row &lt;- tmp %&gt;% group_by(시도) %&gt;% filter(row_number() == 1) final_data &lt;- tmp %&gt;% bind_rows(tmp_first_row) . 이제 마지막입니다! 스파이더차트 배경 위에 데이터를 표현하여 차트를 완성합니다. geom_path와 geom_point 함수를 이용하여 데이터 라인과 포인트를 추가합니다. geom_path는 각 시도의 데이터를 연결하여 라인을 그리는 역할을 하고, geom_point는 라인 위에 데이터 포인트를 표시하는 역할을 합니다. 데이터 라인과 포인트 색상은 scale_color_brewer(palette = \"Set2\")로 설정했으며, RColorBrewer 팔레트의 “Set2” 색상 세트를 적용했습니다. theme을 사용하여 범례 제목을 없애고 범례 위치와 범례 항목의 사이즈를 조정해 주었습니다. panel_bg_with_axis + # 데이터 라인 그리기 geom_path(data = final_data, aes(x, y, group = 시도 , color = 시도), linewidth = 1) + # 데이터 포인트 그리기 geom_point(data = final_data, aes(x, y, group = 시도, color = 시도), size = 3, shape = 21, fill = \"white\") + scale_color_brewer(palette = \"Set2\") + theme( legend.position = \"bottom\", legend.title = element_blank(), legend.key.height = unit(theme.size, \"pt\"), legend.margin = margin(5, 0, 0, 0), legend.background = element_rect(fill = NA, color = NA) ) . 스파이더차트는 다차원 데이터를 한눈에 비교하고 시각화할 수 있는 강력한 도구입니다. 이번 글에서는 데이터를 변환하고 좌표를 계산하여 ggplot2를 사용해 스파이더차트를 그리는 방법을 알아보았습니다. 스파이더차트를 제작하는 과정은 처음에는 복잡하게 느껴질 수 있지만, 데이터의 상대적인 패턴과 차이를 시각적으로 명확히 표현할 수 있으니 한 번 활용해 보세요! . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%8A%A4%ED%8C%8C%EC%9D%B4%EB%8D%94%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html#%EB%B0%B0%EA%B2%BD%EC%97%90-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%8A%A4%ED%8C%8C%EC%9D%B4%EB%8D%94%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html#배경에-데이터-추가하기"
-  },"128": {
+  },"133": {
     "doc": "시간에 따른 변화 시각화하기",
     "title": "시간에 따른 변화 시각화하기",
     "content": " ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%8B%9C%EA%B0%84%EC%97%90%20%EB%94%B0%EB%A5%B8%20%EB%B3%80%ED%99%94%20%EC%8B%9C%EA%B0%81%ED%99%94%ED%95%98%EA%B8%B0.html",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%8B%9C%EA%B0%84%EC%97%90%20%EB%94%B0%EB%A5%B8%20%EB%B3%80%ED%99%94%20%EC%8B%9C%EA%B0%81%ED%99%94%ED%95%98%EA%B8%B0.html"
-  },"129": {
+  },"134": {
     "doc": "시간에 따른 변화 시각화하기",
     "title": "개요",
     "content": "서울 자치구별 주민등록인구수 변화를 시각화하고 싶다고 가정해봅시다. 1995년과 2023년 데이터를 사용해 각 연도의 지도를 그리면, 자치구별로 인구수가 많은 지역을 색상으로 쉽게 확인할 수 있을 겁니다. 하지만 이렇게 하면 1995년 지도와 2023년 지도의 색상 범례가 서로 다르게 나타날 가능성이 높습니다. 이는 한 연도 안에서 지역 간 인구 비교는 가능하지만, 연도 간 인구 변화 추이를 직관적으로 파악하기 어렵게 만듭니다. 이 글에서는 두 연도의 지도를 하나의 공통된 색상 범례로 그려, 연도 간 변화를 쉽게 비교할 수 있는 방법을 소개합니다. 이를 통해 변화의 흐름을 더욱 명확하게 전달할 수 있을 것입니다. ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%8B%9C%EA%B0%84%EC%97%90%20%EB%94%B0%EB%A5%B8%20%EB%B3%80%ED%99%94%20%EC%8B%9C%EA%B0%81%ED%99%94%ED%95%98%EA%B8%B0.html#%EA%B0%9C%EC%9A%94",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%8B%9C%EA%B0%84%EC%97%90%20%EB%94%B0%EB%A5%B8%20%EB%B3%80%ED%99%94%20%EC%8B%9C%EA%B0%81%ED%99%94%ED%95%98%EA%B8%B0.html#개요"
-  },"130": {
+  },"135": {
     "doc": "시간에 따른 변화 시각화하기",
     "title": "데이터 준비",
     "content": "먼저, 서울시 자치구의 경계 데이터를 st_read로 불러오고, 1995년과 2023년 주민등록인구 데이터를 read_xlsx로 읽어옵니다. 서울시 자치구 경계 데이터는 V-World 디지털트윈국토의 행정구역시군구_경계에서 다운받았습니다. 주민등록인구 데이터는 통계청의 주민등록인구(시도/시/군/구)에서 다운받았습니다. # 패키지 로드 library(tidyverse) library(sf) library(readxl) # 서울시 자치구 shp 파일 sgg &lt;- st_read(\"데이터/수도권 지도/행정구역 경계/LARD_ADM_SECT_SGG_11_202405.shp\") . ## Reading layer `LARD_ADM_SECT_SGG_11_202405' from data source ## `C:\\...\\데이터\\수도권 지도\\행정구역 경계\\LARD_ADM_SECT_SGG_11_202405.shp' ## using driver `ESRI Shapefile' ## Simple feature collection with 25 features and 4 fields ## Geometry type: MULTIPOLYGON ## Dimension: XY ## Bounding box: xmin: 179191.4 ymin: 536562.8 xmax: 216242.3 ymax: 566863.5 ## Projected CRS: Korea_2000_Korea_Central_Belt_2010 . # 서울시 자치구 주민등록인구수 pop &lt;- read_xlsx(\"데이터/주민등록인구_서울.xlsx\") head(pop) . ## # A tibble: 6 × 3 ## 행정구역별 시점 `계 (명)` ## &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; ## 1 서울특별시 1995 10550871 ## 2 서울특별시 2023 9386034 ## 3 　　　종로구 1995 203086 ## 4 　　　종로구 2023 139417 ## 5 　　　중구 1995 143138 ## 6 　　　중구 2023 121312 . ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%8B%9C%EA%B0%84%EC%97%90%20%EB%94%B0%EB%A5%B8%20%EB%B3%80%ED%99%94%20%EC%8B%9C%EA%B0%81%ED%99%94%ED%95%98%EA%B8%B0.html#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A4%80%EB%B9%84",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%8B%9C%EA%B0%84%EC%97%90%20%EB%94%B0%EB%A5%B8%20%EB%B3%80%ED%99%94%20%EC%8B%9C%EA%B0%81%ED%99%94%ED%95%98%EA%B8%B0.html#데이터-준비"
-  },"131": {
+  },"136": {
     "doc": "시간에 따른 변화 시각화하기",
     "title": "데이터 조인",
     "content": "주민등록인구 데이터와 shp 파일을 조인하기 위해 먼저 자치구 이름의 불필요한 공백을 제거합니다. 이후 shp 파일의 자치구 이름에서 ’서울특별시’라는 접두어를 제거하여 데이터의 이름 형식을 통일합니다. 마지막으로, left_join을 통해 두 데이터를 결합합니다. 이렇게 하면 지도 데이터에 인구수가 결합되어 시각화에 사용할 수 있는 데이터가 완성됩니다. # 데이터 가공 pop &lt;- pop %&gt;% mutate(행정구역별 = str_trim(행정구역별, \"both\")) # 데이터 조인 joined_data &lt;- sgg %&gt;% mutate(SGG_NM = str_replace(SGG_NM, \"서울특별시 \", \"\")) %&gt;% left_join(pop, by=c(\"SGG_NM\" = \"행정구역별\")) # 데이터 확인 head(joined_data) . ## Simple feature collection with 6 features and 6 fields ## Geometry type: MULTIPOLYGON ## Dimension: XY ## Bounding box: xmin: 195102.6 ymin: 545229.7 xmax: 202367.6 ymax: 559196.5 ## Projected CRS: Korea_2000_Korea_Central_Belt_2010 ## ADM_SECT_C SGG_NM SGG_OID COL_ADM_SE 시점 계 (명) ## 1 11110 종로구 11 11110 1995 203086 ## 2 11110 종로구 11 11110 2023 139417 ## 3 11140 중구 34 11140 1995 143138 ## 4 11140 중구 34 11140 2023 121312 ## 5 11170 용산구 1 11170 1995 254579 ## 6 11170 용산구 1 11170 2023 213151 ## geometry ## 1 MULTIPOLYGON (((197800 5590... ## 2 MULTIPOLYGON (((197800 5590... ## 3 MULTIPOLYGON (((202072.4 55... ## 4 MULTIPOLYGON (((202072.4 55... ## 5 MULTIPOLYGON (((197569.6 55... ## 6 MULTIPOLYGON (((197569.6 55... ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%8B%9C%EA%B0%84%EC%97%90%20%EB%94%B0%EB%A5%B8%20%EB%B3%80%ED%99%94%20%EC%8B%9C%EA%B0%81%ED%99%94%ED%95%98%EA%B8%B0.html#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A1%B0%EC%9D%B8",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%8B%9C%EA%B0%84%EC%97%90%20%EB%94%B0%EB%A5%B8%20%EB%B3%80%ED%99%94%20%EC%8B%9C%EA%B0%81%ED%99%94%ED%95%98%EA%B8%B0.html#데이터-조인"
-  },"132": {
+  },"137": {
     "doc": "시간에 따른 변화 시각화하기",
     "title": "지도 그리기",
     "content": "ggplot을 사용해 지도를 작성합니다. geom_sf는 공간 데이터를 지도에 표현하며, fill 매핑을 통해 각 자치구의 인구수를 색상으로 시각화합니다. facet_wrap(~시점)을 활용해 1995년과 2023년 지도를 두 개의 패널로 구분하여 배치합니다. 자치구 이름과 인구수를 지도 위에 텍스트로 표시하기 위해 geom_sf_text를 사용합니다. ggplot(data = joined_data, aes(fill = `계 (명)`)) + geom_sf(color=\"gray20\") + scale_fill_gradient(low = '#ffffff', high = '#ff6666') + facet_wrap(~시점) + geom_sf_text(aes(label = SGG_NM)) + geom_sf_text(aes(label = `계 (명)`)) + theme_void() . ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%8B%9C%EA%B0%84%EC%97%90%20%EB%94%B0%EB%A5%B8%20%EB%B3%80%ED%99%94%20%EC%8B%9C%EA%B0%81%ED%99%94%ED%95%98%EA%B8%B0.html#%EC%A7%80%EB%8F%84-%EA%B7%B8%EB%A6%AC%EA%B8%B0",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%8B%9C%EA%B0%84%EC%97%90%20%EB%94%B0%EB%A5%B8%20%EB%B3%80%ED%99%94%20%EC%8B%9C%EA%B0%81%ED%99%94%ED%95%98%EA%B8%B0.html#지도-그리기"
-  },"133": {
+  },"138": {
     "doc": "시간에 따른 변화 시각화하기",
     "title": "지도 테마 다듬기",
     "content": "지도에 가독성을 더하기 위해 글꼴과 범례를 설정합니다. 먼저, font_add를 사용해 글꼴을 추가하고 showtext_auto로 활성화합니다. geom_sf_text의 vjust를 조정해 자치구 이름과 인구수 텍스트의 위치를 세밀히 조정합니다. 범례는 scale_fill_gradient에서 타이틀, 콤마 표기를 통해 가독성을 높입니다. 마지막으로, theme_void를 사용해 배경을 없애고, theme으로 범례와 스트립 텍스트의 글꼴, 크기, 위치를 조정해 전체적인 스타일을 완성합니다. # 패키지 로드 library(scales) library(showtext) # 글꼴 설정 font_add(\"kopub\", \"C:/.../AppData/Local/Microsoft/Windows/Fonts/KoPub Dotum Medium.ttf\") font_add(\"kopub_b\", \"C:/.../AppData/Local/Microsoft/Windows/Fonts/KoPub Dotum Bold.ttf\") showtext_auto() showtext_opts(dpi=300) theme.size = 10 geom.text.size = theme.size / .pt # 지도 작성 ggplot(data = joined_data, aes(fill = `계 (명)`)) + geom_sf(color=\"gray20\") + scale_fill_gradient(name = \"인구 수(명)\", low = '#ffffff', high = '#ff6666', labels=comma) + facet_wrap(~시점) + geom_sf_text(aes(label = SGG_NM), vjust = -0.5, family = \"kopub_b\", size = geom.text.size) + geom_sf_text(aes(label = comma(`계 (명)`)), vjust = 1.2, family = \"kopub\", size = geom.text.size) + theme_void(base_family = \"kopub\", base_size = theme.size) + theme( strip.text = element_text(family = \"kopub_b\", size = theme.size * 1.5), legend.position = \"bottom\", legend.title = element_text(family = \"kopub_b\", vjust=1), legend.text = element_text(size=theme.size), legend.key.height = unit(theme.size, \"pt\"), legend.key.width = unit(theme.size * 5, \"pt\") ) . ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%8B%9C%EA%B0%84%EC%97%90%20%EB%94%B0%EB%A5%B8%20%EB%B3%80%ED%99%94%20%EC%8B%9C%EA%B0%81%ED%99%94%ED%95%98%EA%B8%B0.html#%EC%A7%80%EB%8F%84-%ED%85%8C%EB%A7%88-%EB%8B%A4%EB%93%AC%EA%B8%B0",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%8B%9C%EA%B0%84%EC%97%90%20%EB%94%B0%EB%A5%B8%20%EB%B3%80%ED%99%94%20%EC%8B%9C%EA%B0%81%ED%99%94%ED%95%98%EA%B8%B0.html#지도-테마-다듬기"
-  },"134": {
+  },"139": {
     "doc": "연평균성장률 계산",
     "title": "연평균성장률 계산",
     "content": " ",
     "url": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EC%97%B0%ED%8F%89%EA%B7%A0%EC%84%B1%EC%9E%A5%EB%A5%A0%20%EA%B3%84%EC%82%B0.html",
     
     "relUrl": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EC%97%B0%ED%8F%89%EA%B7%A0%EC%84%B1%EC%9E%A5%EB%A5%A0%20%EA%B3%84%EC%82%B0.html"
-  },"135": {
+  },"140": {
     "doc": "연평균성장률 계산",
     "title": "데이터 준비",
     "content": "연평균성장률(Compound Annual Growth Rate, CAGR)은 특정 기간 동안의 평균 성장률을 계산하여 데이터의 장기적인 변화를 평가하는 데 유용한 지표입니다. 이 글에서는 1995년부터 2023년까지의 주민등록인구 데이터를 활용하여 연평균성장률을 계산하는 과정을 단계별로 설명하겠습니다. 먼저, 데이터를 준비합니다. 이번 예제에서는 통계청의 시도별 주민등록인구 데이터를 활용하겠습니다. 이 데이터는 행정구역, 시점, 주민등록인구수로 구성되어 있습니다. read_xlsx 함수를 사용해 데이터를 가져온 후, head 함수로 데이터의 첫 몇 행을 미리 살펴봅니다. # 패키지 로드 library(tidyverse) library(readxl) # 데이터 로드 data &lt;- read_xlsx(\"데이터/주민등록인구_시도_1995-2023.xlsx\") # 데이터 확인 head(data) . ## # A tibble: 6 × 3 ## 행정구역별 시점 `계 (명)` ## &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; ## 1 전국 1995 4.5858029E7 ## 2 전국 1996 4.6266256E7 ## 3 전국 1997 4.6684069E7 ## 4 전국 1998 4.6991171E7 ## 5 전국 1999 4.7335678E7 ## 6 전국 2000 4.7732558E7 . 다음으로, 데이터를 분석하기 쉽게 칼럼명을 정리하고 숫자형 데이터로 변환합니다. rename 함수를 이용해 칼럼명을 보다 직관적으로 변경하고, mutate를 통해 데이터를 숫자형으로 변환했습니다. data &lt;- data %&gt;% rename(주민등록인구수 = `계 (명)`) %&gt;% mutate(시점 = as.numeric(시점), 주민등록인구수 = as.numeric(주민등록인구수)) head(data) . ## # A tibble: 6 × 3 ## 행정구역별 시점 주민등록인구수 ## &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; ## 1 전국 1995 45858029 ## 2 전국 1996 46266256 ## 3 전국 1997 46684069 ## 4 전국 1998 46991171 ## 5 전국 1999 47335678 ## 6 전국 2000 47732558 . ",
     "url": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EC%97%B0%ED%8F%89%EA%B7%A0%EC%84%B1%EC%9E%A5%EB%A5%A0%20%EA%B3%84%EC%82%B0.html#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A4%80%EB%B9%84",
     
     "relUrl": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EC%97%B0%ED%8F%89%EA%B7%A0%EC%84%B1%EC%9E%A5%EB%A5%A0%20%EA%B3%84%EC%82%B0.html#데이터-준비"
-  },"136": {
+  },"141": {
     "doc": "연평균성장률 계산",
     "title": "1년 성장률 계산",
     "content": "연평균성장률(CAGR)은 특정 기간 동안의 평균 성장률을 계산하는 지표로, 매년 일정한 비율로 성장했다고 가정하여 계산됩니다. 연평균성장률의 계산 공식은 다음과 같습니다. CAGR을 백분율(%)로 표현하려면 계산된 값에 100을 곱하면 됩니다. CAGR = (Vf/Vi)1/n − 1 . | Vf: 최종 값 | Vi: 초기 값 | n: 기간 | . 먼저, CAGR 함수를 정의해 줍니다. 이 함수는 초기 값, 최종 값, 초기 연도, 최종 연도를 입력받아 특정 기간 동안의 연평균성장률을 계산합니다. cagr &lt;- function(initial_value, final_value, inital_year, final_year){ years &lt;- final_year - inital_year cagr &lt;- ((final_value/initial_value)^(1/years)) - 1 return (cagr) } . 행정구역, 시점, 주민등록인구수로 구성된 데이터 테이블에 1년 성장률이라는 새 칼럼을 추가하여 연도별 성장률을 계산합니다. 아래 그림과 같이, 1995~1996년 인구 성장률은 1996년 행에 계산합니다. group_by(행정구역별)을 이용해 행정구역별로 성장률이 계산될 수 있도록 합니다. cagr 함수를 사용해 1년 성장률을 계산합니다. 이때, lag 함수로 이전 연도의 데이터를 참조합니다. percent 함수로 계산된 성장률을 백분율로 변환합니다. library(scales) data %&gt;% group_by(행정구역별) %&gt;% mutate(`1년 성장률`=cagr(lag(주민등록인구수), 주민등록인구수, lag(시점), 시점)) %&gt;% mutate(`1년 성장률`=percent(`1년 성장률`, accuracy=.01)) . ## # A tibble: 507 × 4 ## # Groups: 행정구역별 [18] ## 행정구역별 시점 주민등록인구수 `1년 성장률` ## &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt; ## 1 전국 1995 45858029 &lt;NA&gt; ## 2 전국 1996 46266256 0.89% ## 3 전국 1997 46684069 0.90% ## 4 전국 1998 46991171 0.66% ## 5 전국 1999 47335678 0.73% ## 6 전국 2000 47732558 0.84% ## 7 전국 2001 48021543 0.61% ## 8 전국 2002 48229948 0.43% ## 9 전국 2003 48386823 0.33% ## 10 전국 2004 48583805 0.41% ## # ℹ 497 more rows . ",
     "url": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EC%97%B0%ED%8F%89%EA%B7%A0%EC%84%B1%EC%9E%A5%EB%A5%A0%20%EA%B3%84%EC%82%B0.html#1%EB%85%84-%EC%84%B1%EC%9E%A5%EB%A5%A0-%EA%B3%84%EC%82%B0",
     
     "relUrl": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EC%97%B0%ED%8F%89%EA%B7%A0%EC%84%B1%EC%9E%A5%EB%A5%A0%20%EA%B3%84%EC%82%B0.html#1년-성장률-계산"
-  },"137": {
+  },"142": {
     "doc": "연평균성장률 계산",
     "title": "5년 연평균성장률 계산",
     "content": "5년 단위로 성장률을 계산하고자 할 경우, lag 함수의 n 매개변수를 이용해 5년 전 데이터를 참조합니다. 아래 그림과 같이, 1995~2000년 연평균성장률을 2000년 행에 계산합니다. data %&gt;% group_by(행정구역별) %&gt;% mutate(`5년 성장률`=cagr(lag(주민등록인구수, n=5), 주민등록인구수, lag(시점, n=5), 시점)) %&gt;% mutate(`5년 성장률`=percent(`5년 성장률`, accuracy=.01)) . ## # A tibble: 507 × 4 ## # Groups: 행정구역별 [18] ## 행정구역별 시점 주민등록인구수 `5년 성장률` ## &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt; ## 1 전국 1995 45858029 &lt;NA&gt; ## 2 전국 1996 46266256 &lt;NA&gt; ## 3 전국 1997 46684069 &lt;NA&gt; ## 4 전국 1998 46991171 &lt;NA&gt; ## 5 전국 1999 47335678 &lt;NA&gt; ## 6 전국 2000 47732558 0.80% ## 7 전국 2001 48021543 0.75% ## 8 전국 2002 48229948 0.65% ## 9 전국 2003 48386823 0.59% ## 10 전국 2004 48583805 0.52% ## # ℹ 497 more rows . ",
     "url": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EC%97%B0%ED%8F%89%EA%B7%A0%EC%84%B1%EC%9E%A5%EB%A5%A0%20%EA%B3%84%EC%82%B0.html#5%EB%85%84-%EC%97%B0%ED%8F%89%EA%B7%A0%EC%84%B1%EC%9E%A5%EB%A5%A0-%EA%B3%84%EC%82%B0",
     
     "relUrl": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EC%97%B0%ED%8F%89%EA%B7%A0%EC%84%B1%EC%9E%A5%EB%A5%A0%20%EA%B3%84%EC%82%B0.html#5년-연평균성장률-계산"
-  },"138": {
+  },"143": {
     "doc": "원형차트와 도넛차트 그리기",
     "title": "원형차트와 도넛차트 그리기",
     "content": " ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%9B%90%ED%98%95%EC%B0%A8%ED%8A%B8%EC%99%80%20%EB%8F%84%EB%84%9B%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%9B%90%ED%98%95%EC%B0%A8%ED%8A%B8%EC%99%80%20%EB%8F%84%EB%84%9B%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html"
-  },"139": {
+  },"144": {
     "doc": "원형차트와 도넛차트 그리기",
     "title": "개요",
     "content": "이번 글에서는 원형차트(Pie chart)와 도넛차트(Donut chart)를 그리는 방법을 소개합니다. 2023년 시도별 시, 군, 구의 주민등록인구 비중 데이터를 활용하여 차트를 시각화하고, 두 차트의 차이점과 적합한 활용 방법도 함께 설명합니다. ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%9B%90%ED%98%95%EC%B0%A8%ED%8A%B8%EC%99%80%20%EB%8F%84%EB%84%9B%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html#%EA%B0%9C%EC%9A%94",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%9B%90%ED%98%95%EC%B0%A8%ED%8A%B8%EC%99%80%20%EB%8F%84%EB%84%9B%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html#개요"
-  },"140": {
+  },"145": {
     "doc": "원형차트와 도넛차트 그리기",
     "title": "데이터 준비하기",
     "content": "우선, 비율 계산 글에서 계산한 데이터를 사용합니다. 데이터를 정리하고, 시도별 시, 군, 구의 주민등록인구 비율을 계산합니다. # 패키지 로드 library(tidyverse) library(readxl) library(ggplot2) library(showtext) library(scales) # 글꼴 설정 font_add(\"kopub\", \"C:/Users/.../AppData/Local/Microsoft/Windows/Fonts/KoPub Dotum Medium.ttf\") showtext_auto() showtext_opts(dpi=300) theme.size = 12 text.size = theme.size / .pt # 데이터 불러오기 data &lt;- read_xlsx(\"데이터/주민등록인구_시도_시군구_2023.xlsx\", skip=1) # 데이터 정리하기 data2 &lt;- data %&gt;% rename(시도 = `행정구역별(1)`, 시군구 = `행정구역별(2)`, 주민등록인구수 = `계 (명)`) %&gt;% filter(시도 != \"전국\", (시도 == \"세종특별자치시\")|(시군구 != \"소계\")) %&gt;% mutate(시군구 = case_when(시도 == \"세종특별자치시\" ~ \"세종특별자치시\", T ~ 시군구), 시도 = factor(시도, levels = unique(data$`행정구역별(1)`)[-1]), 구분 = case_when(grepl(\"시$\", 시군구) ~ \"시\", grepl(\"군$\", 시군구) ~ \"군\", grepl(\"구$\", 시군구) ~ \"구\"), 구분 = factor(구분, levels = c(\"시\", \"군\", \"구\"))) # 비율 계산하기 sum &lt;- data2 %&gt;% group_by(시도, 구분) %&gt;% summarise(주민등록인구수 = sum(주민등록인구수, na.rm = TRUE)) %&gt;% group_by(시도) %&gt;% mutate(비율 = 주민등록인구수 / sum(주민등록인구수, na.rm = TRUE)) head(sum) . ## # A tibble: 6 × 4 ## # Groups: 시도 [4] ## 시도 구분 주민등록인구수 비율 ## &lt;fct&gt; &lt;fct&gt; &lt;dbl&gt; &lt;dbl&gt; ## 1 서울특별시 구 9386034 1 ## 2 부산광역시 군 178729 0.0543 ## 3 부산광역시 구 3114633 0.946 ## 4 대구광역시 군 285072 0.120 ## 5 대구광역시 구 2089888 0.880 ## 6 인천광역시 군 89382 0.0298 . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%9B%90%ED%98%95%EC%B0%A8%ED%8A%B8%EC%99%80%20%EB%8F%84%EB%84%9B%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A4%80%EB%B9%84%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%9B%90%ED%98%95%EC%B0%A8%ED%8A%B8%EC%99%80%20%EB%8F%84%EB%84%9B%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html#데이터-준비하기"
-  },"141": {
+  },"146": {
     "doc": "원형차트와 도넛차트 그리기",
     "title": "원형차트 그리기",
     "content": "원형차트(Pie chart)는 비율로된 데이터를 시각화하는 데 유용합니다. geom_col과 coord_polar(\"y\") 함수를 조합해 원형차트를 그릴 수 있습니다. geom_col로 데이터를 막대 형태로 시각화한 뒤, coord_polar를 사용하면 직사각형 좌표계를 원형으로 변환할 수 있습니다. 특히, coord_polar(\"y\")로 지정하면 막대의 높이(y)가 각도로 변환되어, 데이터 비율이 원형으로 나타납니다. 원형차트에 텍스트를 표기할 때도 누적막대그래프와 마찬가지로 geom_text에 position = position_stack(vjust = 0.5)로 지정하면 됩니다. 모든 시도에 대해 원형차트를 표현하면 정보가 잘 전달되지 않으므로, 부산광역시, 울산광역시, 경상남도에 대해서만 차트를 그리겠습니다. sum %&gt;% filter(시도 %in% c(\"부산광역시\", \"울산광역시\", \"경상남도\")) %&gt;% ggplot(aes(x = 1, y = 비율, group = 시도, fill = 구분, label = percent(비율, accuracy = .1))) + geom_col(width = 1, linewidth = 0.4, color = \"white\") + geom_text(family = \"kopub\", position = position_stack(vjust = 0.5), size = text.size) + scale_fill_brewer(palette = \"Pastel2\") + coord_polar(\"y\") + facet_wrap(~시도, nrow = 1) + theme_minimal(base_size = theme.size, base_family = \"kopub\") + theme( panel.grid = element_blank(), axis.line = element_blank(), axis.title = element_blank(), axis.text = element_blank(), legend.title = element_blank(), legend.position = \"bottom\", legend.box.background = element_rect(color = \"#959595\", linewidth = 1), legend.key.size = unit(theme.size, \"pt\"), strip.text = element_text(color = \"black\", size = theme.size) ) . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%9B%90%ED%98%95%EC%B0%A8%ED%8A%B8%EC%99%80%20%EB%8F%84%EB%84%9B%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html#%EC%9B%90%ED%98%95%EC%B0%A8%ED%8A%B8-%EA%B7%B8%EB%A6%AC%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%9B%90%ED%98%95%EC%B0%A8%ED%8A%B8%EC%99%80%20%EB%8F%84%EB%84%9B%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html#원형차트-그리기"
-  },"142": {
+  },"147": {
     "doc": "원형차트와 도넛차트 그리기",
     "title": "도넛차트 그리기",
     "content": "도넛차트(Donut chart)는 원형차트와 비슷하지만 가운데를 비워둬서 면적에 길이 속성이 추가된 차트입니다. 가운데 빈 공간에 차트 제목을 추가할 수도 있습니다. geom_col의 x = 2.5로 설정하고 width = 1로 하여 원형 중앙을 비웁니다. geom_text에서 x = 0으로 설정해 시도명을 중앙 빈 공간에 표시합니다. facet_wrap으로 자동 생성되는 시도명 텍스트를 숨기기 위해 theme 함수에 strip.text = element_blank()와 strip.background = element_blank()를 추가합니다. sum %&gt;% filter(시도 %in% c(\"부산광역시\", \"울산광역시\", \"경상남도\")) %&gt;% ggplot(aes(x = 2.5, y = 비율, fill = 구분)) + geom_col(width = 1, linewidth = 0.4, color = \"white\") + geom_text(aes(label = percent(비율, accuracy = .1)), family = \"kopub\", position = position_stack(vjust = 0.5), size = text.size) + geom_text(aes(x = 0, label = 시도), size = text.size, fontface = \"bold\") + scale_fill_brewer(palette = \"Pastel2\") + coord_polar(\"y\") + facet_wrap(~시도, nrow = 1) + theme_minimal(base_size = theme.size, base_family = \"kopub\") + theme( panel.grid = element_blank(), axis.line = element_blank(), axis.title = element_blank(), axis.text = element_blank(), legend.title = element_blank(), legend.position = \"bottom\", legend.box.background = element_rect(color = \"#959595\", linewidth = 1), legend.key.size = unit(theme.size, \"pt\"), strip.text = element_blank(), strip.background = element_blank() ) . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%9B%90%ED%98%95%EC%B0%A8%ED%8A%B8%EC%99%80%20%EB%8F%84%EB%84%9B%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html#%EB%8F%84%EB%84%9B%EC%B0%A8%ED%8A%B8-%EA%B7%B8%EB%A6%AC%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%9B%90%ED%98%95%EC%B0%A8%ED%8A%B8%EC%99%80%20%EB%8F%84%EB%84%9B%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html#도넛차트-그리기"
-  },"143": {
+  },"148": {
     "doc": "원형차트와 도넛차트 그리기",
     "title": "누적막대그래프, 원형차트, 도넛차트의 차이점",
     "content": "비율의 합이 100%일 때 데이터를 시각화하는 방법으로 누적막대그래프, 원형차트, 도넛차트 등이 주로 사용됩니다. 모두 비율 데이터를 표현하는 데 유용하지만, 데이터의 특성과 전달하려는 메시지에 따라 적절히 선택해야 합니다. 누적막대그래프는 데이터를 길이로 표현하여 각 항목의 비율을 직사각형 형태로 누적해서 보여줍니다. 사람들은 각도나 면적보다 길이의 차이를 더 정확히 파악하기 때문에, 비율 데이터를 전달하는 데 가장 효율적인 차트입니다. 누적막대그래프 그리는 법은 누적막대그래프 그리기 글을 참고해 주세요. 원형차트는 데이터를 각도로 변환해 전체가 100%로 구성된 원 형태로 보여줍니다. 전체와 각 항목의 비율을 직관적으로 표현하기 좋아, 데이터를 단순하게 전달하는 데 유용합니다. 다만, 각도를 비교하는 데 어려움이 있어 항목 간 비율 차이를 정확히 전달하기는 어렵습니다. 도넛차트는 원형차트를 변형하여 가운데를 비운 형태입니다. 원형차트의 장점을 유지하면서, 길이 속성을 추가해 항목 간 비율 차이를 더 명확히 표현할 수 있습니다. 또한, 중앙 공간을 활용해 추가 정보를 표시할 수 있어 유용합니다. 항목 수가 많아질수록 모든 차트는 복잡해지기 쉽습니다. 데이터를 단순화하고, 항목 수를 적절히 제한하는 것이 중요합니다. 예를 들어, 이번 글에서는 시, 군, 구라는 세 가지 항목으로만 구성해 시각화했기 때문에, 정보 전달이 효과적이었습니다. 각 차트의 특징을 잘 활용해, 데이터를 가장 효과적으로 전달할 수 있는 방법을 찾아보세요! . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%9B%90%ED%98%95%EC%B0%A8%ED%8A%B8%EC%99%80%20%EB%8F%84%EB%84%9B%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html#%EB%88%84%EC%A0%81%EB%A7%89%EB%8C%80%EA%B7%B8%EB%9E%98%ED%94%84-%EC%9B%90%ED%98%95%EC%B0%A8%ED%8A%B8-%EB%8F%84%EB%84%9B%EC%B0%A8%ED%8A%B8%EC%9D%98-%EC%B0%A8%EC%9D%B4%EC%A0%90",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%9B%90%ED%98%95%EC%B0%A8%ED%8A%B8%EC%99%80%20%EB%8F%84%EB%84%9B%EC%B0%A8%ED%8A%B8%20%EA%B7%B8%EB%A6%AC%EA%B8%B0.html#누적막대그래프-원형차트-도넛차트의-차이점"
-  },"144": {
+  },"149": {
     "doc": "정규표현식을 활용한 문자열 처리",
     "title": "정규표현식을 활용한 문자열 처리",
     "content": " ",
     "url": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D%EC%9D%84%20%ED%99%9C%EC%9A%A9%ED%95%9C%20%EB%AC%B8%EC%9E%90%EC%97%B4%20%EC%B2%98%EB%A6%AC.html",
     
     "relUrl": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D%EC%9D%84%20%ED%99%9C%EC%9A%A9%ED%95%9C%20%EB%AC%B8%EC%9E%90%EC%97%B4%20%EC%B2%98%EB%A6%AC.html"
-  },"145": {
+  },"150": {
     "doc": "정규표현식을 활용한 문자열 처리",
     "title": "정규표현식의 주요 구성 요소",
     "content": "정규표현식(Regular Expression or Regex)은 특정 패턴의 문자열을 찾거나 변경할 때 사용하는 강력한 도구입니다. 이번 포스팅에서는 정규표현식의 주요 구성 요소와 R에서의 활용법을 간결하고 명확하게 정리해보겠습니다. 문자 클래스(Character Class) . 문자 클래스는 특정 문자 집합을 나타낼 때 사용됩니다. 대괄호([]) 안에 문자를 나열하여 문자 집합을 나타낼 수 있습니다. 대괄호에 나열된 문자 중 한 문자와 일치하는지 확인할 때 사용됩니다. | 0부터 9까지 숫자 중 한 문자: [0123456789] | a부터 z까지 소문자 중 한 문자: [abcdefghijklmnopqrstuvwxyz] | 영어 소문자 모음 중 한 문자: [aeiou] | . 순서가 있는 문자의 경우, 범위를 나타내는 - 기호로 축약하여 나타낼 수 있습니다. 기호 그 자체인 -를 표현하고 싶다면, 대괄호 안에서 문자들 사이가 아닌 처음이나 마지막 위치에 -를 작성하면 됩니다. | 0부터 9까지 숫자 중 한 문자: [0-9] | a부터 z까지 소문자 중 한 문자: [a-z] | 알파벳 중 한 문자: [a-zA-Z] | 한글 중 한 문자: [가-힣] | . 대괄호 안 가장 처음에 ^ 기호로 부정을 표현할 수 있습니다. | 숫자가 아닌 한 문자: [^0-9] | 숫자, 알파벳, 한글이 아닌 한 문자: [^0-9a-zA-Z] | . 메타문자(Metacharacter) . 문자 클래스로 표기할 경우 길이가 길어지는 경우 메타문자를 사용하기도 합니다. 일반적으로, ‘백슬래쉬 + 알파벳’ 형태로 생겼습니다. ‘백슬래쉬 + 대문자’는 ’백슬래쉬 + 소문자’의 반대 의미로 쓰이므로, ’백슬래쉬 + 소문자’ 의미만 알고 있으면 됩니다. | 메타문자 | 의미 | 문자 클래스로 표현할 경우 | . | . | 줄바꿈 문자(\\n)를 제외한 모든 문자 | [^\\n] | . | \\d | 숫자(0-9) | [0-9] | . | \\D | 숫자가 아닌 문자 | [^0-9] | . | \\w | 단어 문자(word character), 유니코드에서 글자(letters), 숫자(digits), 언더스코어(underscore)를 의미함 | [a-zA-Z가-힣0-9_] | . | \\W | 단어 문자가 아닌 문자 | [^a-zA-Z가-힣0-9_] | . | \\s | 공백 문자(white space), 스페이스 바(``), 줄바꿈(\\n), 수평탭 간격 띄우기(\\t), 수직탭 간격 띄우기(\\v), 프린트 출력 용지 한 페이지 넘김(\\f), 동일한 줄 맨 앞으로 커서 이동(\\r) 등을 의미함 | [\\n\\t\\v\\f\\r ] | . | \\S | 공백 문자가 아닌 문자 | [^\\n\\t\\v\\f\\r ] | . 수량자(Quantifier) . 수량자는 특정 문자의 반복 횟수를 지정하는 데 쓰입니다. 다만, 문자 클래스 안에 수량자를 적으면 문자의 반복 정도가 아니라 기호 그 자체를 나타낸다는 점을 주의해 주세요. | 수량자 | 의미 | . | ? | 0 또는 1회만 반복 | . | + | 1회 이상 반복 | . | * | 0회 이상 반복 | . | {n} | n회 반복 | . | {n,} | n회 이상 반복 | . | {n, m} | n~m회 반복 | . 앵커(Anchor) . 앵커는 문자의 특정 위치를 나타내는 기호입니다. 앵커를 사용하면, 문자열의 시작이나 끝과 매칭되는 패턴을 정의할 수 있습니다. | 앵커 | 의미 | . | ^ | 행의 처음(문자 클래스 안에서 부정을 나타내는 ^와 다른 의미) | . | $ | 행의 끝 | . | \\A | 텍스트 처음 | . | \\Z | 텍스트 끝 | . | \\b | 단어 경계 | . 그룹(Group) . 그룹은 ()로 표현하며, 여러 문자를 하나의 단위로 묶는 데 사용됩니다. 연산의 우선순위를 지정하거나 역참조하기 위한 참조 그룹을 정의할 때 쓰입니다. 전후방탐색(Look around) . 전후방탐색에서 괄호 안의 문자는 소비되지 않습니다. 즉, 괄호 앞이나 뒤에 있는 문자만 탐색합니다. ‘전방탐색’은 괄호 앞의 문자를 탐색하고, ’후방탐색’은 괄호 뒤의 문자를 탐색합니다. 괄호 안의 문자가 있어야 하는 조건이면 ’긍정형’, 없어야 하는 조건이면 ’부정형’이라고 합니다. 기호가 헷갈릴 수 있는데, 기본 기호는 (?)이고, 긍정형/부정형, 전방탐색/후방탐색에 따라 기호가 추가됩니다. 긍정형은 =, 부정형은 ! 기호가 사용되고, 후방탐색의 경우 ?와 =/! 사이에 &lt; 기호가 추가됩니다. | 전후방탐색 | 의미 | . | a(?=b) | 긍정형 전방탐색: a 다음 b가 나오는 a | . | a(?!b) | 부정형 전방탐색: a 다음 b가 나오지 않는 a | . | (?&lt;=b)a | 긍정형 후방탐색: b 다음 a가 나오는 a | . | (?&lt;!b)a | 부정형 후방탐색: b 다음 a가 나오지 않는 a | . 백슬래쉬 주의사항 . 정규표현식에서는 괄호((, )), 중괄호({, }), 대괄호([, ]), 마침표(.), 별표(*), 덧셈기호(+), 백슬래쉬(\\) 등이 특별한 의미로 사용됩니다. 특별한 의미로 사용되는 문자를 문자 그 자체를 의미하는 기호로 나타내기 위해서는 앞에 백슬래쉬(\\)를 붙여줘야 합니다. 그런데 \\\\(, \\\\{, \\\\.처럼 R에서는 백슬래쉬를 두 번 작성해야 합니다. ",
     "url": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D%EC%9D%84%20%ED%99%9C%EC%9A%A9%ED%95%9C%20%EB%AC%B8%EC%9E%90%EC%97%B4%20%EC%B2%98%EB%A6%AC.html#%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D%EC%9D%98-%EC%A3%BC%EC%9A%94-%EA%B5%AC%EC%84%B1-%EC%9A%94%EC%86%8C",
     
     "relUrl": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D%EC%9D%84%20%ED%99%9C%EC%9A%A9%ED%95%9C%20%EB%AC%B8%EC%9E%90%EC%97%B4%20%EC%B2%98%EB%A6%AC.html#정규표현식의-주요-구성-요소"
-  },"146": {
+  },"151": {
     "doc": "정규표현식을 활용한 문자열 처리",
     "title": "R에서의 정규표현식 활용",
     "content": "stringr 패키지 . R에서 제공하는 기본 함수도 있지만 stringr 패키지를 사용하면 더 쉽게 문자열을 처리할 수 있습니다. stringr 패키지는 tidyverse에도 포함되어 있어서 tidyverse만 설치해도 됩니다. stringr 패키지가 제공하는 함수에 정규표현식을 입력하여 문자열을 처리할 수 있습니다. 패턴 일치 여부, 패턴 위치, 패턴 일치 수, 패턴과 일치하는 문자열 일부 추출, 패턴을 포함하는 문자열 추출 등 다양한 작업이 가능합니다. 자세한 내용은 아래 커닝 페이퍼(Cheat sheet)을 참고해 주세요. | String manipulation with stringr::CHEAT SHEET | . 경험 상 아래 5개 함수를 주로 사용하게 되는 것 같습니다. 패턴과 일치하는 문자열이 있는지 ’확인(detect)’하거나, 패턴과 일치하는 문자열을 ’추출(extract)’하거나, 다른 문자열로 ’대체(replace)’하는 함수가 활용도가 높습니다. 함수에서 pattern 인자에 문자열 패턴을 정규표현식으로 작성해 주면 됩니다. | 함수 | 설명 | . | str_detect(string, pattern) | 각 문자열에서 패턴과 일치하는 문자열이 있는지를 탐색함 | . | str_extract(string, pattern) | 각 문자열에서 패턴과 첫 번째로 일치하는 문자열을 추출함 | . | str_extract_all(string, pattern) | 각 문자열에서 패턴과 일치하는 모든 문자열을 추출함 | . | str_replace(string, pattern, replacement) | 각 문자열에서 패턴과 첫 번째로 일치하는 문자열을 다른 문자열로 바꿈 | . | str_replace_all(string, pattern, replacement) | 각 문자열에서 패턴과 일치하는 모든 문자열을 다른 문자열로 바꿈 | . 문자열 유무 감지 . str_detect() 함수는 문자열에서 특정 패턴이 존재하는지 여부를 불리언(Boolean) 값으로 변환하는 함수입니다. # 예시 문자 text &lt;- c(\"1991년\", \"2000년\", \"2010년\", \"2012년\") # \"2000년\" 이후에 해당하는지 확인 str_detect(text, \"^20\") . ## [1] FALSE TRUE TRUE TRUE . 문자열 추출 . str_extract() 함수는 문자열에서 특정 패턴과 첫 번째로 일치하는 문자열을 추출하는 데 사용됩니다. # 예시 문자 text &lt;- c(\"이메일 주소는 alice@example.com입니다.\", \"john.doe@gmail.com도 사용 중이에요.\", \"다양한 주소들: support@company.com, info@website.or.kr\") # 이메일주소 추출 str_extract(text, \"[a-zA-Z_.]+@\\\\w+\\\\.[a-zA-Z]+\") . ## [1] \"alice@example.com\" \"john.doe@gmail.com\" \"support@company.com\" . 문자열 대체 . str_replace() 함수는 문자열에서 특정 패턴과 첫 번째로 일치하는 문자열을 다른 문자열로 대체하는 데 사용됩니다. # 예시 문자 text &lt;- c(\"I have an apple.\", \"She brought apples.\", \"The apple tree is tall.\") # apple을 orange로 대체 str_replace(text, \"apple\", \"orange\") . ## [1] \"I have an orange.\" \"She brought oranges.\" ## [3] \"The orange tree is tall.\" . 이와 같이 정규표현식을 사용하면 복잡한 문자열 처리를 간단하게 수행할 수 있습니다. stringr 패키지와 함께 정규표현식을 활용해 다양한 작업을 시도해 보세요! . ",
     "url": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D%EC%9D%84%20%ED%99%9C%EC%9A%A9%ED%95%9C%20%EB%AC%B8%EC%9E%90%EC%97%B4%20%EC%B2%98%EB%A6%AC.html#r%EC%97%90%EC%84%9C%EC%9D%98-%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D-%ED%99%9C%EC%9A%A9",
     
     "relUrl": "/docs/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B0%80%EA%B3%B5%20%ED%8C%81/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D%EC%9D%84%20%ED%99%9C%EC%9A%A9%ED%95%9C%20%EB%AC%B8%EC%9E%90%EC%97%B4%20%EC%B2%98%EB%A6%AC.html#r에서의-정규표현식-활용"
-  },"147": {
+  },"152": {
     "doc": "주소에서 좌표값 얻기",
     "title": "주소에서 좌표값 얻기",
     "content": " ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A3%BC%EC%86%8C%EC%97%90%EC%84%9C%20%EC%A2%8C%ED%91%9C%EA%B0%92%20%EC%96%BB%EA%B8%B0.html",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A3%BC%EC%86%8C%EC%97%90%EC%84%9C%20%EC%A2%8C%ED%91%9C%EA%B0%92%20%EC%96%BB%EA%B8%B0.html"
-  },"148": {
+  },"153": {
     "doc": "주소에서 좌표값 얻기",
     "title": "개요",
     "content": "주소 데이터를 기반으로 지도에 위치를 표기하는 방법을 알아보겠습니다. 이번 글에서는 서울에 있는 고등교육기관 주소 데이터를 활용해 지오코딩(주소를 좌표로 변환)을 수행하고, 이를 지도에 시각화하는 과정을 단계별로 설명합니다. ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A3%BC%EC%86%8C%EC%97%90%EC%84%9C%20%EC%A2%8C%ED%91%9C%EA%B0%92%20%EC%96%BB%EA%B8%B0.html#%EA%B0%9C%EC%9A%94",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A3%BC%EC%86%8C%EC%97%90%EC%84%9C%20%EC%A2%8C%ED%91%9C%EA%B0%92%20%EC%96%BB%EA%B8%B0.html#개요"
-  },"149": {
+  },"154": {
     "doc": "주소에서 좌표값 얻기",
     "title": "데이터 준비하기",
     "content": "먼저, 교육통계서비스의 알림·서비스 &gt; 자료실에서 고등교육기관 주소록 데이터를 다운로드합니다. 이 데이터에는 학교명과 주소 정보가 포함되어 있습니다. 지난번 생성한 수도권 지도를 불러오고, 고등교육기관 주소록 데이터를 읽어옵니다. # 패키지 로드 library(tidyverse) library(sf) library(ggplot2) library(showtext) library(ggrepel) library(readxl) library(writexl) # 글꼴 설정 font_add(\"kopub\", \"C:/Users/.../AppData/Local/Microsoft/Windows/Fonts/KoPub Dotum Medium.ttf\") showtext_auto() showtext_opts(dpi=300) theme.size = 8 text.size = theme.size / .pt # 데이터 불러오기 sdg &lt;- st_read(\"아웃풋/수도권 행정구 병합 지도.shp\") %&gt;% separate(col = SGG_NM, into = c(\"SD_NM\", \"SGG_NM\"), sep = \" \", fill = \"right\") . ## Reading layer `수도권 행정구 병합 지도' from data source ## `...\\아웃풋\\수도권 행정구 병합 지도.shp' ## using driver `ESRI Shapefile' ## Simple feature collection with 66 features and 2 fields ## Geometry type: MULTIPOLYGON ## Dimension: XY ## Bounding box: xmin: -10044.95 ymin: 477264 xmax: 274945.2 ymax: 631207.8 ## Projected CRS: Korea_2000_Korea_Central_Belt_2010 . # 고등교육기관 주소록 데이터 불러오기 univ &lt;- read_xlsx(\"데이터/고등교육기관 주소록(2024.4.1.).xlsx\", skip = 5) # 데이터 확인하기 head(univ) . ## # A tibble: 6 × 15 ## 연도 학교종류 시도 행정구 학교명 `학교명(영문)` KEDI학교코드 본분교 학교상태 ## &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; ## 1 2024 대학교 강원 강원 … 국립… Gangneung-Won… 51001000 본교(… 학교명… ## 2 2024 대학교 강원 강원 … 국립… Gangneung-Won… 51001000 본교(… 학교명… ## 3 2024 일반대… 강원 강원 … 국립… Gangneung-Won… 51001600 본교(… 학교명… ## 4 2024 일반대… 강원 강원 … 국립… Gangneung-Won… 51001600 본교(… 학교명… ## 5 2024 특수대… 강원 강원 … 국립… Gangneung Won… 51001607 본교(… 학교명… ## 6 2024 특수대… 강원 강원 … 국립… Gangneung Won… 51001607 본교(… 학교명… ## # ℹ 6 more variables: 설립 &lt;chr&gt;, 우편번호 &lt;chr&gt;, 주소 &lt;chr&gt;, 전화번호 &lt;chr&gt;, ## # 팩스번호 &lt;chr&gt;, 홈페이지 &lt;chr&gt; . 서울만 시각화할 예정이므로, 서울 지역에 해당하는 데이터만 추출합니다. 추출한 데이터를 엑셀 파일로 저장해 다음 단계에서 활용합니다. # 서울 지도만 추출하기 sdg_seoul &lt;- sdg %&gt;% filter(SD_NM == \"서울특별시\") # 서울 고등교육기관 데이터 추출하기 univ_seoul &lt;- univ %&gt;% filter(시도 == \"서울\") # 서울 고등교육기관 데이터 저장하기 write_xlsx(univ_seoul, \"아웃풋/서울 고등교육기관 주소록.xlsx\") . ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A3%BC%EC%86%8C%EC%97%90%EC%84%9C%20%EC%A2%8C%ED%91%9C%EA%B0%92%20%EC%96%BB%EA%B8%B0.html#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A4%80%EB%B9%84%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A3%BC%EC%86%8C%EC%97%90%EC%84%9C%20%EC%A2%8C%ED%91%9C%EA%B0%92%20%EC%96%BB%EA%B8%B0.html#데이터-준비하기"
-  },"150": {
+  },"155": {
     "doc": "주소에서 좌표값 얻기",
     "title": "지오코딩으로 주소에서 좌표값 찾기",
     "content": "주소를 위도(latitude)와 경도(longitude)로 변환하는 과정을 지오코딩(Geocoding)이라고 합니다. R에서도 지오코딩을 수행할 수 있지만, 구글 맵 API 키가 필요하고 유료로 사용해야 하는 제약이 있습니다. 대신, 이번에는 무료로 사용할 수 있는 지오서비스 웹을 활용합니다. 지오서비스 웹은 아래 순서로 사용할 수 있습니다. | 로그인 후 아카이브에 ’서울 고등교육기관 주소록.xlsx` 파일을 업로드합니다. | 상단 메뉴에서 변환 &gt; 지오코딩 &gt; 주소를 좌표로 변환을 클릭합니다. | 업로드한 파일을 선택하고, 주소 필드에 주소 열을 지정합니다. | 변환이 완료된 파일을 다운로드합니다. | . 변환된 데이터를 R로 불러옵니다. # 지오코딩된 데이터 불러오기 univ &lt;- st_read(\"데이터/서울 고등교육기관 지오코딩/a.shp\") . ## Reading layer `a' from data source ## `...\\데이터\\서울 고등교육기관 지오코딩\\a.shp' ## using driver `ESRI Shapefile' ## Simple feature collection with 565 features and 17 fields ## Geometry type: POINT ## Dimension: XY ## Bounding box: xmin: 126.8145 ymin: 37.46644 xmax: 127.1327 ymax: 37.65177 ## Geodetic CRS: WGS 84 . # 데이터 확인하기 head(univ) . ## Simple feature collection with 6 features and 17 fields ## Geometry type: POINT ## Dimension: XY ## Bounding box: xmin: 126.9524 ymin: 37.4674 xmax: 127.0781 ymax: 37.63234 ## Geodetic CRS: WGS 84 ## field1 field2 field3 field4 field5 ## 1 2024 대학교 서울 서울 종로구 서울대학교 ## 2 2024 일반대학원 서울 서울 종로구 서울대학교 일반대학원 ## 3 2024 대학교 서울 서울 관악구 서울대학교 ## 4 2024 전문대학원 서울 서울 종로구 서울대학교 치의학대학원 ## 5 2024 일반대학원 서울 서울 관악구 서울대학교 대학원 ## 6 2024 일반대학원 서울 서울 노원구 서울과학기술대학교 일반대학원 ## field6 field7 field8 field9 ## 1 Seoul National University 51012000 본교(제2캠퍼스) 기존 ## 2 Graduate School of Seoul National University 51012600 본교(제2캠퍼스) 기존 ## 3 Seoul National University 51012000 본교(제1캠퍼스) 기존 ## 4 Seoul National University School of Dentistry 51012B54 본교(제2캠퍼스) 기존 ## 5 Graduate School of Seoul National University 51012600 본교(제1캠퍼스) 기존 ## 6 Graduate School 51027600 본교(제1캠퍼스) 기존 ## field10 field11 field12 ## 1 국립대법인 3080 서울 종로구 대학로 103 ## 2 국립대법인 3080 서울 종로구 대학로 103 ## 3 국립대법인 8826 서울특별시 관악구 관악로 1 (신림동, 서울대학교) ## 4 국립대법인 3080 서울 종로구 대학로 103 ## 5 국립대법인 8826 서울특별시 관악구 관악로 1 (신림동, 서울대학교) ## 6 국립 1811 서울특별시 노원구 공릉로 232 (공릉동, 서울과학기술대학교) ## field13 field14 ## 1 02-880-5114 02-885-5272 ## 2 02-880-5114 02-885-5272 ## 3 02-880-5114 02-885-5272 ## 4 02-740-8611 02-745-1906 ## 5 02-880-5114 02-885-5272 ## 6 02-970-6114 02-970-6800 ## field15 X_GC_TYPE ## 1 www.snu.ac.kr 정 ## 2 https://www.snu.ac.kr/academics/graduate/graduate_schools 정 ## 3 www.snu.ac.kr 정 ## 4 dentistry.snu.ac.kr 정 ## 5 https://www.snu.ac.kr/academics/graduate/graduate_schools 정 ## 6 www.seoultech.ac.kr 정 ## X_CLEANADDR geometry ## 1 서울특별시 종로구 대학로 103 (연건동) POINT (126.9996 37.58097) ## 2 서울특별시 종로구 대학로 103 (연건동) POINT (126.9996 37.58097) ## 3 서울특별시 관악구 관악로 1 (신림동) POINT (126.9524 37.4674) ## 4 서울특별시 종로구 대학로 103 (연건동) POINT (126.9996 37.58097) ## 5 서울특별시 관악구 관악로 1 (신림동) POINT (126.9524 37.4674) ## 6 서울특별시 노원구 공릉로 232 (공릉동) POINT (127.0781 37.63234) . 데이터는 총 565개로 지도에 표기하기에는 많아서 대학교만 추출하고 중복된 학교명을 정리하겠습니다. 이렇게 정리하면, 총 41개 학교가 남습니다. # 대학교 데이터 추출 및 정리하기 univ_tmp &lt;- univ %&gt;% filter(field2 == \"대학교\") %&gt;% select(field5, geometry) %&gt;% rename(학교명 = field5) %&gt;% group_by(학교명) %&gt;% filter(row_number() == 1) # 데이터 확인하기 head(univ_tmp) . ## Simple feature collection with 6 features and 1 field ## Geometry type: POINT ## Dimension: XY ## Bounding box: xmin: 126.9996 ymin: 37.50174 xmax: 127.1327 ymax: 37.63234 ## Geodetic CRS: WGS 84 ## # A tibble: 6 × 2 ## # Groups: 학교명 [6] ## 학교명 geometry ## &lt;chr&gt; &lt;POINT [°]&gt; ## 1 서울대학교 (126.9996 37.58097) ## 2 한국체육대학교 (127.1327 37.52127) ## 3 가톨릭대학교 (127.0047 37.50174) ## 4 건국대학교 (127.0788 37.54164) ## 5 서울과학기술대학교 (127.0781 37.63234) ## 6 서울시립대학교 (127.0556 37.58431) . ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A3%BC%EC%86%8C%EC%97%90%EC%84%9C%20%EC%A2%8C%ED%91%9C%EA%B0%92%20%EC%96%BB%EA%B8%B0.html#%EC%A7%80%EC%98%A4%EC%BD%94%EB%94%A9%EC%9C%BC%EB%A1%9C-%EC%A3%BC%EC%86%8C%EC%97%90%EC%84%9C-%EC%A2%8C%ED%91%9C%EA%B0%92-%EC%B0%BE%EA%B8%B0",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A3%BC%EC%86%8C%EC%97%90%EC%84%9C%20%EC%A2%8C%ED%91%9C%EA%B0%92%20%EC%96%BB%EA%B8%B0.html#지오코딩으로-주소에서-좌표값-찾기"
-  },"151": {
+  },"156": {
     "doc": "주소에서 좌표값 얻기",
     "title": "지도에 맵핑하기",
     "content": "서울 지도와 지오코딩된 데이터의 좌표계가 다를 경우, 데이터를 지도와 동일한 좌표계로 변환해야 합니다. 서울 지도 좌표계는 ‘EPSG: 9001’, 고등교육기관 데이터 좌표계가 ’EPSG: 4326’으로 되어 있어서 고등교육기관 데이터 좌표계를 서울 지도 좌표계로 변환하겠습니다. # 좌표계 변환하기 univ_final &lt;- univ_tmp %&gt;% st_transform(crs = st_crs(sdg_seoul)) . geom_sf로 먼저 서울 지도를 그리고, 두 번째 geom_sf로 지도 위에 고등교육기관 위치를 점으로 표시합니다. shape = 21로 설정하면 점의 외곽선(color)과 내부 색(fill)을 분리해서 설정할 수 있습니다. 서울 지도에 41개 위치를 표기하면 텍스트가 겹칠 가능성이 있기 때문에, geom_text_repel 함수를 이용해 텍스트를 표기하겠습니다. # 지도 작성하기 ggplot() + geom_sf(data = sdg_seoul, color = \"gray40\", fill = \"#eaeaea\", linewidth = 0.5) + geom_sf(data = univ_final, shape = 21, size = 4, stroke = 0.1, color = \"white\", fill = \"#00D353\") + geom_text_repel(data = univ_final, aes(label = 학교명, geometry = geometry), stat = \"sf_coordinates\", family = \"kopub\", size = text.size, force = 0.001, force_pull = 1000, color = \"white\", bg.color = \"black\", bg.r = 0.1, segment.color = \"gray\") + theme_void() . 이렇게 해도 29개 라벨이 겹치는 문제가 발생합니다. 학교명에서 ’대학교’를 제거해 텍스트 길이를 줄이고, geom_text_repel에서 max.overlaps = Inf으로 지정해 텍스트가 모두 표시되도록 설정합니다. # 학교명에서 대학교 제거하기 univ_cnt &lt;- univ_final %&gt;% mutate(학교명 = sub(\"대학교\", \"\", 학교명)) # 지도 작성하기 ggplot() + geom_sf(data = sdg_seoul, color = \"gray40\", fill = \"#eaeaea\", linewidth = 0.5) + geom_sf(data = univ_final, shape = 21, size = 4, stroke = 0.1, color = \"white\", fill = \"#00D353\") + geom_text_repel(data = univ_cnt, aes(label = 학교명, geometry = geometry), stat = \"sf_coordinates\", family = \"kopub\", size = text.size, force = 0.001, force_pull = 1000, color = \"white\", bg.color = \"black\", bg.r = 0.1, segment.color = \"gray\", max.overlaps = Inf) + theme_void() . 이번 글에서는 주소 데이터를 활용해 지오코딩을 수행하고, 얻은 좌표값을 지도에 표시하는 과정을 살펴보았습니다. 무료 지오코딩 서비스를 활용해 데이터를 변환하고, 이를 R에서 정리한 뒤 맵핑하는 전체 과정을 따라해 보세요. 지오코딩은 위치 기반 데이터 시각화에 필수적인 기술로, 매우 유용하게 쓰일 수 있습니다. ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A3%BC%EC%86%8C%EC%97%90%EC%84%9C%20%EC%A2%8C%ED%91%9C%EA%B0%92%20%EC%96%BB%EA%B8%B0.html#%EC%A7%80%EB%8F%84%EC%97%90-%EB%A7%B5%ED%95%91%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A3%BC%EC%86%8C%EC%97%90%EC%84%9C%20%EC%A2%8C%ED%91%9C%EA%B0%92%20%EC%96%BB%EA%B8%B0.html#지도에-맵핑하기"
-  },"152": {
+  },"157": {
     "doc": "지도 팁",
     "title": "지도 팁",
     "content": "공간 데이터를 시각화하고 분석하는 데 유용한 R 팁과 기술을 다룹니다. sf와 ggplot2를 활용해 지도를 만들고, 공간 데이터를 시각화하며, 지역 정보를 효과적으로 표현하는 방법을 정리합니다. ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81",
     
     "relUrl": "/docs/지도 팁"
-  },"153": {
+  },"158": {
     "doc": "지도 확대하기",
     "title": "지도 확대하기",
     "content": " ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EB%8F%84%20%ED%99%95%EB%8C%80%ED%95%98%EA%B8%B0.html",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EB%8F%84%20%ED%99%95%EB%8C%80%ED%95%98%EA%B8%B0.html"
-  },"154": {
+  },"159": {
     "doc": "지도 확대하기",
     "title": "지도 확대는 언제 필요할까요?",
     "content": "지도를 그리다 보면 넓은 지역을 보여주면서도 특정 지역에 초점을 맞추고 싶을 때나, 행정구역 내에서도 특정 지역만 확대해서 강조하고 싶을 때가 있습니다. 이번에는 서울을 중심으로 지도를 확대하거나, 광화문처럼 특정 위치에 초점을 맞춘 지도를 만드는 방법을 알려드리겠습니다. 방법은 두 가지입니다. | 지도의 중심으로 설정할 폴리곤에서 좌표를 추출하는 방법 | 특정 지역의 좌표를 직접 입력하는 방법 | . ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EB%8F%84%20%ED%99%95%EB%8C%80%ED%95%98%EA%B8%B0.html#%EC%A7%80%EB%8F%84-%ED%99%95%EB%8C%80%EB%8A%94-%EC%96%B8%EC%A0%9C-%ED%95%84%EC%9A%94%ED%95%A0%EA%B9%8C%EC%9A%94",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EB%8F%84%20%ED%99%95%EB%8C%80%ED%95%98%EA%B8%B0.html#지도-확대는-언제-필요할까요"
-  },"155": {
+  },"160": {
     "doc": "지도 확대하기",
     "title": "폴리곤에서 경계 좌표를 추출해 확대하기",
     "content": "지난 ‘녹지, 수계, 도로 추가하기’ 포스팅에서 만든 수도권 지도를 활용하겠습니다. 먼저, 수도권 지도에서 서울 경계값을 추출합니다. st_bbox를 사용하면 서울의 경계 좌표(xmin, xmax, ymin, ymax)를 손쉽게 가져올 수 있습니다. # 서울 경계 좌표 구하기 coords_seoul &lt;- sgg %&gt;% filter(grepl(\"서울특별시\", SGG_NM)) %&gt;% st_bbox() coords_seoul . ## xmin ymin xmax ymax ## 179191.4 536562.8 216242.3 566863.5 . 수도권 지도를 반복해서 사용할 예정이라, base_map이라는 변수에 저장해두겠습니다. 서울의 경계 좌표(coords_seoul)를 coord_sf에 입력해, 서울을 확대한 지도를 그릴 수 있습니다. # 기본 지도 정의 base_map &lt;- ggplot() + geom_sf(data = sgg, colour=NA, fill=\"#eaeaea\") + # 시군구 영역 geom_sf(data = green, colour=NA, fill=\"#A0D097\") + # 녹지 geom_sf(data = mt, colour=NA, fill=\"#A0D097\") + # 산지 geom_sf(data = water, colour=NA, fill=\"#A5D1F2\") + # 수계 geom_sf(data = road, colour=NA, fill=\"white\", linewidth=0.1) + # 도로 geom_sf(data = sgg, colour=\"white\", fill=NA, linewidth=1.3) + # 시군구 경계 geom_sf(data = sgg, colour=\"gray40\", fill=NA, linewidth=0.5) # 시군구 경계 # 서울 중심으로 확대된 지도 그리기 base_map + coord_sf(xlim = coords_seoul[c(\"xmin\", \"xmax\")], ylim = coords_seoul[c(\"ymin\", \"ymax\")]) + theme_void() . ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EB%8F%84%20%ED%99%95%EB%8C%80%ED%95%98%EA%B8%B0.html#%ED%8F%B4%EB%A6%AC%EA%B3%A4%EC%97%90%EC%84%9C-%EA%B2%BD%EA%B3%84-%EC%A2%8C%ED%91%9C%EB%A5%BC-%EC%B6%94%EC%B6%9C%ED%95%B4-%ED%99%95%EB%8C%80%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EB%8F%84%20%ED%99%95%EB%8C%80%ED%95%98%EA%B8%B0.html#폴리곤에서-경계-좌표를-추출해-확대하기"
-  },"156": {
+  },"161": {
     "doc": "지도 확대하기",
     "title": "경계에 여유를 두고 싶다면?",
     "content": "서울 경계에 딱 맞춘 지도는 답답해 보일 수 있습니다. 이럴 땐 st_buffer를 사용해서 여백을 추가할 수 있습니다. 서울 경계선을 기준으로 3km의 버퍼를 추가해 조금 더 여유 있는 지도를 만들어보겠습니다. # 3km 버퍼를 둔 경계 좌표 구하기 buffered_coords_seoul &lt;- sgg %&gt;% filter(grepl(\"서울특별시\", SGG_NM)) %&gt;% st_buffer(dist = 3000) %&gt;% # 3km 버퍼 st_bbox() # 버퍼를 적용한 확대 지도 그리기 base_map + coord_sf(xlim = buffered_coords_seoul[c(\"xmin\", \"xmax\")], ylim = buffered_coords_seoul[c(\"ymin\", \"ymax\")]) + theme_void() . ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EB%8F%84%20%ED%99%95%EB%8C%80%ED%95%98%EA%B8%B0.html#%EA%B2%BD%EA%B3%84%EC%97%90-%EC%97%AC%EC%9C%A0%EB%A5%BC-%EB%91%90%EA%B3%A0-%EC%8B%B6%EB%8B%A4%EB%A9%B4",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EB%8F%84%20%ED%99%95%EB%8C%80%ED%95%98%EA%B8%B0.html#경계에-여유를-두고-싶다면"
-  },"157": {
+  },"162": {
     "doc": "지도 확대하기",
     "title": "직접 좌표를 입력해 확대하기",
     "content": "서울에서도 특정 지역, 예를 들어 광화문 인근 지역을 지도로 그리고 싶다면, Google 지도에서 좌표를 직접 가져와야 합니다. Google 지도에서 원하는 지점을 두 번 클릭하면 경도와 위도를 확인할 수 있습니다. Google 지도에서 얻은 좌표는 WGS 1984(EPSG:4326) 좌표계를 사용하기 때문에, 이를 GRS80(EPSG:5186)으로 변환해야 합니다. st_multipoint를 사용해서 영역의 네 꼭짓점을 정의하고, 변환한 좌표를 coord_sf에 입력하면 완성입니다! . # 광화문 영역 좌표 정의 및 변환 x &lt;- c(126.951940, 127.000950) y &lt;- c(37.566511, 37.586238) pts &lt;- st_multipoint(matrix(c(x[c(1, 2, 2, 1)], y[c(1, 1, 2, 2)]), ncol = 2)) coords_ghm &lt;- st_sfc(pts, crs = 4326) %&gt;% st_transform(crs = 5186) %&gt;% st_bbox() # 광화문 인근 지역 지도 그리기 base_map + coord_sf(xlim = coords_ghm[c(\"xmin\", \"xmax\")], ylim = coords_ghm[c(\"ymin\", \"ymax\")]) + theme_void() . ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EB%8F%84%20%ED%99%95%EB%8C%80%ED%95%98%EA%B8%B0.html#%EC%A7%81%EC%A0%91-%EC%A2%8C%ED%91%9C%EB%A5%BC-%EC%9E%85%EB%A0%A5%ED%95%B4-%ED%99%95%EB%8C%80%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EB%8F%84%20%ED%99%95%EB%8C%80%ED%95%98%EA%B8%B0.html#직접-좌표를-입력해-확대하기"
-  },"158": {
+  },"163": {
     "doc": "지역명 겹치지 않게 배치하기",
     "title": "지역명 겹치지 않게 배치하기",
     "content": " ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EC%97%AD%EB%AA%85%20%EA%B2%B9%EC%B9%98%EC%A7%80%20%EC%95%8A%EA%B2%8C%20%EB%B0%B0%EC%B9%98%ED%95%98%EA%B8%B0.html",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EC%97%AD%EB%AA%85%20%EA%B2%B9%EC%B9%98%EC%A7%80%20%EC%95%8A%EA%B2%8C%20%EB%B0%B0%EC%B9%98%ED%95%98%EA%B8%B0.html"
-  },"159": {
+  },"164": {
     "doc": "지역명 겹치지 않게 배치하기",
     "title": "개요",
     "content": "지난번 지역명 표기하기 글에서 수도권 지도를 그리고 시군구명을 표기했습니다. 폴리곤 크기가 작은 지역들이 인접해 있는 경우, 아래 그림처럼 지역명이 서로 겹치는 문제가 발생합니다. 이번 글에서는 이러한 텍스트 중첩 문제를 해결하기 위한 두 가지 주요 방법을 소개합니다. 하나는 geom_text_repel 함수를 사용해 텍스트를 자동으로 분산 배치하는 방법이고, 다른 하나는 특정 기준에 따라 일부 지역명을 생략하여 지도를 간소화하는 방법입니다. # 패키지 로드 library(tidyverse) library(sf) library(ggplot2) library(showtext) # 데이터 불러오기 sdg &lt;- st_read(\"아웃풋/수도권 행정구 병합 지도.shp\") %&gt;% separate(col = SGG_NM, into = c(\"SD_NM\", \"SGG_NM\"), sep = \" \", fill = \"right\") . ## Reading layer `수도권 행정구 병합 지도' from data source ## `...\\아웃풋\\수도권 행정구 병합 지도.shp' ## using driver `ESRI Shapefile' ## Simple feature collection with 66 features and 2 fields ## Geometry type: MULTIPOLYGON ## Dimension: XY ## Bounding box: xmin: -10044.95 ymin: 477264 xmax: 274945.2 ymax: 631207.8 ## Projected CRS: Korea_2000_Korea_Central_Belt_2010 . # 글꼴 설정 font_add(\"kopub\", \"C:/Users/.../AppData/Local/Microsoft/Windows/Fonts/KoPub Dotum Medium.ttf\") showtext_auto() showtext_opts(dpi=300) theme.size = 12 text.size = theme.size / .pt # 지도 작성 ggplot(data = sdg) + geom_sf(colour = \"gray40\", fill = \"#eaeaea\", linewidth = 0.5) + geom_sf_text(aes(label = SGG_NM), family = \"kopub\", size = text.size) + theme_void() . ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EC%97%AD%EB%AA%85%20%EA%B2%B9%EC%B9%98%EC%A7%80%20%EC%95%8A%EA%B2%8C%20%EB%B0%B0%EC%B9%98%ED%95%98%EA%B8%B0.html#%EA%B0%9C%EC%9A%94",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EC%97%AD%EB%AA%85%20%EA%B2%B9%EC%B9%98%EC%A7%80%20%EC%95%8A%EA%B2%8C%20%EB%B0%B0%EC%B9%98%ED%95%98%EA%B8%B0.html#개요"
-  },"160": {
+  },"165": {
     "doc": "지역명 겹치지 않게 배치하기",
     "title": "geom_text_repel 함수로 지역명 분산 배치하기",
     "content": "첫 번째 방법은 ggrepel 패키지의 geom_text_repel 함수를 사용하는 것입니다. 이 함수는 텍스트가 서로 겹치지 않도록 간격을 자동으로 조정하여 분산 배치합니다. sf 객체에 사용하려면 stat = \"sf_coordinates\"를 지정해야 합니다. 이 함수의 주요 인자로는 force와 force_pull이 있습니다. force로 텍스트 라벨들끼리 얼마나 강하게 밀어낼지를 설정합니다. 값이 클수록 라벨이 더 멀리 분산됩니다. force_pull로 텍스트 라벨이 데이터 포인트에 얼마나 강하게 끌리는지를 설정합니다. 값이 작을수록 라벨이 데이터 포인트에서 더 멀이 떨어질 수 있습니다. 아래는 주요 인자를 기본값으로 두고 geom_text_repel 함수를 사용해 지역명이 겹치는 문제를 해결하려고 한 코드입니다. 하지만, 지도가 복잡하기 때문에 geom_text_repel 함수로는 모든 지역명을 적절히 배치하기 어려워 보입니다. force와 force_pull 값을 조정하더라도 이 문제를 완벽히 해결하기 쉽지 않아 보입니다. # 패키지 로드 library(ggrepel) # 지도 작성 ggplot(data = sdg) + geom_sf(colour = \"gray40\", fill = \"#eaeaea\", linewidth = 0.5) + geom_text_repel(aes(label = SGG_NM, geometry = geometry), stat = \"sf_coordinates\", family = \"kopub\", size = text.size) + theme_void() . ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EC%97%AD%EB%AA%85%20%EA%B2%B9%EC%B9%98%EC%A7%80%20%EC%95%8A%EA%B2%8C%20%EB%B0%B0%EC%B9%98%ED%95%98%EA%B8%B0.html#geom_text_repel-%ED%95%A8%EC%88%98%EB%A1%9C-%EC%A7%80%EC%97%AD%EB%AA%85-%EB%B6%84%EC%82%B0-%EB%B0%B0%EC%B9%98%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EC%97%AD%EB%AA%85%20%EA%B2%B9%EC%B9%98%EC%A7%80%20%EC%95%8A%EA%B2%8C%20%EB%B0%B0%EC%B9%98%ED%95%98%EA%B8%B0.html#geom_text_repel-함수로-지역명-분산-배치하기"
-  },"161": {
+  },"166": {
     "doc": "지역명 겹치지 않게 배치하기",
     "title": "일부 지역명 생략하기",
     "content": "두 번째 방법은 일부 지역명을 생략하는 것입니다. 예를 들어, 폴리곤 면적이 중위값보다 작은 지역명을 생략하여 주요 지역명만 지도에 남깁니다. # 폴리곤 면적 계산 sdg &lt;- sdg %&gt;% mutate(면적 = as.numeric(st_area(sdg))) # 지도 작성 ggplot(data = sdg) + geom_sf(colour = \"gray40\", fill = \"#eaeaea\", linewidth = 0.5) + geom_sf_text(aes(label = ifelse(sdg$면적 &lt; median(sdg$면적), \"\", SGG_NM)), family = \"kopub\", size = text.size) + theme_void() . 이번 글에서는 지도에서 텍스트가 겹칠 때 이를 해결하는 두 가지 방법을 소개했습니다. geom_text_repel 함수는 텍스트를 자동으로 분산 배치해 주지만, 복잡한 지도에서는 모든 텍스트를 완벽히 배치하기 어렵습니다. 반면, 특정 기준에 따라 일부 지역명을 생략하는 방법은 중요한 정보만 표시하여 깔끔한 지도를 만들 수 있지만, 일부 정보가 누락될 수 있다는 점을 고려해야 합니다. 각각의 장단점을 잘 살펴보고, 시각화의 목적에 맞는 방법을 선택해 활용해 보세요! . ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EC%97%AD%EB%AA%85%20%EA%B2%B9%EC%B9%98%EC%A7%80%20%EC%95%8A%EA%B2%8C%20%EB%B0%B0%EC%B9%98%ED%95%98%EA%B8%B0.html#%EC%9D%BC%EB%B6%80-%EC%A7%80%EC%97%AD%EB%AA%85-%EC%83%9D%EB%9E%B5%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EC%97%AD%EB%AA%85%20%EA%B2%B9%EC%B9%98%EC%A7%80%20%EC%95%8A%EA%B2%8C%20%EB%B0%B0%EC%B9%98%ED%95%98%EA%B8%B0.html#일부-지역명-생략하기"
-  },"162": {
+  },"167": {
     "doc": "지역명 표기하기",
     "title": "지역명 표기하기",
     "content": " ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EC%97%AD%EB%AA%85%20%ED%91%9C%EA%B8%B0%ED%95%98%EA%B8%B0.html",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EC%97%AD%EB%AA%85%20%ED%91%9C%EA%B8%B0%ED%95%98%EA%B8%B0.html"
-  },"163": {
+  },"168": {
     "doc": "지역명 표기하기",
     "title": "개요",
     "content": "이번 글에서는 R의 ggplot2와 sf 패키지를 활용해 지도 위에 지역명을 표기하는 방법을 알아보겠습니다. 자동으로 텍스트를 배치하는 방법부터, 직접 텍스트 위치를 조정하는 방법까지 차근차근 알아봅시다! . ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EC%97%AD%EB%AA%85%20%ED%91%9C%EA%B8%B0%ED%95%98%EA%B8%B0.html#%EA%B0%9C%EC%9A%94",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EC%97%AD%EB%AA%85%20%ED%91%9C%EA%B8%B0%ED%95%98%EA%B8%B0.html#개요"
-  },"164": {
+  },"169": {
     "doc": "지역명 표기하기",
     "title": "수도권 지도 준비하기",
     "content": "먼저, 행정구 병합하기 글에서 만든 수도권 지도를 불러오겠습니다. 이 지도 데이터에는 SGG_NM 열이 있는데, 시도와 시군구 이름이 담겨 있습니다. 이를 활용해 지도 위에 시군구명을 표시하는 방법을 알아보겠습니다. # 패키지 로드 library(tidyverse) library(sf) # 데이터 불러오기 sdg &lt;- st_read(\"아웃풋/수도권 행정구 병합 지도.shp\") . ## Reading layer `수도권 행정구 병합 지도' from data source ## `...\\아웃풋\\수도권 행정구 병합 지도.shp' ## using driver `ESRI Shapefile' ## Simple feature collection with 66 features and 2 fields ## Geometry type: MULTIPOLYGON ## Dimension: XY ## Bounding box: xmin: -10044.95 ymin: 477264 xmax: 274945.2 ymax: 631207.8 ## Projected CRS: Korea_2000_Korea_Central_Belt_2010 . # 데이터 확인 head(sdg) . ## Simple feature collection with 6 features and 2 fields ## Geometry type: MULTIPOLYGON ## Dimension: XY ## Bounding box: xmin: 170923.2 ymin: 518463.7 xmax: 254296.8 ymax: 605780.4 ## Projected CRS: Korea_2000_Korea_Central_Belt_2010 ## SGG_NM COL_ADM_SE geometry ## 1 경기도 가평군 41820 MULTIPOLYGON (((239726.3 60... ## 2 경기도 고양시 41280 MULTIPOLYGON (((193799.4 57... ## 3 경기도 과천시 41290 MULTIPOLYGON (((200375.6 54... ## 4 경기도 광명시 41210 MULTIPOLYGON (((188355.1 54... ## 5 경기도 광주시 41610 MULTIPOLYGON (((230605 5485... ## 6 경기도 구리시 41310 MULTIPOLYGON (((213032.4 56... ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EC%97%AD%EB%AA%85%20%ED%91%9C%EA%B8%B0%ED%95%98%EA%B8%B0.html#%EC%88%98%EB%8F%84%EA%B6%8C-%EC%A7%80%EB%8F%84-%EC%A4%80%EB%B9%84%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EC%97%AD%EB%AA%85%20%ED%91%9C%EA%B8%B0%ED%95%98%EA%B8%B0.html#수도권-지도-준비하기"
-  },"165": {
+  },"170": {
     "doc": "지역명 표기하기",
     "title": "시도명과 시군구명 분리하기",
     "content": "SGG_NM열에 시도와 시군구 이름이 하나의 문자열로 결합되어 있습니다. 이를 분리하여 시도(SD_NM)와 시군구(SGG_NM) 이름을 각각 분리해 보겠습니다. separate 함수를 사용하면 손쉽게 이 작업을 수행할 수 있습니다. sdg &lt;- sdg %&gt;% separate(col = SGG_NM, into = c(\"SD_NM\", \"SGG_NM\"), sep = \" \", fill = \"right\") head(sdg) . ## Simple feature collection with 6 features and 3 fields ## Geometry type: MULTIPOLYGON ## Dimension: XY ## Bounding box: xmin: 170923.2 ymin: 518463.7 xmax: 254296.8 ymax: 605780.4 ## Projected CRS: Korea_2000_Korea_Central_Belt_2010 ## SD_NM SGG_NM COL_ADM_SE geometry ## 1 경기도 가평군 41820 MULTIPOLYGON (((239726.3 60... ## 2 경기도 고양시 41280 MULTIPOLYGON (((193799.4 57... ## 3 경기도 과천시 41290 MULTIPOLYGON (((200375.6 54... ## 4 경기도 광명시 41210 MULTIPOLYGON (((188355.1 54... ## 5 경기도 광주시 41610 MULTIPOLYGON (((230605 5485... ## 6 경기도 구리시 41310 MULTIPOLYGON (((213032.4 56... ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EC%97%AD%EB%AA%85%20%ED%91%9C%EA%B8%B0%ED%95%98%EA%B8%B0.html#%EC%8B%9C%EB%8F%84%EB%AA%85%EA%B3%BC-%EC%8B%9C%EA%B5%B0%EA%B5%AC%EB%AA%85-%EB%B6%84%EB%A6%AC%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EC%97%AD%EB%AA%85%20%ED%91%9C%EA%B8%B0%ED%95%98%EA%B8%B0.html#시도명과-시군구명-분리하기"
-  },"166": {
+  },"171": {
     "doc": "지역명 표기하기",
     "title": "자동으로 지역명 표기하기",
     "content": "가장 간단한 방법은 geom_sf_text를 사용하는 것입니다. 이 함수는 지도 데이터의 지오메트리 정보를 기반으로 텍스트를 자동으로 배치합니다. 간단한 설정만으로도 시군구 이름을 지도 위에 추가할 수 있습니다. # 패키지 로드 library(ggplot2) library(showtext) # 글꼴 설정 font_add(\"kopub\", \"C:/Users/.../AppData/Local/Microsoft/Windows/Fonts/KoPub Dotum Medium.ttf\") showtext_auto() showtext_opts(dpi=300) theme.size = 12 text.size = theme.size / .pt # 지도 작성 ggplot(data = sdg) + geom_sf(colour = \"gray40\", fill = \"#eaeaea\", linewidth = 0.5) + geom_sf_text(aes(label = SGG_NM), family = \"kopub\", size = text.size) + theme_void() . ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EC%97%AD%EB%AA%85%20%ED%91%9C%EA%B8%B0%ED%95%98%EA%B8%B0.html#%EC%9E%90%EB%8F%99%EC%9C%BC%EB%A1%9C-%EC%A7%80%EC%97%AD%EB%AA%85-%ED%91%9C%EA%B8%B0%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EC%97%AD%EB%AA%85%20%ED%91%9C%EA%B8%B0%ED%95%98%EA%B8%B0.html#자동으로-지역명-표기하기"
-  },"167": {
+  },"172": {
     "doc": "지역명 표기하기",
     "title": "중심 좌표 직접 계산하여 지역명 표기하기",
     "content": "텍스트 위치를 더 정확하게 조정하고 싶다면, 직접 좌표를 지정하는 방법도 있습니다. 예를 들어, st_centroid 함수를 사용해 각 폴리곤의 중심 좌표를 추출한 뒤, 이 좌표를 활용해 지역명을 해당 중심에 배치할 수 있습니다. # 포인트 추출 pnts1 &lt;- st_centroid(sdg) # 지도 작성 ggplot() + geom_sf(data = sdg, colour = \"gray40\", fill = \"#eaeaea\", linewidth = 0.5) + geom_sf_text(data = pnts1, aes(label = SGG_NM), family = \"kopub\", size = text.size) + theme_void() . ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EC%97%AD%EB%AA%85%20%ED%91%9C%EA%B8%B0%ED%95%98%EA%B8%B0.html#%EC%A4%91%EC%8B%AC-%EC%A2%8C%ED%91%9C-%EC%A7%81%EC%A0%91-%EA%B3%84%EC%82%B0%ED%95%98%EC%97%AC-%EC%A7%80%EC%97%AD%EB%AA%85-%ED%91%9C%EA%B8%B0%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EC%97%AD%EB%AA%85%20%ED%91%9C%EA%B8%B0%ED%95%98%EA%B8%B0.html#중심-좌표-직접-계산하여-지역명-표기하기"
-  },"168": {
+  },"173": {
     "doc": "지역명 표기하기",
     "title": "폴리곤 내부에 지역명 표기하기",
     "content": "만약 텍스트가 반드시 폴리곤 내부에 위치해야 한다면, st_point_on_surface 함수를 사용해 보세요. 이 함수는 항상 폴리곤 내부에 위치하는 대표 점을 계산해줍니다. # 포인트 추출 pnts2 &lt;- st_point_on_surface(sdg) # 지도 작성 ggplot() + geom_sf(data = sdg, colour = \"gray40\", fill = \"#eaeaea\", linewidth = 0.5) + geom_sf_text(data = pnts2, aes(label = SGG_NM), family = \"kopub\", size = text.size) + theme_void() . 직접 좌표를 계산하거나 다른 위치 정보를 활용해 원하는 지점에 텍스트를 배치할 수도 있습니다. 이번 글에서 소개한 방법들을 응용해 텍스트 위치를 자유롭게 조정해 보세요! 다만, 일부 지역명이 겹치는 문제가 발생할 수 있는데, 이를 해결하는 방법은 다른 포스팅에서 자세히 다룰 예정입니다. ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EC%97%AD%EB%AA%85%20%ED%91%9C%EA%B8%B0%ED%95%98%EA%B8%B0.html#%ED%8F%B4%EB%A6%AC%EA%B3%A4-%EB%82%B4%EB%B6%80%EC%97%90-%EC%A7%80%EC%97%AD%EB%AA%85-%ED%91%9C%EA%B8%B0%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%EC%A7%80%EC%97%AD%EB%AA%85%20%ED%91%9C%EA%B8%B0%ED%95%98%EA%B8%B0.html#폴리곤-내부에-지역명-표기하기"
-  },"169": {
+  },"174": {
     "doc": "차트 팁",
     "title": "차트 팁",
     "content": "데이터를 한눈에 이해할 수 있는 시각화를 위한 R 그래프 작성 팁을 공유합니다. ggplot2를 활용해 다양한 유형의 차트를 만들어 인사이트를 효과적으로 전달하는 방법을 정리합니다. ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81",
     
     "relUrl": "/docs/차트 팁"
-  },"170": {
+  },"175": {
     "doc": "축 텍스트 줄 바꿈",
     "title": "축 텍스트 줄 바꿈",
     "content": " ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%B6%95%20%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%A4%84%20%EB%B0%94%EA%BF%88.html",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%B6%95%20%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%A4%84%20%EB%B0%94%EA%BF%88.html"
-  },"171": {
+  },"176": {
     "doc": "축 텍스트 줄 바꿈",
     "title": "일정 너비 초과 시 줄 바꾸기",
     "content": "ggplot2로 그래프를 그릴 때 축 텍스트가 길어 중첩되거나 잘리는 경우, 줄 바꿈을 통해 가독성을 높일 수 있습니다. 이번 포스팅에서는 축 텍스트 줄 바꿈을 간단히 설정하는 두 가지 방법을 소개합니다. 첫 번째 방법은 stringr 패키지의 str_wrap 함수를 사용하여 일정 너비를 초과하는 텍스트를 자동으로 줄 바꾸는 것입니다. 이 방법은 간단히 텍스트의 최대 너비를 지정할 수 있어 편리합니다. str_wrap 함수는 텍스트를 지정된 width 값에 따라 줄 바꿈합니다. # 패키지 설치 및 로드 install.packages(\"stringr\") library(stringr) # 축 텍스트 너비 설정 scale_x_discrete(labels = function(x) str_wrap(x, width = 8)) . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%B6%95%20%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%A4%84%20%EB%B0%94%EA%BF%88.html#%EC%9D%BC%EC%A0%95-%EB%84%88%EB%B9%84-%EC%B4%88%EA%B3%BC-%EC%8B%9C-%EC%A4%84-%EB%B0%94%EA%BE%B8%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%B6%95%20%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%A4%84%20%EB%B0%94%EA%BF%88.html#일정-너비-초과-시-줄-바꾸기"
-  },"172": {
+  },"177": {
     "doc": "축 텍스트 줄 바꿈",
     "title": "특정 문자 기준으로 줄 바꾸기",
     "content": "두 번째 방법은 sub 함수와 정규표현식을 사용하여 특정 문자(괄호, 대쉬, 쉼표 등)를 기준으로 줄 바꿈하는 것입니다. 이 방법은 특정 위치에서 줄 바꿈을 제어하고 싶을 때 유용합니다. 정규표현식에서 각 기호가 의미하는 바는 다음과 같습니다. | \\\\(: 괄호 | \\n: 줄 바꿈 문자 | \\\\s: 공백 문자 | . # 괄호 앞 줄 바꿈 scale_x_discrete(labels=function(x) sub(\"\\\\(\", \"\\n\\\\(\", x)) # 대쉬 뒤 줄 바꿈 scale_x_discrete(labels=function(x) sub(\"-\", \"-\\n\", x)) # 대쉬 뒤 줄 바꿈 후 공백 줄 바꿈 scale_x_discrete(labels = function(x){ y=sub(\"-\", \"-\\n\", x) sub(\"\\\\s\", \"\\n\", y) }) . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%B6%95%20%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%A4%84%20%EB%B0%94%EA%BF%88.html#%ED%8A%B9%EC%A0%95-%EB%AC%B8%EC%9E%90-%EA%B8%B0%EC%A4%80%EC%9C%BC%EB%A1%9C-%EC%A4%84-%EB%B0%94%EA%BE%B8%EA%B8%B0",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%EC%B6%95%20%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%A4%84%20%EB%B0%94%EA%BF%88.html#특정-문자-기준으로-줄-바꾸기"
-  },"173": {
+  },"178": {
     "doc": "텍스트 윤곽선 추가하기",
     "title": "텍스트 윤곽선 추가하기",
     "content": " ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%9C%A4%EA%B3%BD%EC%84%A0%20%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0.html",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%9C%A4%EA%B3%BD%EC%84%A0%20%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0.html"
-  },"174": {
+  },"179": {
     "doc": "텍스트 윤곽선 추가하기",
     "title": "개요",
     "content": "지난번 지역명 겹치지 않게 배치하기 글에서는 수도권 지도를 그리고 지역명을 겹치지 않게 배치하는 방법을 알아봤습니다. 텍스트를 분산 배치하거나, 면적이 작은 일부 지역의 명칭을 생략하는 방법으로 문제를 해결했죠. 이번에는 지도의 가독성을 한 단계 더 높이기 위해 텍스트에 윤곽선을 추가하는 방법을 살펴보겠습니다. 텍스트에 윤곽선을 더하면 글씨가 지도 배경과 겹치지 않으면서 더 선명하게 보이게 됩니다. ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%9C%A4%EA%B3%BD%EC%84%A0%20%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0.html#%EA%B0%9C%EC%9A%94",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%9C%A4%EA%B3%BD%EC%84%A0%20%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0.html#개요"
-  },"175": {
+  },"180": {
     "doc": "텍스트 윤곽선 추가하기",
     "title": "데이터 준비하기",
     "content": "먼저, 지도를 그릴 데이터를 준비합니다. 기본적인 데이터 처리 및 지도 생성 방법은 지역명 겹치지 않게 배치하기 글을 참고하세요. 아래 코드는 지도를 그리기 위한 데이터 준비 단계입니다. # 패키지 로드 library(tidyverse) library(sf) library(ggplot2) library(showtext) library(ggrepel) # 글꼴 설정 font_add(\"kopub\", \"C:/Users/.../AppData/Local/Microsoft/Windows/Fonts/KoPub Dotum Medium.ttf\") showtext_auto() showtext_opts(dpi=300) theme.size = 10 text.size = theme.size / .pt # 데이터 불러오기 sdg &lt;- st_read(\"아웃풋/수도권 행정구 병합 지도.shp\") %&gt;% separate(col = SGG_NM, into = c(\"SD_NM\", \"SGG_NM\"), sep = \" \", fill = \"right\") . ## Reading layer `수도권 행정구 병합 지도' from data source ## `...\\아웃풋\\수도권 행정구 병합 지도.shp' ## using driver `ESRI Shapefile' ## Simple feature collection with 66 features and 2 fields ## Geometry type: MULTIPOLYGON ## Dimension: XY ## Bounding box: xmin: -10044.95 ymin: 477264 xmax: 274945.2 ymax: 631207.8 ## Projected CRS: Korea_2000_Korea_Central_Belt_2010 . # 폴리곤 면적 계산 sdg &lt;- sdg %&gt;% mutate(면적 = as.numeric(st_area(sdg))) . ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%9C%A4%EA%B3%BD%EC%84%A0%20%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0.html#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A4%80%EB%B9%84%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%9C%A4%EA%B3%BD%EC%84%A0%20%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0.html#데이터-준비하기"
-  },"176": {
+  },"181": {
     "doc": "텍스트 윤곽선 추가하기",
     "title": "geom_text_repel로 텍스트 윤곽선 추가하기",
     "content": "geom_text_repel 함수는 텍스트가 서로 겹치지 않도록 자동으로 배치하는데 유용합니다. 여기에 bg.color와 bg.r 인자를 사용하면 텍스트에 윤곽선을 추가할 수 있습니다. bg.color로 윤곽선의 색상, bg.r로 윤곽선의 두께를 설정할 수 있습니다. 아래는 geom_text_repel을 활용해 텍스트 간 간격을 자동으로 조정하면서, 텍스트에 윤곽선을 추가하는 코드입니다. # 지도 작성하기 ggplot(data = sdg) + geom_sf(colour = \"gray40\", fill = \"#eaeaea\", linewidth = 0.5) + geom_text_repel(aes(label = SGG_NM, geometry = geometry), stat = \"sf_coordinates\", family = \"kopub\", size = text.size, force = 0.0001, force_pull = 1000, color = \"white\", bg.color = \"black\", bg.r = 0.1) + theme_void() . ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%9C%A4%EA%B3%BD%EC%84%A0%20%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0.html#geom_text_repel%EB%A1%9C-%ED%85%8D%EC%8A%A4%ED%8A%B8-%EC%9C%A4%EA%B3%BD%EC%84%A0-%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%9C%A4%EA%B3%BD%EC%84%A0%20%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0.html#geom_text_repel로-텍스트-윤곽선-추가하기"
-  },"177": {
+  },"182": {
     "doc": "텍스트 윤곽선 추가하기",
     "title": "geom_shadowtext로 텍스트 윤곽선 추가하기",
     "content": "shadowtext 패키지의 geom_shadowtext를 사용하면 텍스트에 윤곽선을 간단히 추가할 수 있습니다. geom_sf_text와는 달리, geom_shadowtext를 사용할 때는 geometry와 stat을 지정해야 합니다. 이는 shadowtext가 sf 객체의 좌표를 활용할 수 있도록 하기 위함입니다. 글자의 색상은 color로 조정하고, 윤곽선의 색상과 두께는 bg.color와 bg.r로 조정할 수 있습니다. 아래는 면적 기준으로 작은 지역명을 생략하고, 텍스트에 검정색 윤곽선을 추가하는 코드입니다. # 패키지 로드 library(shadowtext) # 지도 작성하기 ggplot(data = sdg) + geom_sf(colour = \"gray40\", fill = \"#eaeaea\", linewidth = 0.5) + geom_shadowtext(aes(label = ifelse(sdg$면적 &lt; median(sdg$면적), \"\", SGG_NM), geometry = geometry), stat = \"sf_coordinates\", family = \"kopub\", size = text.size, color = \"white\", bg.color = \"black\", bg.r = 0.1) + theme_void() . 이번 글에서는 지도 텍스트의 가독성을 높이기 위해 윤곽선을 추가하는 두 가지 방법을 소개했습니다. 텍스트 중첩 문제를 해결하면서 윤곽선을 추가하려면 geom_text_repel을 사용하는 것이 좋고, 중첩 문제가 없거나 다른 방식으로 해결한 경우에는 geom_shadowtext를 추천합니다. 두 방법 모두 텍스트를 더 선명하고 깔끔하게 보여줄 수 있으니, 시각화 목적에 맞게 활용해 보세요! . ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%9C%A4%EA%B3%BD%EC%84%A0%20%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0.html#geom_shadowtext%EB%A1%9C-%ED%85%8D%EC%8A%A4%ED%8A%B8-%EC%9C%A4%EA%B3%BD%EC%84%A0-%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%ED%85%8D%EC%8A%A4%ED%8A%B8%20%EC%9C%A4%EA%B3%BD%EC%84%A0%20%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0.html#geom_shadowtext로-텍스트-윤곽선-추가하기"
-  },"178": {
+  },"183": {
     "doc": "행정구 병합하기",
     "title": "행정구 병합하기",
     "content": " ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%ED%96%89%EC%A0%95%EA%B5%AC%20%EB%B3%91%ED%95%A9%ED%95%98%EA%B8%B0.html",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%ED%96%89%EC%A0%95%EA%B5%AC%20%EB%B3%91%ED%95%A9%ED%95%98%EA%B8%B0.html"
-  },"179": {
+  },"184": {
     "doc": "행정구 병합하기",
     "title": "개요",
     "content": "시군구 단위의 지도를 그릴 때 자치구와 행정구를 모두 포함할지 고민되는 경우가 있습니다. 경기도 수원시나 성남시처럼 행정구가 설치된 경우, 이를 병합해서 시로만 표현하는 경우가 많습니다. 이번 글에서는 행정구 경계를 병합하는 방법을 단계별로 살펴보겠습니다. ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%ED%96%89%EC%A0%95%EA%B5%AC%20%EB%B3%91%ED%95%A9%ED%95%98%EA%B8%B0.html#%EA%B0%9C%EC%9A%94",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%ED%96%89%EC%A0%95%EA%B5%AC%20%EB%B3%91%ED%95%A9%ED%95%98%EA%B8%B0.html#개요"
-  },"180": {
+  },"185": {
     "doc": "행정구 병합하기",
     "title": "행정구역 경계 데이터 다운로드하기",
     "content": "우선, 지도의 기초 데이터를 준비해야 합니다. V-World 디지털트윈국토 사이트에서 필요한 공간정보 데이터를 다운받을 수 있습니다. 로그인 후 ’행정구역’을 검색해 행정구역시군구_경계 게시물에서 시군구 경계 데이터를 받을 수 있습니다. 이번에는 수도권(서울, 인천, 경기)의 데이터를 다운로드하여 사용합니다. ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%ED%96%89%EC%A0%95%EA%B5%AC%20%EB%B3%91%ED%95%A9%ED%95%98%EA%B8%B0.html#%ED%96%89%EC%A0%95%EA%B5%AC%EC%97%AD-%EA%B2%BD%EA%B3%84-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%ED%96%89%EC%A0%95%EA%B5%AC%20%EB%B3%91%ED%95%A9%ED%95%98%EA%B8%B0.html#행정구역-경계-데이터-다운로드하기"
-  },"181": {
+  },"186": {
     "doc": "행정구 병합하기",
     "title": "shp 파일 읽기 및 병합하기",
     "content": "파일을 처리하기 위해 tidyverse와 sf 패키지를 사용합니다. list.files 함수로 폴더 내 모든 shp 파일을 찾고, 이를 st_read 함수로 읽어 데이터프레임 형식으로 변환합니다. 이후 bind_rows를 통해 읽어들인 여러 데이터를 하나로 합칩니다. 이 과정을 통해 수도권에 해당하는 행정구역 데이터를 통합한 데이터셋을 얻을 수 있습니다. # 패키지 로드 library(tidyverse) library(sf) # 데이터 불러오기 folder_path &lt;- \"데이터/수도권 지도/행정구역 경계\" shp_files &lt;- list.files(folder_path, pattern = \"*.shp$\", full.names = TRUE) merged_shp &lt;- shp_files %&gt;% lapply(st_read) %&gt;% bind_rows() . ## Reading layer `LARD_ADM_SECT_SGG_11_202405' from data source ## `C:\\...\\데이터\\수도권 지도\\행정구역 경계\\LARD_ADM_SECT_SGG_11_202405.shp' ## using driver `ESRI Shapefile' ## Simple feature collection with 25 features and 4 fields ## Geometry type: MULTIPOLYGON ## Dimension: XY ## Bounding box: xmin: 179191.4 ymin: 536562.8 xmax: 216242.3 ymax: 566863.5 ## Projected CRS: Korea_2000_Korea_Central_Belt_2010 ## Reading layer `LARD_ADM_SECT_SGG_28_202405' from data source ## `C:\\...\\데이터\\수도권 지도\\행정구역 경계\\LARD_ADM_SECT_SGG_28_202405.shp' ## using driver `ESRI Shapefile' ## Simple feature collection with 10 features and 4 fields ## Geometry type: MULTIPOLYGON ## Dimension: XY ## Bounding box: xmin: -10044.95 ymin: 481583 xmax: 181782.2 ymax: 600780 ## Projected CRS: Korea_2000_Korea_Central_Belt_2010 ## Reading layer `LARD_ADM_SECT_SGG_41_202405' from data source ## `C:\\...\\데이터\\수도권 지도\\행정구역 경계\\LARD_ADM_SECT_SGG_41_202405.shp' ## using driver `ESRI Shapefile' ## Simple feature collection with 44 features and 4 fields ## Geometry type: MULTIPOLYGON ## Dimension: XY ## Bounding box: xmin: 144789.2 ymin: 477264 xmax: 274945.2 ymax: 631207.8 ## Projected CRS: Korea_2000_Korea_Central_Belt_2010 . # 데이터 확인 head(merged_shp) . ## Simple feature collection with 6 features and 4 fields ## Geometry type: MULTIPOLYGON ## Dimension: XY ## Bounding box: xmin: 195102.6 ymin: 545229.7 xmax: 210189.8 ymax: 559196.5 ## Projected CRS: Korea_2000_Korea_Central_Belt_2010 ## ADM_SECT_C SGG_NM SGG_OID COL_ADM_SE ## 1 11110 서울특별시 종로구 11 11110 ## 2 11140 서울특별시 중구 34 11140 ## 3 11170 서울특별시 용산구 1 11170 ## 4 11200 서울특별시 성동구 1 11200 ## 5 11215 서울특별시 광진구 49 11215 ## 6 11230 서울특별시 동대문구 232 11230 ## geometry ## 1 MULTIPOLYGON (((197800 5590... ## 2 MULTIPOLYGON (((202072.4 55... ## 3 MULTIPOLYGON (((197569.6 55... ## 4 MULTIPOLYGON (((203845.4 55... ## 5 MULTIPOLYGON (((208984.4 55... ## 6 MULTIPOLYGON (((206279 5563... ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%ED%96%89%EC%A0%95%EA%B5%AC%20%EB%B3%91%ED%95%A9%ED%95%98%EA%B8%B0.html#shp-%ED%8C%8C%EC%9D%BC-%EC%9D%BD%EA%B8%B0-%EB%B0%8F-%EB%B3%91%ED%95%A9%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%ED%96%89%EC%A0%95%EA%B5%AC%20%EB%B3%91%ED%95%A9%ED%95%98%EA%B8%B0.html#shp-파일-읽기-및-병합하기"
-  },"182": {
+  },"187": {
     "doc": "행정구 병합하기",
     "title": "행정구 경계 병합하기",
     "content": "SGG_NM 열에 포함된 지역 명칭을 변환합니다. str_replace 함수를 사용해 ’경기도 수원시 장안구’와 같은 값을 ’경기도 수원시’로 변환하고, 이후 group_by와 summarise를 통해 동일한 이름을 가진 행정구역을 병합합니다. 이 과정을 통해 행정구가 시 단위로 통합됩니다. str_replace(SGG_NM, \"(\\\\s\\\\w+)\\\\s\\\\w+$\", \"\\\\1\")는 문자열에서 특정 패턴을 찾아 변환하는 함수입니다. 이 코드는 SGG_NM 열에 저장된 행정구역 이름에서 두 번째 공백 뒤의 단어를 제거하고, 앞부분만 남깁니다. 예를 들어 ’경기도 수원시 장안구’라는 값이 ’경기도 수원시’로 변환됩니다. 여기서 정규표현식 \"(\\\\s\\\\w+)\\\\s\\\\w+$\"는 문자열에서 첫 번째 공백과 그 뒤의 단어를 하나의 그룹으로 캡처(\\\\1)하며, 두 번째 공백 이후의 단어는 제거합니다. # 패키지 로드 library(stringr) # 행정구역 명칭의 두 번째 공백 뒤 단어를 없애기 result &lt;- merged_shp %&gt;% mutate(SGG_NM = str_replace(SGG_NM, \"(\\\\s\\\\w+)\\\\s\\\\w+$\", \"\\\\1\")) %&gt;% group_by(SGG_NM, COL_ADM_SE) %&gt;% summarise() # 행정구역 확인 unique(result$SGG_NM) . ## [1] \"경기도 가평군\" \"경기도 고양시\" \"경기도 과천시\" ## [4] \"경기도 광명시\" \"경기도 광주시\" \"경기도 구리시\" ## [7] \"경기도 군포시\" \"경기도 김포시\" \"경기도 남양주시\" ## [10] \"경기도 동두천시\" \"경기도 부천시\" \"경기도 성남시\" ## [13] \"경기도 수원시\" \"경기도 시흥시\" \"경기도 안산시\" ## [16] \"경기도 안성시\" \"경기도 안양시\" \"경기도 양주시\" ## [19] \"경기도 양평군\" \"경기도 여주시\" \"경기도 연천군\" ## [22] \"경기도 오산시\" \"경기도 용인시\" \"경기도 의왕시\" ## [25] \"경기도 의정부시\" \"경기도 이천시\" \"경기도 파주시\" ## [28] \"경기도 평택시\" \"경기도 포천시\" \"경기도 하남시\" ## [31] \"경기도 화성시\" \"서울특별시 강남구\" \"서울특별시 강동구\" ## [34] \"서울특별시 강북구\" \"서울특별시 강서구\" \"서울특별시 관악구\" ## [37] \"서울특별시 광진구\" \"서울특별시 구로구\" \"서울특별시 금천구\" ## [40] \"서울특별시 노원구\" \"서울특별시 도봉구\" \"서울특별시 동대문구\" ## [43] \"서울특별시 동작구\" \"서울특별시 마포구\" \"서울특별시 서대문구\" ## [46] \"서울특별시 서초구\" \"서울특별시 성동구\" \"서울특별시 성북구\" ## [49] \"서울특별시 송파구\" \"서울특별시 양천구\" \"서울특별시 영등포구\" ## [52] \"서울특별시 용산구\" \"서울특별시 은평구\" \"서울특별시 종로구\" ## [55] \"서울특별시 중구\" \"서울특별시 중랑구\" \"인천광역시 강화군\" ## [58] \"인천광역시 계양구\" \"인천광역시 남동구\" \"인천광역시 동구\" ## [61] \"인천광역시 미추홀구\" \"인천광역시 부평구\" \"인천광역시 서구\" ## [64] \"인천광역시 연수구\" \"인천광역시 옹진군\" \"인천광역시 중구\" . ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%ED%96%89%EC%A0%95%EA%B5%AC%20%EB%B3%91%ED%95%A9%ED%95%98%EA%B8%B0.html#%ED%96%89%EC%A0%95%EA%B5%AC-%EA%B2%BD%EA%B3%84-%EB%B3%91%ED%95%A9%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%ED%96%89%EC%A0%95%EA%B5%AC%20%EB%B3%91%ED%95%A9%ED%95%98%EA%B8%B0.html#행정구-경계-병합하기"
-  },"183": {
+  },"188": {
     "doc": "행정구 병합하기",
     "title": "시도 경계 만들기",
     "content": "시군구 데이터를 시도 단위로 더 단순화하기 위해 SGG_NM에서 첫 번째 단어를 추출하여 SIDO_NM 열을 생성합니다. 이를 위해 str_replace를 사용하며, ’경기도 수원시’에서 ’경기도’만 남도록 변환합니다. 이후 group_by와 summarise로 데이터를 병합하여 시도 단위의 데이터를 생성합니다. # 시도 칼럼 생성 및 병합 result_sido &lt;- result %&gt;% mutate(SIDO_NM = str_replace(SGG_NM, \"(\\\\w+)\\\\s\\\\w+\", \"\\\\1\")) %&gt;% group_by(SIDO_NM) %&gt;% summarise() # 행정구역 확인 unique(result_sido$SIDO_NM) . ## [1] \"경기도\" \"서울특별시\" \"인천광역시\" . ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%ED%96%89%EC%A0%95%EA%B5%AC%20%EB%B3%91%ED%95%A9%ED%95%98%EA%B8%B0.html#%EC%8B%9C%EB%8F%84-%EA%B2%BD%EA%B3%84-%EB%A7%8C%EB%93%A4%EA%B8%B0",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%ED%96%89%EC%A0%95%EA%B5%AC%20%EB%B3%91%ED%95%A9%ED%95%98%EA%B8%B0.html#시도-경계-만들기"
-  },"184": {
+  },"189": {
     "doc": "행정구 병합하기",
     "title": "수도권 시군구 지도 작성하기",
     "content": "병합된 데이터를 지도에 시각화하기 위해 ggplot2 패키지를 사용합니다. geom_sf 함수는 공간 데이터를 시각화할 수 있도록 지원합니다. 경계선 색상과 두께를 설정해 시군구와 시도의 경계를 각각 다른 레이어로 표현할 수 있습니다. theme_void를 사용해 축과 배경을 제거하여 깔끔한 지도를 만듭니다. # 패키지 로드 library(ggplot2) # 지도 작성 ggplot() + geom_sf(data = result, colour = \"gray40\", fill = NA, linewidth = 0.5) + geom_sf(data = result_sido, colour = \"gray20\", fill = NA, linewidth = 1) + theme_void() . ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%ED%96%89%EC%A0%95%EA%B5%AC%20%EB%B3%91%ED%95%A9%ED%95%98%EA%B8%B0.html#%EC%88%98%EB%8F%84%EA%B6%8C-%EC%8B%9C%EA%B5%B0%EA%B5%AC-%EC%A7%80%EB%8F%84-%EC%9E%91%EC%84%B1%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%ED%96%89%EC%A0%95%EA%B5%AC%20%EB%B3%91%ED%95%A9%ED%95%98%EA%B8%B0.html#수도권-시군구-지도-작성하기"
-  },"185": {
+  },"190": {
     "doc": "행정구 병합하기",
     "title": "shp 파일 저장하기",
     "content": "병합된 데이터를 shp 파일로 저장해 이후 활용할 수 있도록 합니다. 이를 위해 st_write를 사용하며, UTF-8 인코딩을 설정해 한글 데이터가 깨지지 않도록 합니다. 또한, append = FALSE로 지정하여 기존 파일에 덮어쓰기할 수 있도록 설정합니다. st_write(result, \"아웃풋/수도권 행정구 병합 지도.shp\", append = FALSE, layer_options = \"ENCODING=UTF-8\") . ## Deleting layer `수도권 행정구 병합 지도' using driver `ESRI Shapefile' ## Writing layer `수도권 행정구 병합 지도' to data source ## `아웃풋/수도권 행정구 병합 지도.shp' using driver `ESRI Shapefile' ## options: ENCODING=UTF-8 ## Writing 66 features with 2 fields and geometry type Unknown (any). ",
     "url": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%ED%96%89%EC%A0%95%EA%B5%AC%20%EB%B3%91%ED%95%A9%ED%95%98%EA%B8%B0.html#shp-%ED%8C%8C%EC%9D%BC-%EC%A0%80%EC%9E%A5%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/%EC%A7%80%EB%8F%84%20%ED%8C%81/%ED%96%89%EC%A0%95%EA%B5%AC%20%EB%B3%91%ED%95%A9%ED%95%98%EA%B8%B0.html#shp-파일-저장하기"
-  },"186": {
+  },"191": {
     "doc": "혼합형 그래프 작성",
     "title": "혼합형 그래프 작성",
     "content": " ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%ED%98%BC%ED%95%A9%ED%98%95%20%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%9E%91%EC%84%B1.html",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%ED%98%BC%ED%95%A9%ED%98%95%20%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%9E%91%EC%84%B1.html"
-  },"187": {
+  },"192": {
     "doc": "혼합형 그래프 작성",
     "title": "데이터 준비",
     "content": "막대그래프와 선그래프를 조합한 혼합형 그래프를 그려야 할 때가 있습니다. 이번 포스팅에서는 AirPassengers 데이터를 활용하여 혼합형 그래프를 작성하는 과정을 단계별로 소개해 드립니다. AirPassengers 데이터셋은 1949~1960년 월별 항공 승객 수를 제공하며, 단위는 천 명입니다. 이를 ggplot2로 시각화하기 위해 먼저 데이터를 변환해야 합니다. AirPassengers는 시계열 객체(ts)로, 그래프 작성을 위해 데이터프레임 객체로 변환해야 합니다. 데이터셋을 변환하고 필요한 열을 추가합니다. # 패키지 로드 library(dplyr) # 데이터 변환 data &lt;- data.frame(matrix(AirPassengers, ncol = 12, byrow = TRUE)) colnames(data) &lt;- seq(1, 12) # 열 이름 변경 (1~12월) data &lt;- data %&gt;% mutate(년도 = seq(1949, 1960)) # 데이터 확인 head(data) . ## 1 2 3 4 5 6 7 8 9 10 11 12 년도 ## 1 112 118 132 129 121 135 148 148 136 119 104 118 1949 ## 2 115 126 141 135 125 149 170 170 158 133 114 140 1950 ## 3 145 150 178 163 172 178 199 199 184 162 146 166 1951 ## 4 171 180 193 181 183 218 230 242 209 191 172 194 1952 ## 5 196 196 236 235 229 243 264 272 237 211 180 201 1953 ## 6 204 188 235 227 234 264 302 293 259 229 203 229 1954 . 년도별 승객 수를 합산하고, 전년 대비 승객 수 증감률을 계산합니다. # 데이터 합산 data2 &lt;- data %&gt;% mutate( `승객 수` = rowSums(across(1:12)), `전년 대비 승객 수 증감률` = (`승객 수` - lag(`승객 수`)) / lag(`승객 수`) ) %&gt;% select(년도, `승객 수`, `전년 대비 승객 수 증감률`) # 데이터 확인 head(data2) . ## 년도 승객 수 전년 대비 승객 수 증감률 ## 1 1949 1520 NA ## 2 1950 1676 0.10263158 ## 3 1951 2042 0.21837709 ## 4 1952 2364 0.15768854 ## 5 1953 2700 0.14213198 ## 6 1954 2867 0.06185185 . ",
     "url": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%ED%98%BC%ED%95%A9%ED%98%95%20%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%9E%91%EC%84%B1.html#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A4%80%EB%B9%84",
     
     "relUrl": "/docs/%EC%B0%A8%ED%8A%B8%20%ED%8C%81/%ED%98%BC%ED%95%A9%ED%98%95%20%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%9E%91%EC%84%B1.html#데이터-준비"
-  },"188": {
+  },"193": {
     "doc": "혼합형 그래프 작성",
     "title": "혼합형 그래프 작성",
     "content": "년도별 승객 수를 나타내는 기본 막대그래프를 작성합니다. # 패키지 로드 library(ggplot2) # 막대그래프 생성 ggplot(data = data2) + geom_col(aes(x = 년도, y = `승객 수`), width = 0.6) + scale_x_continuous(n.breaks = 12) + theme_bw() . 전년 대비 승객 수 증감률을 선그래프로 추가합니다. 그러나 값의 범위 차이로 인해 선그래프가 잘 보이지 않습니다. # 선그래프 추가 ggplot(data = data2) + geom_col(aes(x = 년도, y = `승객 수`), width = 0.6) + geom_line(aes(x = 년도, y = `전년 대비 승객 수 증감률`)) + scale_x_continuous(n.breaks = 12) + theme_bw() . 적절한 상수를 곱해 선그래프의 위치를 조정합니다. 상수(coeff)는 승객 수와 증감률의 상대적 값을 고려해 계산합니다. # 상수 계산 coeff &lt;- max(data2$`승객 수`, na.rm = TRUE) / (max(data2$`전년 대비 승객 수 증감률`, na.rm = TRUE) * 2) # 조정된 선그래프 생성 ggplot(data = data2) + geom_col(aes(x = 년도, y = `승객 수`), width = 0.6) + geom_line(aes(x = 년도, y = `전년 대비 승객 수 증감률` * coeff)) + scale_x_continuous(n.breaks = 12) + theme_bw() . 선그래프의 실제 값을 나타내기 위해 보조축을 추가합니다. 두 번째 y축은 scale_y_continuous 함수의 sec.axis 인자를 통해 추가할 수 있습니다. # 이중축 추가 ggplot(data = data2) + geom_col(aes(x = 년도, y = `승객 수`), width = 0.6) + geom_line(aes(x = 년도, y = `전년 대비 승객 수 증감률` * coeff)) + scale_x_continuous(n.breaks = 12) + scale_y_continuous( name = \"승객 수(천명)\", labels = scales::comma_format(), sec.axis = sec_axis(~./coeff, name = \"전년 대비 승객 수 증감률(%)\", labels = scales::percent_format()) ) + theme_bw() . 그래프의 막대와 선의 의미를 명확히 하기 위해 범례를 추가합니다. 범례 제목과 위치를 조정하여 깔끔한 그래프를 완성합니다. 범례를 추가하기 위해 geom_col(aes()) 안에 fill=\"승객 수\"를 추가하고, geom_line(aes()) 안에 color=\"전년 대비 승객 수 증감률\"을 추가합니다. 각각의 색상을 지정하기 위해 scale_fill_manual(values=\"gray40\"), scale_color_manual(values=\"gray70\")를 추가합니다. theme에서 범례와 관련된 제목, 배경색, 위치, 여백을 조정해 줍니다. 여기서는 범례 제목, 배경색, 여백을 없앴고, 화면 상에서 좌측 상부에 범례가 위치하도록 조정했습니다. ggplot(data = data2) + geom_col(aes(x = 년도, y = `승객 수`, fill = \"승객 수\"), width = 0.6) + geom_line(aes(x = 년도, y = `전년 대비 승객 수 증감률` * coeff, color = \"전년 대비 승객 수 증감률\")) + scale_fill_manual(values = \"gray40\") + scale_color_manual(values = \"gray70\") + scale_x_continuous(n.breaks = 12) + scale_y_continuous( name = \"승객 수(천명)\", labels = scales::comma_format(), sec.axis = sec_axis(~./coeff, name = \"전년 대비 승객 수 증감률(%)\", labels = scales::percent_format()) ) + theme_bw() + theme( legend.title = element_blank(), legend.background = element_blank(), legend.position = c(0.20, 0.90), legend.margin = margin(0, 0, 0, 0) ) . 혼합형 그래프를 활용하면 두 가지 데이터를 동시에 보여줄 수 있습니다. 위 코드를 참고해서 여러분 데이터에 맞는 혼합형 그래프를 작성해 보세요! . ",
