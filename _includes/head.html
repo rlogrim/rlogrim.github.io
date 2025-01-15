@@ -22,6 +22,10 @@
   {% include css/activation.scss.liquid %}
   </style>
 
+  <!-- canonical url 태그 시작 -->
+  <link rel="canonical" href="{{ site.url }}{{ page.url | replace:'index.html','' }}">
+  <!-- canonical url 태그 끝 -->
+
   <!-- Google AdSense 코드 시작 -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1615216783702805"
   crossorigin="anonymous">
