@@ -1319,6 +1319,8 @@ body { font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD G
 /* ========================================================================== Author box ========================================================================== */
 .author__content, .author__content *, .author__urls-wrapper, .author__urls-wrapper * { font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif !important; }
 
+.fa, .fas, .fab { font-family: "Font Awesome 5 Free" !important; font-weight: 900; }
+
 /* ========================================================================== Archive / List items – Pretendard ========================================================================== */
 .archive, .archive *, .archive__item, .archive__item * { font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif !important; }
 
