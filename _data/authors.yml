@@ -1,0 +1,11 @@
+Rvinci:
+  name  : "알빈치"
+  bio   : |
+    R로 그림을 그린 지 어언 6년. 
+    연구기관에 재직 중이며, 
+    엑셀로 해결될 일도 굳이 R로 그려보는 편입니다.
+  avatar: "/assets/images/avatar.png"
+  links:
+    - label: "rlogrim.blog@gmail.com"
+      icon: "fas fa-fw fa-envelope"
+      url: "mailto:rlogrim.blog@gmail.com"

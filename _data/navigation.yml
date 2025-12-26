@@ -1,0 +1,12 @@
+main:
+  - title: "Home"
+    url: /
+
+  - title: "데이터 가공"
+    url: /data/
+
+  - title: "차트"
+    url: /chart/
+
+  - title: "지도"
+    url: /map/

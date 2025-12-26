@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://ggsave.tidylog.kr/sitemap.xml
