@@ -1,0 +1,120 @@
+---
+---
+
+@import "minimal-mistakes";
+
+/* ==========================================================================
+   Global font
+   ========================================================================== */
+
+body {
+  font-family: "Pretendard",
+               -apple-system,
+               BlinkMacSystemFont,
+               "Apple SD Gothic Neo",
+               "Noto Sans KR",
+               sans-serif !important;
+}
+
+/* ==========================================================================
+   Masthead / Navigation
+   ========================================================================== */
+
+.masthead,
+.greedy-nav,
+.greedy-nav a,
+.site-title {
+  font-family: "Pretendard",
+               -apple-system,
+               BlinkMacSystemFont,
+               "Apple SD Gothic Neo",
+               "Noto Sans KR",
+               sans-serif !important;
+}
+
+/* ==========================================================================
+   Author box
+   ========================================================================== */
+
+.author__content,
+.author__content *,
+
+.author__urls-wrapper,
+.author__urls-wrapper * {
+  font-family: "Pretendard",
+               -apple-system,
+               BlinkMacSystemFont,
+               "Apple SD Gothic Neo",
+               "Noto Sans KR",
+               sans-serif !important;
+}
+
+/* ==========================================================================
+   Archive / List items – Pretendard
+   ========================================================================== */
+
+.archive,
+.archive *,
+.archive__item,
+.archive__item * {
+  font-family: "Pretendard",
+               -apple-system,
+               BlinkMacSystemFont,
+               "Apple SD Gothic Neo",
+               "Noto Sans KR",
+               sans-serif !important;
+}
+
+.archive p {
+   font-size: 0.9rem;
+}
+
+.list__item {
+   font-size: 0.9rem;
+}
+
+/* ==========================================================================
+   Article / Page content – Pretendard
+   ========================================================================== */
+
+.page,
+.page * {
+  font-family: "Pretendard",
+               -apple-system,
+               BlinkMacSystemFont,
+               "Apple SD Gothic Neo",
+               "Noto Sans KR",
+               sans-serif !important;
+}
+
+.page__content {
+  font-size: 0.90rem;
+}
+
+/* ==========================================================================
+   Code blocks (Rouge) – JetBrains Mono
+   ========================================================================== */
+
+.highlighter-rouge,
+.highlighter-rouge * {
+  font-family: "JetBrains Mono",
+               "Pretendard",
+               monospace !important;
+}
+
+/* ==========================================================================
+   Page footer – Pretendard
+   ========================================================================== */
+
+.page__footer-follow,
+.page__footer-follow *,
+
+.page__footer-copyright,
+.page__footer-copyright * {
+  font-family: "Pretendard",
+               -apple-system,
+               BlinkMacSystemFont,
+               "Apple SD Gothic Neo",
+               "Noto Sans KR",
+               sans-serif !important;
+}

@@ -1,7 +1,7 @@
 ---
 title: 그룹별 상하위 데이터 추출하기
 author: Rvinci
-excerpt: dplyr로 그룹별 상하위 데이터 추출하는 법 알아보기
+excerpt: 그룹별로 값이 큰 항목과 작은 항목을 매번 손으로 정리하고 계신가요? 이 글에서는 그룹별 상·하위 값을 자동으로 추출하고 바로 활용 가능한 요약표로 정리하는 방법을 다룹니다.
 categories: [data]
 published: true
 output:
@@ -15,7 +15,7 @@ knit: (function(inputFile, encoding) {
   output_dir = "C:/Users/minyoung/projects/ggsave/docs/데이터 가공 팁") })
 ---
 
-이번에는 2023년 시군구별 주민등록인구 데이터를 가지고 놀아봅니다.  
+이번에는 2023년 시군구별 주민등록인구 데이터를 가지고 분석을 진행해봅니다.  
 각 시도별로 사람이 가장 많이 모여 사는 시군구 3곳과  
 조금은 한적한 시군구 3곳을 골라내는 작업입니다.
 
@@ -25,7 +25,6 @@ knit: (function(inputFile, encoding) {
 데이터는 통계청의 [시군구별 주민등록인구 데이터](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL20651E&vw_cd=MT_GTITLE01&list_id=101&scrId=&seqNo=&lang_mode=ko&obj_var_id=&itm_id=&conn_path=MT_GTITLE01&path=%252FstatisticsList%252FstatisticsListIndex.do)를 사용합니다.
 
 데이터 구성은 단순합니다.
-
 - 시도
 - 시군구
 - 주민등록인구수
@@ -175,7 +174,6 @@ pop_low
 상위 3개 시군구 정보를 쉼표로 연결된 하나의 문자열로 정리합니다.
 
 이렇게 하면
-
 - 시도당 한 행만 남고
 - 각 행에는 상·하위 시군구 정보가 깔끔하게 요약되어
 

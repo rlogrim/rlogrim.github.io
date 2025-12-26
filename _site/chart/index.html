@@ -10,19 +10,16 @@
   <head>
     <meta charset="utf-8">
 
-<!-- begin _includes/seo.html --><title>알로그림</title>
+<!-- begin _includes/seo.html --><title>차트 - 알로그림</title>
 <meta name="description" content="알로그림은 R로 차트와 지도를 그리는 과정을 기록하는 블로그입니다. tidyverse, sf, ggplot2를 활용한 데이터 정리와 시각화 과정을 중심으로, 결과보다 과정을 공유합니다.">
 
-
-  <meta name="author" content="알빈치(Rvinci)">
-  
 
 
 <meta property="og:type" content="website">
 <meta property="og:locale" content="en_US">
 <meta property="og:site_name" content="알로그림">
-<meta property="og:title" content="알로그림">
-<meta property="og:url" content="http://localhost:4000/">
+<meta property="og:title" content="차트">
+<meta property="og:url" content="http://localhost:4000/chart/">
 
 
   <meta property="og:description" content="알로그림은 R로 차트와 지도를 그리는 과정을 기록하는 블로그입니다. tidyverse, sf, ggplot2를 활용한 데이터 정리와 시각화 과정을 중심으로, 결과보다 과정을 공유합니다.">
@@ -38,20 +35,10 @@
 
 
 
-<link rel="canonical" href="http://localhost:4000/">
+<link rel="canonical" href="http://localhost:4000/chart/">
 
 
 
-
-
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Person",
-    "name": null,
-    "url": "http://localhost:4000/"
-}
-</script>
 
 
 
@@ -91,7 +78,7 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   </head>
 
-  <body class="layout--home" dir="ltr">
+  <body class="layout--category" dir="ltr">
     <nav class="skip-links">
   <ul>
     <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
@@ -160,199 +147,19 @@
 
 <div id="main" role="main">
   
-  <div class="sidebar sticky">
-  
-
-
-<div itemscope itemtype="https://schema.org/Person" class="h-card">
-
-  
-    <div class="author__avatar">
-      <a href="http://localhost:4000/">
-        <img src="/assets/images/avatar.png" alt="알빈치(Rvinci)" itemprop="image" class="u-photo">
-      </a>
-    </div>
-  
-
-  <div class="author__content">
-    <h3 class="author__name p-name" itemprop="name">
-      <a class="u-url" rel="me" href="http://localhost:4000/" itemprop="url">알빈치(Rvinci)</a>
-    </h3>
-    
-      <div class="author__bio p-note" itemprop="description">
-        <p>R로 그림을 그린 지 어언 6년. 
-연구기관에 재직 중이며, 
-엑셀로 해결될 일도 굳이 R로 그려보는 편입니다.</p>
-
-      </div>
-    
-  </div>
-
-  <div class="author__urls-wrapper">
-    <button class="btn btn--inverse">Follow</button>
-    <ul class="author__urls social-icons">
-      
-
-      
-        
-          
-            <li><a href="mailto:rlogrim.blog@gmail.com" rel="nofollow noopener noreferrer me"><i class="fas fa-fw fa-envelope" aria-hidden="true"></i><span class="label">rlogrim.blog@gmail.com</span></a></li>
-          
-        
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      <!--
-  <li>
-    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
-      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
-    </a>
-  </li>
--->
-    </ul>
-  </div>
-</div>
-
-  
-  </div>
-
 
 
   <div class="archive">
     
-      <h1 id="page-title" class="page__title"></h1>
+      <h1 id="page-title" class="page__title">차트</h1>
     
-    <h3 id="r로-이것저것-그려봅니다">R로 이것저것 그려봅니다</h3>
-
-<p>알로그림은 R로 도표, 시각화, 지도를 그리는 과정을 기록하는 블로그입니다.
-<code class="language-plaintext highlighter-rouge">tidyverse</code>, <code class="language-plaintext highlighter-rouge">sf</code>, <code class="language-plaintext highlighter-rouge">ggplot2</code> 등 R 생태계의 주요 패키지를 활용해
-데이터를 정리하고, 분석하고, 시각화하는 과정을 정리합니다.</p>
-
-<p>이 블로그는 결과만 보여주기보다는,
-차트와 지도가 만들어지는 과정에서의 생각과 시행착오를 기록하는 개인 아카이브입니다.
-간결하고 이해하기 쉬운 코드로 시각화하고,
-필요할 때 다시 꺼내 볼 수 있는 형태로 남기는 것을 목표로 합니다.</p>
-
-<p>R로 시각화를 고민하고 구현하는 분들께
-작게나마 영감을 건네는 공간이 되기를 바랍니다.</p>
-
-<h3 id="왜-r일까">왜 R일까?</h3>
-
-<p>R은 엑셀이나 GIS 프로그램으로는 다루기 어려운
-복잡한 도표와 지도를 유연하게 표현할 수 있는 도구입니다.
-시각화의 세부 요소를 코드로 직접 제어할 수 있어,
-형식과 스타일을 일관되게 유지하면서도
-같은 작업을 반복할 때 빠르고 정확하게 결과를 재현할 수 있습니다.</p>
-
-<p>처음에는 익숙해지기까지 시간이 필요하지만,
-한 번 흐름을 익히면 데이터 처리부터 시각화까지를
-하나의 작업 과정으로 연결할 수 있어
-분석과 표현을 함께 다루는 데 특히 강점을 가집니다.</p>
-
-<p>또한 가볍고 무료로 사용할 수 있다는 점도
-R이 시각화 도구로 선택되는 중요한 이유 중 하나입니다.</p>
-
-
-<h3 class="archive__subtitle">Recent Posts</h3>
-
+    
 
 
 
 <div class="entries-list">
   
-
-
-
-
-
-
-
-<div class="list__item">
-  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
-    
-    <h2 class="archive__item-title no_toc" itemprop="headline">
-      
-        <a href="/data/2025/12/26/select-top-bottom-by-group.html" rel="permalink">그룹별 상하위 데이터 추출하기
-</a>
-      
-    </h2>
-    
-
-  <p class="page__meta">
-    
-
-    
-
-    
-      
-      
-
-      <span class="page__meta-readtime">
-        <i class="far fa-clock" aria-hidden="true"></i>
-        
-          5 minute read
-        
-      </span>
-    
-  </p>
-
-
-    <p class="archive__item-excerpt" itemprop="description">그룹별로 값이 큰 항목과 작은 항목을 매번 손으로 정리하고 계신가요? 이 글에서는 그룹별 상·하위 값을 자동으로 추출하고 바로 활용 가능한 요약표로 정리하는 방법을 다룹니다.
-</p>
-  </article>
 </div>
-
-</div>
-
-
-
 
   </div>
 </div>

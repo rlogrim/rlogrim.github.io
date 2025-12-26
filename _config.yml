@@ -3,7 +3,7 @@ description: "알로그림은 R로 차트와 지도를 그리는 과정을 기�
 url: "https://rlogrim.github.io"
 baseurl: "" # Root URL ("" for GitHub Pages root)
 
-remote_theme: "mmistakes/minimal-mistakes@4.27.3"
+remote_theme: mmistakes/minimal-mistakes
 
 plugins:
   - jekyll-include-cache
@@ -22,5 +22,17 @@ defaults:
       author_profile: true
       read_time: true
       comments: true
-      share: true
+      share: false
       related: true
+
+search: true
+search_full_content: true
+
+repository: rlogrim/rlogrim.github.io
+
+comments:
+  provider: "utterances"
+  utterances:
+    theme: "github-light"
+    issue_term: "pathname"
+    label: "comment"
