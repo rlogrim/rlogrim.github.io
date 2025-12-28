@@ -30,10 +30,6 @@ defaults:
       comments: true
       share: false
       related: true
-  - scope:
-      path: "sitemap.xml"
-    values:
-      layout: null
 
 search: true
 search_full_content: true
