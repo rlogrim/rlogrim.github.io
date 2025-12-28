@@ -150,7 +150,7 @@ ggplot() +
   theme_void()
 ```
 
-<img src="{{ site.baseurl }}/assets/images/2025-12-29-how-to-merge-regions/unnamed-chunk-4-1.png" width="100%" style="display: block; margin: auto;" alt="행정구가 병합된 수도권 지도" />
+<img src="{{ site.baseurl }}/assets/images/2025-12-29-how-to-merge-regions/unnamed-chunk-4-1.png" width="100%" style="display: block; margin: auto;" alt="행정구가 병합된 수도권 지도"/>
 
 ## 지도를 shp 파일로 저장하기
 
