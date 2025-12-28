@@ -1,8 +1,10 @@
 ---
 title: 그룹별 상하위 데이터 추출하기
 author: Rvinci
+description: 그룹별로 값이 큰 항목과 작은 항목을 매번 손으로 정리하고 계신가요? 이 글에서는 그룹별 상·하위 값을 자동으로 추출하고 바로 활용 가능한 요약표로 정리하는 방법을 다룹니다.
 excerpt: 그룹별로 값이 큰 항목과 작은 항목을 매번 손으로 정리하고 계신가요? 이 글에서는 그룹별 상·하위 값을 자동으로 추출하고 바로 활용 가능한 요약표로 정리하는 방법을 다룹니다.
 categories: [data]
+tags: [r, tidyverse, data-processing, data-summary]
 published: true
 output:
   md_document:

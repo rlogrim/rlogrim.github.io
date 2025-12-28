@@ -1,17 +1,23 @@
 title: "알로그림"
-description: "알로그림은 R로 차트와 지도를 그리는 과정을 기록하는 블로그입니다. tidyverse, sf, ggplot2를 활용한 데이터 정리와 시각화 과정을 중심으로, 결과보다 과정을 공유합니다."
+description: "알로그림은 R로 데이터를 가공하고 차트와 지도를 그리는 과정을 기록하는 블로그입니다. tidyverse, sf, ggplot2를 활용한 데이터 정리와 시각화 과정을 중심으로, 결과보다 과정을 공유하는 것을 목표로 합니다."
 url: "https://rlogrim.github.io"
 baseurl: "" # Root URL ("" for GitHub Pages root)
+permalink: /:categories/:title/
 
 remote_theme: mmistakes/minimal-mistakes
 
 plugins:
   - jekyll-include-cache
+  - jekyll-sitemap
 
 markdown: kramdown
 kramdown:
   input: GFM
 highlighter: rouge
+
+collections:
+  posts:
+    output: true
 
 defaults:
   - scope:
