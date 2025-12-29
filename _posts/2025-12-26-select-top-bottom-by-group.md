@@ -6,15 +6,6 @@ excerpt: 그룹별로 값이 큰 항목과 작은 항목을 매번 손으로 정
 categories: [data]
 tags: [r, tidyverse, data-processing, data-summary]
 published: true
-output:
-  md_document:
-    variant: markdown_github
-    preserve_yaml: true
-knit: (function(inputFile, encoding) {
-  rmarkdown::render(inputFile, 
-  encoding = encoding, 
-  output_file=paste0(Sys.Date(), "-", sub(".Rmd", ".md",inputFile)), 
-  output_dir = "C:/Users/minyoung/projects/ggsave/docs/데이터 가공 팁") })
 ---
 
 이번에는 2023년 시군구별 주민등록인구 데이터를 가지고 분석을 진행해봅니다.  
