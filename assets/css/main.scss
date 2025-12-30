@@ -1,127 +1,43 @@
 ---
 ---
 
+$doc-font-size: 15px;
+$doc-font-size-medium: $doc-font-size * 1.125;
+$doc-font-size-large: $doc-font-size * 1.25;
+$doc-font-size-x-large: $doc-font-size * 1.375;
+
+/* Defaults used in Minimal mistakes */
+$default-sans-serif: Pretendard, -apple-system, BlinkMacSystemFont, "Roboto", "Segoe UI", "Helvetica Neue", "Lucida Grande", Arial, sans-serif;
+$default-serif: Pretendard, Georgia, Times, serif;
+$default-monospace: "JetBrains Mono", Pretendard, Monaco, Consolas, "Lucida Console", monospace;
+
+/* Emoji native from modern font stack - add to the end of the font-face for native emojis */
+$emoji-native: 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+/* system typefaces */
+$serif: $default-serif;
+$sans-serif: $default-sans-serif;
+$sans-serif-narrow: $sans-serif;
+$monospace: $default-monospace;
+
+$global-font-family: $sans-serif;
+$header-font-family: $sans-serif;
+$caption-font-family: $serif;
+
 @import "minimal-mistakes";
 
-/* ==========================================================================
-   Global font
-   ========================================================================== */
-
-body {
-  font-family: "Pretendard",
-               -apple-system,
-               BlinkMacSystemFont,
-               "Apple SD Gothic Neo",
-               "Noto Sans KR",
-               sans-serif !important;
-}
-
-/* ==========================================================================
-   Masthead / Navigation
-   ========================================================================== */
-
-.masthead,
-.greedy-nav,
-.greedy-nav a,
-.site-title {
-  font-family: "Pretendard",
-               -apple-system,
-               BlinkMacSystemFont,
-               "Apple SD Gothic Neo",
-               "Noto Sans KR",
-               sans-serif !important;
-}
-
-/* ==========================================================================
-   Author box
-   ========================================================================== */
-
-.author__content,
-.author__content *,
-
-.author__urls-wrapper,
-.author__urls-wrapper * {
-  font-family: "Pretendard",
-               -apple-system,
-               BlinkMacSystemFont,
-               "Apple SD Gothic Neo",
-               "Noto Sans KR",
-               sans-serif !important;
-}
-
-.fa,
-.fas,
-.fab {
-  font-family: "Font Awesome 5 Free" !important;
-  font-weight: 900;
-}
-
-/* ==========================================================================
-   Archive / List items – Pretendard
-   ========================================================================== */
-
-.archive,
-.archive *,
-.archive__item,
-.archive__item * {
-  font-family: "Pretendard",
-               -apple-system,
-               BlinkMacSystemFont,
-               "Apple SD Gothic Neo",
-               "Noto Sans KR",
-               sans-serif !important;
-}
-
-.archive p {
-   font-size: 0.9rem;
-}
-
-.list__item {
-   font-size: 0.9rem;
-}
-
-/* ==========================================================================
-   Article / Page content – Pretendard
-   ========================================================================== */
-
-.page,
-.page * {
-  font-family: "Pretendard",
-               -apple-system,
-               BlinkMacSystemFont,
-               "Apple SD Gothic Neo",
-               "Noto Sans KR",
-               sans-serif !important;
-}
-
 .page__content {
-  font-size: 0.90rem;
+   p,
+  li,
+  dl {
+    font-size: 0.9em;
+  }
 }
 
-/* ==========================================================================
-   Code blocks (Rouge) – JetBrains Mono
-   ========================================================================== */
-
-.highlighter-rouge,
-.highlighter-rouge * {
-  font-family: "JetBrains Mono",
-               "Pretendard",
-               monospace !important;
+div.highlighter-rouge, figure.highlight {
+   font-size: 0.65em;
 }
 
-/* ==========================================================================
-   Page footer – Pretendard
-   ========================================================================== */
-
-.page__footer-follow,
-.page__footer-follow *,
-
-.page__footer-copyright,
-.page__footer-copyright * {
-  font-family: "Pretendard",
-               -apple-system,
-               BlinkMacSystemFont,
-               "Apple SD Gothic Neo",
-               "Noto Sans KR",
-               sans-serif !important;
+.sidebar p, .sidebar li {
+   font-size: 0.8em;
 }

@@ -30,6 +30,12 @@ defaults:
       comments: true
       share: false
       related: true
+      show_date: true
+
+atom_feed:
+  hide: true
+
+enable_copy_code_button: true
 
 search: true
 search_full_content: true
