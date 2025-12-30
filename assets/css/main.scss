@@ -1,7 +1,7 @@
 ---
 ---
 
-$doc-font-size: 15px;
+$doc-font-size: 14px;
 $doc-font-size-medium: $doc-font-size * 1.125;
 $doc-font-size-large: $doc-font-size * 1.25;
 $doc-font-size-x-large: $doc-font-size * 1.375;
@@ -25,19 +25,3 @@ $header-font-family: $sans-serif;
 $caption-font-family: $serif;
 
 @import "minimal-mistakes";
-
-.page__content {
-   p,
-  li,
-  dl {
-    font-size: 0.9em;
-  }
-}
-
-div.highlighter-rouge, figure.highlight {
-   font-size: 0.65em;
-}
-
-.sidebar p, .sidebar li {
-   font-size: 0.8em;
-}

@@ -158,10 +158,10 @@ a:focus, button:focus { /* Default*/ outline: thin dotted #6f777d; /* Webkit*/ o
 /* ========================================================================== STYLE RESETS ========================================================================== */
 * { box-sizing: border-box; }
 
-html { /* apply a natural box layout model to all elements */ box-sizing: border-box; background-color: #fff; font-size: 15px; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
-@media (min-width: 48em) { html { font-size: 16.875px; } }
-@media (min-width: 64em) { html { font-size: 18.75px; } }
-@media (min-width: 80em) { html { font-size: 20.625px; } }
+html { /* apply a natural box layout model to all elements */ box-sizing: border-box; background-color: #fff; font-size: 14px; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+@media (min-width: 48em) { html { font-size: 15.75px; } }
+@media (min-width: 64em) { html { font-size: 17.5px; } }
+@media (min-width: 80em) { html { font-size: 19.25px; } }
 
 /* Remove margin */
 body { margin: 0; }
@@ -1312,8 +1312,3 @@ body { display: -webkit-box; display: -ms-flexbox; display: flex; min-height: 10
   .page__hero-caption a { color: #000 !important; }
   /* Hide the following elements on print ========================================================================== */
   .masthead, .toc, .page__share, .page__related, .pagination, .ads, .page__footer, .page__comments-form, .author__avatar, .author__content, .author__urls-wrapper, .nav__list, .sidebar, .adsbygoogle { display: none !important; height: 1px !important; } }
-.page__content p, .page__content li, .page__content dl { font-size: 0.9em; }
-
-div.highlighter-rouge, figure.highlight { font-size: 0.65em; }
-
-.sidebar p, .sidebar li { font-size: 0.8em; }
