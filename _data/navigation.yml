@@ -1,7 +1,4 @@
 main:
-  - title: "홈"
-    url: /
-
   - title: "데이터 가공"
     url: /data/
 
