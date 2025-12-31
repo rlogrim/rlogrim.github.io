@@ -10,8 +10,8 @@
   <head>
     <meta charset="utf-8">
 
-<!-- begin _includes/seo.html --><title>지도 위에 공간 정보 쌓아보기 - 알로그림</title>
-<meta name="description" content="행정구역 지도 위에 여러 공간 데이터를 함께 그리고 싶었던 적 있나요? 행정구역 경계를 바탕으로 녹지, 수계, 도로 데이터를 불러와 정리하고, 레이어로 쌓아 하나의 지도를 완성하는 과정을 소개합니다.">
+<!-- begin _includes/seo.html --><title>지도 확대하기 - 알로그림</title>
+<meta name="description" content="전체 지도가 아니라 원하는 지역만 확대하고 싶은 적이 있었나요? 지도를 확대하는 두 가지 방법을 알려드립니다.">
 
 
   <meta name="author" content="알빈치(Rvinci)">
@@ -23,11 +23,11 @@
 <meta property="og:type" content="article">
 <meta property="og:locale" content="en_US">
 <meta property="og:site_name" content="알로그림">
-<meta property="og:title" content="지도 위에 공간 정보 쌓아보기">
-<meta property="og:url" content="http://localhost:4000/map/layering-spatial-data/">
+<meta property="og:title" content="지도 확대하기">
+<meta property="og:url" content="http://localhost:4000/map/how-to-zoom-in-on-maps/">
 
 
-  <meta property="og:description" content="행정구역 지도 위에 여러 공간 데이터를 함께 그리고 싶었던 적 있나요? 행정구역 경계를 바탕으로 녹지, 수계, 도로 데이터를 불러와 정리하고, 레이어로 쌓아 하나의 지도를 완성하는 과정을 소개합니다.">
+  <meta property="og:description" content="전체 지도가 아니라 원하는 지역만 확대하고 싶은 적이 있었나요? 지도를 확대하는 두 가지 방법을 알려드립니다.">
 
 
 
@@ -42,7 +42,7 @@
 
 
 
-<link rel="canonical" href="http://localhost:4000/map/layering-spatial-data/">
+<link rel="canonical" href="http://localhost:4000/map/how-to-zoom-in-on-maps/">
 
 
 
@@ -254,8 +254,8 @@
 
 
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
-    <meta itemprop="headline" content="지도 위에 공간 정보 쌓아보기">
-    <meta itemprop="description" content="행정구역 지도 위에 여러 공간 데이터를 함께 그리고 싶었던 적 있나요? 행정구역 경계를 바탕으로 녹지, 수계, 도로 데이터를 불러와 정리하고, 레이어로 쌓아 하나의 지도를 완성하는 과정을 소개합니다.">
+    <meta itemprop="headline" content="지도 확대하기">
+    <meta itemprop="description" content="전체 지도가 아니라 원하는 지역만 확대하고 싶은 적이 있었나요? 지도를 확대하는 두 가지 방법을 알려드립니다.">
     <meta itemprop="datePublished" content="2025-12-31T00:00:00+09:00">
     
 
@@ -263,7 +263,7 @@
       
         <header>
           <h1 id="page-title" class="page__title" itemprop="headline">
-            <a href="http://localhost:4000/map/layering-spatial-data/" itemprop="url">지도 위에 공간 정보 쌓아보기
+            <a href="http://localhost:4000/map/how-to-zoom-in-on-maps/" itemprop="url">지도 확대하기
 </a>
           </h1>
           
@@ -299,172 +299,131 @@
 
       <section class="page__content" itemprop="text">
         
-        <p>행정구역 경계만 있는 지도는<br />
-어딘가 밋밋하게 보일 때가 있습니다.</p>
+        <p>지도를 그리다 보면 특정 지역만<br />
+더 자세히 보고 싶을 때가 있습니다.</p>
 
-<p>이번 글에서는 행정구역 경계를 기본으로 두고,<br />
-산지, 녹지, 수계, 도로 같은 정보를 겹쳐<br />
-조금 더 풍부한 정보를 담고 있는 지도를 만들어 보겠습니다.</p>
+<p>예를 들어,</p>
+<ul>
+  <li>수도권 전체 지도에서 서울만 보여주고 싶을 때</li>
+  <li>서울 안에서도 광화문처럼 한 지점에 초점을 맞추고 싶을 때처럼요</li>
+</ul>
 
-<p>먼저 사용할 데이터를 준비합니다.<br />
-행정구역 경계, 산지, 녹지, 수계, 도로 데이터는 모두<br />
-<a href="https://www.vworld.kr">V-World 디지털트윈국토</a>에서 받을 수 있습니다.</p>
+<p>이럴 때 범위를 지정해서 지도를 확대하는 2가지 방법이 있습니다.</p>
 
-<p>다행히 모든 데이터의 좌표계가 GRS80(EPSG: 5186)으로 동일해<br />
-좌표계 변환 없이 바로 사용할 수 있습니다.<br />
-그래서 좌표계를 맞추는 추가 작업은 필요 없습니다.</p>
+<h2 id="폴리곤-경계를-기준으로-지도-확대하기">폴리곤 경계를 기준으로 지도 확대하기</h2>
 
-<table>
-  <thead>
-    <tr>
-      <th>데이터</th>
-      <th>게시물</th>
-      <th>좌표계</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>행정구역 경계</td>
-      <td><a href="https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?searchKeyword=%ED%96%89%EC%A0%95%EA%B5%AC%EC%97%AD&amp;searchOrganization=&amp;searchBrmCode=&amp;searchTagList=&amp;searchFrm=&amp;pageIndex=1&amp;gidmCd=&amp;gidsCd=&amp;sortType=00&amp;svcCde=MK&amp;dsId=30604&amp;listPageIndex=1">행정구역시군구_경계</a></td>
-      <td>GRS80(EPSG:5186)</td>
-    </tr>
-    <tr>
-      <td>산지</td>
-      <td><a href="https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?svcCde=MK&amp;dsId=30362">(연속주제)_산지관리/보전준보전산지</a></td>
-      <td>GRS80(EPSG:5186)</td>
-    </tr>
-    <tr>
-      <td>녹지</td>
-      <td><a href="https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?svcCde=MK&amp;dsId=30289">(연속주제)_국토계획/공간시설</a></td>
-      <td>GRS80(EPSG:5186)</td>
-    </tr>
-    <tr>
-      <td>수계</td>
-      <td><a href="https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?svcCde=MK&amp;dsId=30207">실폭하천</a></td>
-      <td>GRS80(EPSG:5186)</td>
-    </tr>
-    <tr>
-      <td>도로</td>
-      <td><a href="https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?svcCde=MK&amp;dsId=30057">(도로명주소)실폭도로</a></td>
-      <td>GRS80(EPSG:5186)</td>
-    </tr>
-  </tbody>
-</table>
+<p>이전 <a href="https://rlogrim.github.io/map/layering-spatial-data/">지도 위에 공간 정보 쌓아보기</a> 포스팅에서 만든<br />
+수도권 지도를 활용하겠습니다.</p>
 
-<h2 id="여러-shp-파일-한-번에-불러오기">여러 shp 파일, 한 번에 불러오기</h2>
+<p>먼저 수도권 지도에서 서울의 경계 좌표를 가져옵니다.<br />
+<code class="language-plaintext highlighter-rouge">st_bbox()</code>를 쓰면 폴리곤의 최소, 최대 좌표(xmin, xmax, ymin, ymax)를<br />
+한 번에 얻을 수 있습니다.</p>
 
-<p>다운로드한 shp 파일들을 R로 불러옵니다.<br />
-행정구역 경계는 이전에 만들어둔<br />
-<a href="https://rlogrim.github.io/map/how-to-merge-regions/">수도권 행정구 병합 지도.shp</a> 파일을 사용합니다.</p>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 서울 경계 좌표 구하기</span><span class="w">
+</span><span class="n">coords_seoul</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sgg</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">filter</span><span class="p">(</span><span class="n">grepl</span><span class="p">(</span><span class="s2">"서울특별시"</span><span class="p">,</span><span class="w"> </span><span class="n">SGG_NM</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">st_bbox</span><span class="p">()</span><span class="w">
 
-<p>나머지 데이터는 폴더 안에 여러 shp 파일로 나뉘어 있으므로,<br />
-<code class="language-plaintext highlighter-rouge">list.files()</code>로 한꺼번에 불러와 <code class="language-plaintext highlighter-rouge">bind_rows()</code>로 합쳐줍니다.
-이렇게 하면 데이터 종류별로 하나의 sf 객체로 만들 수 있습니다.</p>
-
-<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 패키지 로드</span><span class="w">
-</span><span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span><span class="w">
-</span><span class="n">library</span><span class="p">(</span><span class="n">sf</span><span class="p">)</span><span class="w">
-
-</span><span class="c1"># 행정구역 경계 지도 로드</span><span class="w">
-</span><span class="n">sgg</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">st_read</span><span class="p">(</span><span class="s2">"아웃풋/수도권 행정구 병합 지도.shp"</span><span class="p">)</span><span class="w">
-
-</span><span class="c1"># 녹지 데이터 로드 및 병합</span><span class="w">
-</span><span class="n">folder_path</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"데이터/수도권 지도/녹지"</span><span class="w">
-
-</span><span class="n">shp_files</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">list.files</span><span class="p">(</span><span class="n">folder_path</span><span class="p">,</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"*.shp$"</span><span class="p">,</span><span class="w"> </span><span class="n">full.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
-
-</span><span class="n">green</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">shp_files</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
-  </span><span class="n">lapply</span><span class="p">(</span><span class="n">st_read</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
-  </span><span class="n">bind_rows</span><span class="p">()</span><span class="w">
-
-</span><span class="c1"># 도로 데이터 로드 및 병합</span><span class="w">
-</span><span class="n">folder_path</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"데이터/수도권 지도/도로"</span><span class="w">
-
-</span><span class="n">shp_files</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">list.files</span><span class="p">(</span><span class="n">folder_path</span><span class="p">,</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"*.shp$"</span><span class="p">,</span><span class="w"> </span><span class="n">full.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
-
-</span><span class="n">road</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">shp_files</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
-  </span><span class="n">lapply</span><span class="p">(</span><span class="n">st_read</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
-  </span><span class="n">bind_rows</span><span class="p">()</span><span class="w">
-
-</span><span class="c1"># 산지 데이터 로드 및 병합</span><span class="w">
-</span><span class="n">folder_path</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"데이터/수도권 지도/산지"</span><span class="w">
-
-</span><span class="n">shp_files</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">list.files</span><span class="p">(</span><span class="n">folder_path</span><span class="p">,</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"*.shp$"</span><span class="p">,</span><span class="w"> </span><span class="n">full.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
-
-</span><span class="n">mt</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">shp_files</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
-  </span><span class="n">lapply</span><span class="p">(</span><span class="n">st_read</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
-  </span><span class="n">bind_rows</span><span class="p">()</span><span class="w">
-
-</span><span class="c1"># 수계 데이터 로드 및 병합</span><span class="w">
-</span><span class="n">folder_path</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"데이터/수도권 지도/수계"</span><span class="w">
-
-</span><span class="n">shp_files</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">list.files</span><span class="p">(</span><span class="n">folder_path</span><span class="p">,</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"*.shp$"</span><span class="p">,</span><span class="w"> </span><span class="n">full.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
-
-</span><span class="n">water</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">shp_files</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
-  </span><span class="n">lapply</span><span class="p">(</span><span class="n">st_read</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
-  </span><span class="n">bind_rows</span><span class="p">()</span><span class="w">
+</span><span class="n">coords_seoul</span><span class="w">
 </span></code></pre></div></div>
 
-<h2 id="지도에-쓰기-좋게-shp-파일-다듬기">지도에 쓰기 좋게 shp 파일 다듬기</h2>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##     xmin     ymin     xmax     ymax 
+## 179191.4 536562.8 216242.3 566863.5
+</code></pre></div></div>
 
-<p>녹지 데이터는 ‘국토계획/공간시설’ 자료에서<br />
-필요한 부분만 골라 사용합니다.<br />
-용도지역지구 표준분류코드를 기준으로 보면,<br />
-광장(UQT100)은 녹지 성격과 거리가 있어 제외했습니다.</p>
+<p>이제 이 좌표를 활용할 차례입니다.</p>
 
-<p><code class="language-plaintext highlighter-rouge">MNUM</code>에서 필요한 부분만 잘라낸 뒤,<br />
-조건에 맞지 않는 항목을 <code class="language-plaintext highlighter-rouge">filter()</code>로 걸러냅니다.</p>
+<p>앞으로 지도를 여러 번 그릴 예정이니,<br />
+기본이 되는 지도를 <code class="language-plaintext highlighter-rouge">base_map</code>이라는 이름으로 한 번 만들어두겠습니다.<br />
+그리고 <code class="language-plaintext highlighter-rouge">coord_sf()</code>에 방금 구한 서울 경계 좌표를 넣으면,<br />
+서울을 중심으로 한 확대 지도가 완성됩니다.</p>
 
-<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">green</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">green</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
-  </span><span class="n">mutate</span><span class="p">(</span><span class="n">no</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">substr</span><span class="p">(</span><span class="n">MNUM</span><span class="p">,</span><span class="w"> </span><span class="m">21</span><span class="p">,</span><span class="w"> </span><span class="m">24</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
-  </span><span class="n">filter</span><span class="p">(</span><span class="n">no</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s2">"UQT1"</span><span class="p">)</span><span class="w">
-</span></code></pre></div></div>
-
-<p>산지와 수계 데이터는 전국 단위라 그대로 쓰기엔 너무 큽니다.<br />
-그래서 <code class="language-plaintext highlighter-rouge">st_intersection()</code>을 이용해<br />
-수도권 행정구역(sgg)과 겹치는 부분만 남깁니다.</p>
-
-<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">st_crs</span><span class="p">(</span><span class="n">water</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">5186</span><span class="w">
-</span><span class="n">st_crs</span><span class="p">(</span><span class="n">mt</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">5186</span><span class="w">
-
-</span><span class="n">water</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">st_intersection</span><span class="p">(</span><span class="n">water</span><span class="p">,</span><span class="w"> </span><span class="n">sgg</span><span class="p">)</span><span class="w">
-</span><span class="n">mt</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">st_intersection</span><span class="p">(</span><span class="n">mt</span><span class="p">,</span><span class="w"> </span><span class="n">sgg</span><span class="p">)</span><span class="w">
-</span></code></pre></div></div>
-
-<h2 id="레이어를-차곡차곡-쌓아서-한-장의-지도로-만들기">레이어를 차곡차곡 쌓아서 한 장의 지도로 만들기</h2>
-
-<p>이제 모든 재료가 준비됐습니다.<br />
-<code class="language-plaintext highlighter-rouge">ggplot2</code>의 <code class="language-plaintext highlighter-rouge">geom_sf()</code>를 이용해 지도 레이어를 하나씩 쌓아봅니다.<br />
-바탕에 행정구역 면, 그 위에 녹지, 산지, 수계, 도로,<br />
-마지막으로 행정구역 경계선을 그려줍니다.</p>
-
-<p>축과 배경은 <code class="language-plaintext highlighter-rouge">theme_void()</code>로 제거해<br />
-지도 자체에만 시선이 가도록 합니다.</p>
-
-<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ggplot</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 기본 지도 정의</span><span class="w">
+</span><span class="n">base_map</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ggplot</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
   </span><span class="n">geom_sf</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sgg</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="o">=</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="o">=</span><span class="s2">"#eaeaea"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="c1"># 시군구 영역</span><span class="w">
   </span><span class="n">geom_sf</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">green</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="o">=</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="o">=</span><span class="s2">"#A0D097"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="c1"># 녹지</span><span class="w">
   </span><span class="n">geom_sf</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mt</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="o">=</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="o">=</span><span class="s2">"#A0D097"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="c1"># 산지</span><span class="w">
   </span><span class="n">geom_sf</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">water</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="o">=</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="o">=</span><span class="s2">"#A5D1F2"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="c1"># 수계</span><span class="w">
   </span><span class="n">geom_sf</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">road</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="o">=</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="o">=</span><span class="s2">"white"</span><span class="p">,</span><span class="w"> </span><span class="n">linewidth</span><span class="o">=</span><span class="m">0.1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="c1"># 도로</span><span class="w">
   </span><span class="n">geom_sf</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sgg</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="o">=</span><span class="s2">"white"</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="o">=</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="n">linewidth</span><span class="o">=</span><span class="m">1.3</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="c1"># 시군구 경계</span><span class="w">
-  </span><span class="n">geom_sf</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sgg</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="o">=</span><span class="s2">"gray40"</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="o">=</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="n">linewidth</span><span class="o">=</span><span class="m">0.5</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="c1"># 시군구 경계</span><span class="w">
+  </span><span class="n">geom_sf</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sgg</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="o">=</span><span class="s2">"gray40"</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="o">=</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="n">linewidth</span><span class="o">=</span><span class="m">0.5</span><span class="p">)</span><span class="w"> </span><span class="c1"># 시군구 경계</span><span class="w">
+
+</span><span class="c1"># 서울 중심으로 확대된 지도 그리기</span><span class="w">
+</span><span class="n">base_map</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">coord_sf</span><span class="p">(</span><span class="n">xlim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">coords_seoul</span><span class="p">[</span><span class="nf">c</span><span class="p">(</span><span class="s2">"xmin"</span><span class="p">,</span><span class="w"> </span><span class="s2">"xmax"</span><span class="p">)],</span><span class="w">
+           </span><span class="n">ylim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">coords_seoul</span><span class="p">[</span><span class="nf">c</span><span class="p">(</span><span class="s2">"ymin"</span><span class="p">,</span><span class="w"> </span><span class="s2">"ymax"</span><span class="p">)])</span><span class="w"> </span><span class="o">+</span><span class="w">
   </span><span class="n">theme_void</span><span class="p">()</span><span class="w">
 </span></code></pre></div></div>
 
-<p><img src="/assets/images/2025-12-31-layering-spatial-data/unnamed-chunk-4-1.png" width="100%" style="display: block; margin: auto;" alt="녹지, 산지, 수계, 도로를 표현한 수도권 지도" /></p>
+<p><img src="/assets/images/2025-12-31-how-to-zoom-in-on-maps/unnamed-chunk-2-1.png" width="100%" style="display: block; margin: auto;" alt="수도권에서 서울을 확대한 지도" /></p>
 
-<p>행정구역을 뼈대로 삼고,<br />
-그 위에 어떤 공간 정보든 자유롭게 얹을 수 있습니다.</p>
+<h2 id="경계에-여유를-두고-싶다면">경계에 여유를 두고 싶다면?</h2>
 
-<p>예를 들어,</p>
-<ul>
-  <li>인구, 산업, 시설 밀도 등 점 데이터</li>
-  <li>도로, 철도, 하천 등 선 데이터</li>
-  <li>개발제한구역, 용도지역 등 면 데이터</li>
-</ul>
+<p>서울 경계에 정확히 맞춘 지도는<br />
+조금 답답해 보일 수 있습니다.<br />
+이럴 땐 경계에 여유를 조금 주는 게 좋습니다.</p>
 
-<p>이 방법을 활용해서 목적에 맞는 다양한 지도를 만들어 보세요.</p>
+<p><code class="language-plaintext highlighter-rouge">st_buffer()</code>를 이용해 경계를 기준으로<br />
+바깥쪽 여백을 만들 수 있습니다.<br />
+여기서는 서울 경계에 3km 정도 여유를 줘보겠습니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 3km 버퍼를 둔 경계 좌표 구하기</span><span class="w">
+</span><span class="n">buffered_coords_seoul</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sgg</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">filter</span><span class="p">(</span><span class="n">grepl</span><span class="p">(</span><span class="s2">"서울특별시"</span><span class="p">,</span><span class="w"> </span><span class="n">SGG_NM</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">st_buffer</span><span class="p">(</span><span class="n">dist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3000</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="c1"># 3km 버퍼</span><span class="w">
+  </span><span class="n">st_bbox</span><span class="p">()</span><span class="w">
+
+</span><span class="c1"># 버퍼를 적용한 확대 지도 그리기</span><span class="w">
+</span><span class="n">base_map</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">coord_sf</span><span class="p">(</span><span class="n">xlim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">buffered_coords_seoul</span><span class="p">[</span><span class="nf">c</span><span class="p">(</span><span class="s2">"xmin"</span><span class="p">,</span><span class="w"> </span><span class="s2">"xmax"</span><span class="p">)],</span><span class="w">
+           </span><span class="n">ylim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">buffered_coords_seoul</span><span class="p">[</span><span class="nf">c</span><span class="p">(</span><span class="s2">"ymin"</span><span class="p">,</span><span class="w"> </span><span class="s2">"ymax"</span><span class="p">)])</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_void</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/images/2025-12-31-how-to-zoom-in-on-maps/unnamed-chunk-3-1.png" width="100%" style="display: block; margin: auto;" alt="경계에 버퍼를 준 서울 지도" /></p>
+
+<h2 id="좌표를-직접-지정해서-확대하기">좌표를 직접 지정해서 확대하기</h2>
+
+<p>이번에는 수동으로 범위를 지정하는 방법을 살펴볼까요?</p>
+
+<p>Google 지도에서 광화문을 검색한 후<br />
+확대해서 보고 영역의 꼭지점을 두 번 클릭하면<br />
+경도, 위도 좌표를 확인할 수 있습니다.</p>
+
+<p>한 가지 주의할 점은,<br />
+Google 지도 좌표는 EPSG:4326(WGS84)를 쓰기 때문에<br />
+우리가 쓰는 지도 좌표계인 EPSG:5186(GRS80)으로 변환이 필요하다는 점입니다.</p>
+
+<p>네 꼭짓점 좌표를 만들고,<br />
+좌표계를 변환한 뒤 <code class="language-plaintext highlighter-rouge">coord_sf()</code>에 넣어주면 끝입니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 광화문 영역 좌표 정의 및 변환</span><span class="w">
+</span><span class="n">x</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">126.951940</span><span class="p">,</span><span class="w"> </span><span class="m">127.000950</span><span class="p">)</span><span class="w">
+</span><span class="n">y</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">37.566511</span><span class="p">,</span><span class="w"> </span><span class="m">37.586238</span><span class="p">)</span><span class="w">
+
+</span><span class="n">pts</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">st_multipoint</span><span class="p">(</span><span class="n">matrix</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">)],</span><span class="w">
+                              </span><span class="n">y</span><span class="p">[</span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">)]),</span><span class="w"> </span><span class="n">ncol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">))</span><span class="w">
+
+</span><span class="n">coords_ghm</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">st_sfc</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span><span class="w"> </span><span class="n">crs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4326</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">st_transform</span><span class="p">(</span><span class="n">crs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5186</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">st_bbox</span><span class="p">()</span><span class="w">
+
+</span><span class="c1"># 광화문 인근 지역 지도 그리기</span><span class="w">
+</span><span class="n">base_map</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">coord_sf</span><span class="p">(</span><span class="n">xlim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">coords_ghm</span><span class="p">[</span><span class="nf">c</span><span class="p">(</span><span class="s2">"xmin"</span><span class="p">,</span><span class="w"> </span><span class="s2">"xmax"</span><span class="p">)],</span><span class="w">
+           </span><span class="n">ylim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">coords_ghm</span><span class="p">[</span><span class="nf">c</span><span class="p">(</span><span class="s2">"ymin"</span><span class="p">,</span><span class="w"> </span><span class="s2">"ymax"</span><span class="p">)])</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_void</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/images/2025-12-31-how-to-zoom-in-on-maps/unnamed-chunk-4-1.png" width="100%" style="display: block; margin: auto;" alt="광화문 인근 지역 지도" /></p>
+
+<p>특정 지역만 확대하고 싶었다면,<br />
+이 두 가지 방법이 충분히 도움이 될 거라고 생각합니다.</p>
+
+<p>폴리곤 경계를 기준으로 범위를 잡는 방법은<br />
+폴리곤이 있는 도시나 권역에 초점을 맞출 때 유용하고,<br />
+좌표를 직접 지정하는 방법은<br />
+폴리곤이 없는 지역을 대상으로 지도를 그릴 때 활용할 수 있습니다.</p>
 
         
       </section>
@@ -485,10 +444,10 @@
       
   <nav class="pagination">
     
-      <a href="/map/how-to-zoom-in-on-maps/" class="pagination--pager" title="지도 확대하기">Previous</a>
+      <a href="/chart/y-axis-range-adjustment-tips/" class="pagination--pager" title="y축 여백을 없애거나 범위 조정하기">Previous</a>
     
     
-      <a href="#" class="pagination--pager disabled">Next</a>
+      <a href="/map/layering-spatial-data/" class="pagination--pager" title="지도 위에 공간 정보 쌓아보기">Next</a>
     
   </nav>
 
@@ -523,7 +482,7 @@
     
     <h2 class="archive__item-title no_toc" itemprop="headline">
       
-        <a href="/map/how-to-zoom-in-on-maps/" rel="permalink">지도 확대하기
+        <a href="/map/layering-spatial-data/" rel="permalink">지도 위에 공간 정보 쌓아보기
 </a>
       
     </h2>
@@ -548,14 +507,14 @@
       <span class="page__meta-readtime">
         <i class="far fa-fw fa-clock" aria-hidden="true"></i>
         
-          2 minute read
+          1 minute read
         
       </span>
     
   </p>
 
 
-    <p class="archive__item-excerpt" itemprop="description">전체 지도가 아니라 원하는 지역만 확대하고 싶은 적이 있었나요? 지도를 확대하는 두 가지 방법을 알려드립니다.
+    <p class="archive__item-excerpt" itemprop="description">행정구역 지도 위에 여러 공간 데이터를 함께 그리고 싶었던 적 있나요? 행정구역 경계를 바탕으로 녹지, 수계, 도로 데이터를 불러와 정리하고, 레이어로 쌓아 하나의 지도를 완성하는 과정을 소개합니다.
 </p>
   </article>
 </div>
