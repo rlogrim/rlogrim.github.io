@@ -1,0 +1,880 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.3 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>시계열 차트에서 날짜 다루기 - 알로그림</title>
+<meta name="description" content="시계열 차트를 그리다 날짜 때문에 막힌 적 있나요? 문자형 날짜를 날짜 객체로 변환하는 방법부터, 날짜 축 설정, 라벨 정리, 일 단위 데이터를 월 단위로 요약하는 과정까지 차근차근 알아봅시다.">
+
+
+  <meta name="author" content="알빈치(Rvinci)">
+  
+  <meta property="article:author" content="알빈치(Rvinci)">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="알로그림">
+<meta property="og:title" content="시계열 차트에서 날짜 다루기">
+<meta property="og:url" content="http://localhost:4000/chart/handling-dates-in-time-series-charts/">
+
+
+  <meta property="og:description" content="시계열 차트를 그리다 날짜 때문에 막힌 적 있나요? 문자형 날짜를 날짜 객체로 변환하는 방법부터, 날짜 축 설정, 라벨 정리, 일 단위 데이터를 월 단위로 요약하는 과정까지 차근차근 알아봅시다.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2026-01-01T00:00:00+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="http://localhost:4000/chart/handling-dates-in-time-series-charts/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  window.enable_copy_code_button = true;
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- Pretendard (Korean UI / Body) -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css">
+
+<!-- JetBrains Mono (Code Blocks) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          알로그림
+          
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/data/"
+                
+                
+              >데이터 가공</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/chart/"
+                
+                
+              >차트</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/map/"
+                
+                
+              >지도</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="http://localhost:4000/">
+        <img src="/assets/images/avatar.png" alt="알빈치(Rvinci)" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="http://localhost:4000/" itemprop="url">알빈치(Rvinci)</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>R로 그림을 그린 지 어언 6년. 
+연구기관에 재직 중이며, 
+엑셀로 해결될 일도 굳이 R로 그려보는 편입니다.</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+
+      
+        
+          
+            <li><a href="mailto:rlogrim.blog@gmail.com" rel="nofollow noopener noreferrer me"><i class="fas fa-fw fa-envelope" aria-hidden="true"></i><span class="label">rlogrim.blog@gmail.com</span></a></li>
+          
+        
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="시계열 차트에서 날짜 다루기">
+    <meta itemprop="description" content="시계열 차트를 그리다 날짜 때문에 막힌 적 있나요? 문자형 날짜를 날짜 객체로 변환하는 방법부터, 날짜 축 설정, 라벨 정리, 일 단위 데이터를 월 단위로 요약하는 과정까지 차근차근 알아봅시다.">
+    <meta itemprop="datePublished" content="2026-01-01T00:00:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">
+            <a href="http://localhost:4000/chart/handling-dates-in-time-series-charts/" itemprop="url">시계열 차트에서 날짜 다루기
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-01T00:00:00+09:00">January 1, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>R로 시계열 데이터를 그리다 보면,<br />
+생각보다 자주 막히는 지점이 바로 날짜 처리입니다.</p>
+
+<p>이번 글에서는 국가별 코로나19 확진자 수 데이터를 예제로 삼아,</p>
+<ul>
+  <li>문자형 날짜를 날짜(Date) 객체로 변환하는 방법</li>
+  <li>ggplot2에서 날짜를 x축으로 사용하는 방법</li>
+  <li>날짜 라벨을 읽기 좋게 다듬는 방법</li>
+  <li>일 단위 데이터를 월 단위로 정리하는 방법까지 한 번에 정리해봅니다.</li>
+</ul>
+
+<p>데이터는 <a href="https://ourworldindata.org/covid-vaccinations?country=OWID_WRL">Our World in Data</a>에서 제공하는<br />
+코로나19 공개 데이터를 사용합니다.</p>
+
+<h2 id="날짜-왜-이렇게-다루기-어려울까">날짜, 왜 이렇게 다루기 어려울까</h2>
+
+<p>날짜 데이터는 막상 다뤄보면<br />
+생각보다 까다로운 점이 많습니다.</p>
+
+<p>먼저, 형식이 제각각입니다.<br />
+“2020-08-08”, “2020/08/08”, “20-08-08”, “2020년 8월 8일”처럼 표현 방식이 제각기 다릅니다.</p>
+
+<p>문자형으로 불러오면 순서가 깨집니다.<br />
+날짜가 시간 순서가 아니라 문자열 순서로 정렬됩니다.</p>
+
+<p>숫자처럼 계산할 수 없습니다.<br />
+날짜는 단순한 숫자가 아니어서 <code class="language-plaintext highlighter-rouge">+</code>, <code class="language-plaintext highlighter-rouge">-</code> 연산이 바로 되지 않습니다.</p>
+
+<p>이런 문제를 해결해 주는 패키지가 바로 <code class="language-plaintext highlighter-rouge">lubridate</code>입니다.<br />
+자세한 내용은 <a href="https://lubridate.tidyverse.org/reference/lubridate-package.html">공식 문서</a>를 참고해도 좋습니다.</p>
+
+<h2 id="데이터부터-준비합시다">데이터부터 준비합시다</h2>
+
+<p>이번에 사용할 데이터에는 다음과 같은 열이 들어 있습니다.</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">date</code>: 날짜(문자형)</li>
+  <li><code class="language-plaintext highlighter-rouge">locate</code>: 국가명</li>
+  <li><code class="language-plaintext highlighter-rouge">new_cases</code>: 해당 날짜의 신규 확진자 수</li>
+</ul>
+
+<p>한국 데이터만 골라서 분석에 필요한 행만 남기겠습니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 패키지 로드</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">lubridate</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># 데이터 불러오기</span><span class="w">
+</span><span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read.csv</span><span class="p">(</span><span class="s2">"데이터/owid-covid-data.csv"</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># 한국 데이터 필터링 및 열 선택</span><span class="w">
+</span><span class="n">data_korea</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">filter</span><span class="p">(</span><span class="n">location</span><span class="o">==</span><span class="s2">"South Korea"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">select</span><span class="p">(</span><span class="n">date</span><span class="p">,</span><span class="w"> </span><span class="n">new_cases</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># 데이터 구조 확인</span><span class="w">
+</span><span class="n">str</span><span class="p">(</span><span class="n">data_korea</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## 'data.frame':    1034 obs. of  2 variables:
+##  $ date     : chr  "2020-01-22" "2020-01-23" "2020-01-24" "2020-01-25" ...
+##  $ new_cases: num  NA 0 1 0 1 1 0 0 0 7 ...
+</code></pre></div></div>
+
+<p>이 상태에서 <code class="language-plaintext highlighter-rouge">date</code>는 아직 문자형(character)입니다.<br />
+그래프의 x축으로 쓰기 전에,<br />
+날짜 전용 클래스인 <code class="language-plaintext highlighter-rouge">Date</code>로 변화해줘야 합니다.<br />
+<code class="language-plaintext highlighter-rouge">ymd()</code>는 “2020-01-22”처럼 연-월-일 형태의 문자열을<br />
+자동으로 인식해 날짜 객체로 바꿔줍니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 날짜 변환</span><span class="w">
+</span><span class="n">data_korea</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data_korea</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">date</span><span class="o">=</span><span class="n">ymd</span><span class="p">(</span><span class="n">date</span><span class="p">))</span><span class="w">
+
+</span><span class="c1"># 데이터 요약</span><span class="w">
+</span><span class="n">summary</span><span class="p">(</span><span class="n">data_korea</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##       date              new_cases     
+##  Min.   :2020-01-22   Min.   :     0  
+##  1st Qu.:2020-10-06   1st Qu.:   168  
+##  Median :2021-06-21   Median :   967  
+##  Mean   :2021-06-21   Mean   : 25733  
+##  3rd Qu.:2022-03-06   3rd Qu.: 13004  
+##  Max.   :2022-11-20   Max.   :621317  
+##                       NA's   :1
+</code></pre></div></div>
+
+<h2 id="x축에-날짜를-배치하기">x축에 날짜를 배치하기</h2>
+
+<p>날짜를 x축에 쓰려면 <code class="language-plaintext highlighter-rouge">scale_x_date()</code>를 사용합니다.<br />
+<code class="language-plaintext highlighter-rouge">breaks</code>로 x축 어디에 눈금을 찍을지,<br />
+<code class="language-plaintext highlighter-rouge">date_labels</code>로 날짜를 어떤 형식으로 보여줄지 정할 수 있습니다.
+아래 예시는 3개월 간격으로 날짜를 표시하고,<br />
+라벨은 년-월 형식으로 보여주는 코드입니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ggplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data_korea</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">date</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="n">new_cases</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_col</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_x_date</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span><span class="w"> 
+               </span><span class="n">breaks</span><span class="o">=</span><span class="n">seq</span><span class="p">(</span><span class="n">ymd</span><span class="p">(</span><span class="s1">'2020-01-20'</span><span class="p">),</span><span class="n">ymd</span><span class="p">(</span><span class="s1">'2022-11-20'</span><span class="p">),</span><span class="w"> </span><span class="n">by</span><span class="o">=</span><span class="s1">'3 month'</span><span class="p">),</span><span class="w"> 
+               </span><span class="n">date_labels</span><span class="o">=</span><span class="s2">"%Y-%m"</span><span class="w">
+               </span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_y_continuous</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"신규 확진자 수(명)"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_bw</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/images/2026-01-01-handling-dates-in-time-series-charts/unnamed-chunk-3-1.png" width="70%" style="display: block; margin: auto;" alt="한국의 일별 코로나 신규 확진자 수 그래프" /></p>
+
+<h2 id="날짜-라벨이-겹칠-땐">날짜 라벨이 겹칠 땐</h2>
+
+<p>날짜가 길거나 간격이 촘촘하면<br />
+라벨이 서로 겹쳐서 읽기 어려울 때가 있습니다.<br />
+이럴 때는 줄 바꿈이나 회전으로 해결할 수 있습니다.</p>
+
+<h3 id="1-줄-바꿈하기">1. 줄 바꿈하기</h3>
+
+<p><code class="language-plaintext highlighter-rouge">labels</code>에 다음과 같이 함수를 넘기면,<br />
+날짜 문자열을 원하는 형태로 직접 바꿀 수 있습니다.
+아래 코드는 연도 뒤에서 줄 바꿈을 해줍니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ggplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data_korea</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">date</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="n">new_cases</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_col</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_x_date</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span><span class="w">
+              </span><span class="n">breaks</span><span class="o">=</span><span class="n">seq</span><span class="p">(</span><span class="n">ymd</span><span class="p">(</span><span class="s1">'2020-01-20'</span><span class="p">),</span><span class="n">ymd</span><span class="p">(</span><span class="s1">'2022-11-20'</span><span class="p">),</span><span class="w"> </span><span class="n">by</span><span class="o">=</span><span class="s1">'3 month'</span><span class="p">),</span><span class="w">
+              </span><span class="n">labels</span><span class="o">=</span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="n">sub</span><span class="p">(</span><span class="s2">"-"</span><span class="p">,</span><span class="w"> </span><span class="s2">"-\n"</span><span class="p">,</span><span class="w"> </span><span class="nf">as.character</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w"> </span><span class="c1"># 년도 다음 대쉬 뒤 줄 바꿈</span><span class="w">
+              </span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">scale_y_continuous</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"신규 확진자 수(명)"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_bw</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/images/2026-01-01-handling-dates-in-time-series-charts/unnamed-chunk-4-1.png" width="70%" style="display: block; margin: auto;" alt="x축 텍스트 줄 바꾼 그래프" /></p>
+
+<h3 id="2-라벨-회전하기">2. 라벨 회전하기</h3>
+
+<p>라벨을 기울이는 것도 자주 쓰는 방법입니다.
+<code class="language-plaintext highlighter-rouge">angle</code>로 회전 각도를 설정하고,<br />
+<code class="language-plaintext highlighter-rouge">hjust</code>, <code class="language-plaintext highlighter-rouge">vjust</code>로 글자 정렬 위치를 조정합니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ggplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data_korea</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">date</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="n">new_cases</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_col</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_x_date</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span><span class="w">
+              </span><span class="n">breaks</span><span class="o">=</span><span class="n">seq</span><span class="p">(</span><span class="n">ymd</span><span class="p">(</span><span class="s1">'2020-01-20'</span><span class="p">),</span><span class="n">ymd</span><span class="p">(</span><span class="s1">'2022-11-20'</span><span class="p">),</span><span class="w"> </span><span class="n">by</span><span class="o">=</span><span class="s1">'3 month'</span><span class="p">),</span><span class="w">
+              </span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">scale_y_continuous</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"신규 확진자 수(명)"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_bw</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme</span><span class="p">(</span><span class="w">
+    </span><span class="n">axis.text.x</span><span class="o">=</span><span class="n">element_text</span><span class="p">(</span><span class="n">angle</span><span class="o">=</span><span class="m">45</span><span class="p">,</span><span class="w"> </span><span class="n">hjust</span><span class="o">=</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">vjust</span><span class="o">=</span><span class="m">1</span><span class="p">)</span><span class="w">
+  </span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/images/2026-01-01-handling-dates-in-time-series-charts/unnamed-chunk-5-1.png" width="70%" style="display: block; margin: auto;" alt="x축 텍스트 45도 회전한 그래프" /></p>
+
+<h2 id="일별-데이터-월별로-정리하기">일별 데이터, 월별로 정리하기</h2>
+
+<p>일별 데이터가 너무 많다면,<br />
+월 단위로 요약해서 보는 편이 더 좋을 때도 많습니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">date</code>에서 년-월 문자열을 생성하고,<br />
+이를 기준으로 그룹화하여 월별 신규 확진자 수를 합산합니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 년월 열 생성 및 집계</span><span class="w">
+</span><span class="n">data_korea_monthly</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data_korea</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">년월</span><span class="o">=</span><span class="n">format</span><span class="p">(</span><span class="n">date</span><span class="p">,</span><span class="w"> </span><span class="s2">"%Y-%m"</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">group_by</span><span class="p">(</span><span class="n">년월</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">summarise</span><span class="p">(</span><span class="n">new_cases</span><span class="o">=</span><span class="nf">sum</span><span class="p">(</span><span class="n">new_cases</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span><span class="w">
+
+</span><span class="c1"># 데이터 확인</span><span class="w">
+</span><span class="n">head</span><span class="p">(</span><span class="n">data_korea_monthly</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## # A tibble: 6 × 2
+##   년월    new_cases
+##   &lt;chr&gt;       &lt;dbl&gt;
+## 1 2020-01        10
+## 2 2020-02      3139
+## 3 2020-03      6636
+## 4 2020-04       988
+## 5 2020-05       729
+## 6 2020-06      1347
+</code></pre></div></div>
+
+<p>이제 날짜가 범주형 변수가 되었기 때문에,<br />
+x축은 <code class="language-plaintext highlighter-rouge">scale_x_discrete()</code>을 사용합니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ggplot</span><span class="p">(</span><span class="n">data_korea_monthly</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">년월</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="n">new_cases</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_col</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_x_discrete</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span><span class="w">
+                   </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="n">sub</span><span class="p">(</span><span class="s2">"-"</span><span class="p">,</span><span class="w"> </span><span class="s2">"\n"</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w">
+                   </span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_y_continuous</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"신규 확진자 수(명)"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_bw</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/images/2026-01-01-handling-dates-in-time-series-charts/unnamed-chunk-7-1.png" width="70%" style="display: block; margin: auto;" alt="한국의 월별 코로나 신규 확진자 수 그래프" /></p>
+
+<p>모든 달에 연도르 쓰면 차트가 복잡해 보일 수 있습니다.<br />
+이럴 땐 1월에만 연도를 남기고,<br />
+나머지는 월만 표시하는 방법도 있습니다.</p>
+
+<p>“YYYY-01”일 경우 연도를 유지하고,<br />
+그 외의 경우에는 연도를 제거하라는 함수를 <code class="language-plaintext highlighter-rouge">labels</code>에 넣어줍니다.
+<code class="language-plaintext highlighter-rouge">grepl</code> 함수로 1월 해당 여부를 체크합니다.<br />
+<code class="language-plaintext highlighter-rouge">ifelse</code>, <code class="language-plaintext highlighter-rouge">sub</code> 함수를 이용해서 1월에 해당하지 않으면 년도를 삭제하고,<br />
+그 외의 경우에는 년도 대쉬 뒤에 줄 바꿈을 해줍니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ggplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data_korea_monthly</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">년월</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="n">new_cases</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_col</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_x_discrete</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span><span class="w">
+                   </span><span class="n">labels</span><span class="o">=</span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">){</span><span class="w">
+                     </span><span class="n">y</span><span class="o">=</span><span class="n">sub</span><span class="p">(</span><span class="s2">"-"</span><span class="p">,</span><span class="w"> </span><span class="s2">"\n"</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w">
+                     </span><span class="n">ifelse</span><span class="p">(</span><span class="o">!</span><span class="n">grepl</span><span class="p">(</span><span class="s2">".*(01)$"</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">),</span><span class="w"> </span><span class="n">sub</span><span class="p">(</span><span class="s2">"^\\d{4}"</span><span class="p">,</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">),</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w">
+                   </span><span class="p">})</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_y_continuous</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"신규 확진자 수(명)"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_bw</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/images/2026-01-01-handling-dates-in-time-series-charts/unnamed-chunk-8-1.png" width="70%" style="display: block; margin: auto;" alt="1월에만 년도를 표시한 그래프" /></p>
+
+<p>마지막으로 시각적인 요소를 조금 더 정리해봅니다.</p>
+<ul>
+  <li>y축 단위를 만 명 단위로 변환</li>
+  <li>막대가 x축에 딱 붙도록 설정</li>
+  <li>막대 위 값 표시</li>
+  <li>글꼴과 색상 통일</li>
+</ul>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 글꼴 변경</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">showtext</span><span class="p">)</span><span class="w">
+
+</span><span class="n">font_add_google</span><span class="p">(</span><span class="s2">"Noto Sans KR"</span><span class="p">,</span><span class="w"> </span><span class="s2">"noto"</span><span class="p">)</span><span class="w">
+
+</span><span class="n">showtext_auto</span><span class="p">()</span><span class="w">
+</span><span class="n">showtext_opts</span><span class="p">(</span><span class="n">dpi</span><span class="o">=</span><span class="m">300</span><span class="p">)</span><span class="w">
+
+</span><span class="n">theme.size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="w">
+</span><span class="n">geom.text.size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">theme.size</span><span class="o">/</span><span class="n">.pt</span><span class="w"> 
+
+</span><span class="c1"># 그래프 작성</span><span class="w">
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data_korea_monthly</span><span class="p">,</span><span class="w"> 
+       </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">년월</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="n">new_cases</span><span class="o">/</span><span class="m">10000</span><span class="p">,</span><span class="w"> 
+           </span><span class="n">label</span><span class="o">=</span><span class="n">scales</span><span class="o">::</span><span class="n">comma</span><span class="p">(</span><span class="n">new_cases</span><span class="o">/</span><span class="m">10000</span><span class="p">,</span><span class="w"> </span><span class="n">accuracy</span><span class="o">=</span><span class="m">1</span><span class="p">))</span><span class="w">
+       </span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_col</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s2">"#9AD1F5"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_text</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">geom.text.size</span><span class="p">,</span><span class="w"> </span><span class="n">family</span><span class="o">=</span><span class="s2">"noto"</span><span class="p">,</span><span class="w"> </span><span class="n">vjust</span><span class="o">=</span><span class="m">-0.5</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_x_discrete</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span><span class="w">
+                   </span><span class="n">labels</span><span class="o">=</span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">){</span><span class="w">
+                     </span><span class="n">y</span><span class="o">=</span><span class="n">sub</span><span class="p">(</span><span class="s2">"-"</span><span class="p">,</span><span class="w"> </span><span class="s2">"\n"</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w">
+                     </span><span class="n">ifelse</span><span class="p">(</span><span class="o">!</span><span class="n">grepl</span><span class="p">(</span><span class="s2">".*(01)$"</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">),</span><span class="w"> </span><span class="n">sub</span><span class="p">(</span><span class="s2">"^\\d{4}"</span><span class="p">,</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">),</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w">
+                   </span><span class="p">})</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_y_continuous</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"신규 확진자 수(만 명)"</span><span class="p">,</span><span class="w">
+                     </span><span class="n">labels</span><span class="o">=</span><span class="n">scales</span><span class="o">::</span><span class="n">comma_format</span><span class="p">(),</span><span class="w">
+                     </span><span class="n">expand</span><span class="o">=</span><span class="n">expansion</span><span class="p">(</span><span class="n">mult</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0.2</span><span class="p">)))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_bw</span><span class="p">(</span><span class="n">base_size</span><span class="o">=</span><span class="n">theme.size</span><span class="p">,</span><span class="w"> </span><span class="n">base_family</span><span class="o">=</span><span class="s2">"noto"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/images/2026-01-01-handling-dates-in-time-series-charts/unnamed-chunk-9-1.png" width="70%" style="display: block; margin: auto;" alt="한국의 월별 코로나 신규 확진자 수 그래프" /></p>
+
+<p>날짜 데이터는 처음엔 다루기 까다롭지만,<br />
+날짜 클래스로 변환하고 축 설정과 라벨만 잘 조절해주면<br />
+시계열 차트를 손쉽게 그릴 수 있습니다.</p>
+
+<p>다른 시계열 데이터에도 같은 방식을 적용해보세요.</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2026-01-01T00:00:00+09:00">January 1, 2026</time></p>
+
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="/map/layering-spatial-data/" class="pagination--pager" title="지도 위에 공간 정보 쌓아보기">Previous</a>
+    
+    
+      <a href="/chart/visualizing-multiple-variables/" class="pagination--pager" title="여러 변수를 하나의 그래프로 표현하기">Next</a>
+    
+  </nav>
+
+
+    </div>
+
+    
+      
+        <p>
+          Comments are configured with provider: <strong>utterances</strong>,
+          but are disabled in non-production environments.
+        </p>
+      
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">You May Also Enjoy</h2>
+  <div class="grid__wrapper">
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/chart/visualizing-multiple-variables/" rel="permalink">여러 변수를 하나의 그래프로 표현하기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-02T00:00:00+09:00">January 2, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">여러 변수를 동시에 비교해야 할 때 어떤 방식으로 시각화해야 할지 고민하고 있나요? 이 글에서는 ggplot2를 활용해 여러 속성을 한눈에 비교하는 방법부터, 속성별 분할과 정렬까지 실무에 바로 적용할 수 있는 시각화 기법을 단계별로 소개합니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/map/layering-spatial-data/" rel="permalink">지도 위에 공간 정보 쌓아보기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2025-12-31T00:00:00+09:00">December 31, 2025</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">행정구역 지도 위에 여러 공간 데이터를 함께 그리고 싶었던 적 있나요? 행정구역 경계를 바탕으로 녹지, 수계, 도로 데이터를 불러와 정리하고, 레이어로 쌓아 하나의 지도를 완성하는 과정을 소개합니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/map/how-to-zoom-in-on-maps/" rel="permalink">지도 확대하기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2025-12-31T00:00:00+09:00">December 31, 2025</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">전체 지도가 아니라 원하는 지역만 확대하고 싶은 적이 있었나요? 지도를 확대하는 두 가지 방법을 알려드립니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/chart/y-axis-range-adjustment-tips/" rel="permalink">y축 여백을 없애거나 범위 조정하기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2025-12-29T00:00:00+09:00">December 29, 2025</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">막대그래프에서 y축 여백이 거슬리거나, 값 차이가 잘 안 보인 적이 있나요? ggplot2로 그래프를 그릴 때 y축 범위를 조정하는 방법을 살펴봅니다.
+</p>
+  </article>
+</div>
+
+    
+  </div>
+</div>
+
+  
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        
+
+
+<div class="page__footer-copyright">&copy; 2026 <a href="http://localhost:4000">알로그림</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+    <script>
+  'use strict';
+
+  (function() {
+    var commentContainer = document.querySelector('#utterances-comments');
+
+    if (!commentContainer) {
+      return;
+    }
+
+    var script = document.createElement('script');
+    script.setAttribute('src', 'https://utteranc.es/client.js');
+    script.setAttribute('repo', 'rlogrim/rlogrim.github.io');
+    script.setAttribute('issue-term', 'pathname');
+    script.setAttribute('label', 'comment');
+    script.setAttribute('theme', 'github-light');
+    script.setAttribute('crossorigin', 'anonymous');
+
+    commentContainer.appendChild(script);
+  })();
+</script>
+
+  
+
+
+
+
+  </body>
+</html>
