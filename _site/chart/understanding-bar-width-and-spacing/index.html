@@ -1,0 +1,774 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.3 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>막대그래프 너비와 간격 조절하기 - 알로그림</title>
+<meta name="description" content="막대그래프를 그렸는데 막대가 너무 붙어 보이거나 답답하게 느껴진 적 있나요? 이 글에서는 geom_col(width)와 position_dodge(width)가 실제로 무엇을 의미하는지 설명하고, 막대 너비와 간격을 조절하는 방법을 알려드립니다.">
+
+
+  <meta name="author" content="알빈치(Rvinci)">
+  
+  <meta property="article:author" content="알빈치(Rvinci)">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="알로그림">
+<meta property="og:title" content="막대그래프 너비와 간격 조절하기">
+<meta property="og:url" content="http://localhost:4000/chart/understanding-bar-width-and-spacing/">
+
+
+  <meta property="og:description" content="막대그래프를 그렸는데 막대가 너무 붙어 보이거나 답답하게 느껴진 적 있나요? 이 글에서는 geom_col(width)와 position_dodge(width)가 실제로 무엇을 의미하는지 설명하고, 막대 너비와 간격을 조절하는 방법을 알려드립니다.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2026-01-04T00:00:00+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="http://localhost:4000/chart/understanding-bar-width-and-spacing/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  window.enable_copy_code_button = true;
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- Pretendard (Korean UI / Body) -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css">
+
+<!-- JetBrains Mono (Code Blocks) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          알로그림
+          
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/data/"
+                
+                
+              >데이터 가공</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/chart/"
+                
+                
+              >차트</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/map/"
+                
+                
+              >지도</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="http://localhost:4000/">
+        <img src="/assets/images/avatar.png" alt="알빈치(Rvinci)" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="http://localhost:4000/" itemprop="url">알빈치(Rvinci)</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>R로 그림을 그린 지 어언 6년. 
+연구기관에 재직 중이며, 
+엑셀로 해결될 일도 굳이 R로 그려보는 편입니다.</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+
+      
+        
+          
+            <li><a href="mailto:rlogrim.blog@gmail.com" rel="nofollow noopener noreferrer me"><i class="fas fa-fw fa-envelope" aria-hidden="true"></i><span class="label">rlogrim.blog@gmail.com</span></a></li>
+          
+        
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="막대그래프 너비와 간격 조절하기">
+    <meta itemprop="description" content="막대그래프를 그렸는데 막대가 너무 붙어 보이거나 답답하게 느껴진 적 있나요? 이 글에서는 geom_col(width)와 position_dodge(width)가 실제로 무엇을 의미하는지 설명하고, 막대 너비와 간격을 조절하는 방법을 알려드립니다.">
+    <meta itemprop="datePublished" content="2026-01-04T00:00:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">
+            <a href="http://localhost:4000/chart/understanding-bar-width-and-spacing/" itemprop="url">막대그래프 너비와 간격 조절하기
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-04T00:00:00+09:00">January 4, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>이번 글에서는 <code class="language-plaintext highlighter-rouge">ggplot2</code> 패키지를 사용해 막대그래프의 막대 너비와 막대
+사이 간격을 조절하는 방법을 정리해 보겠습니다.</p>
+
+<p>막대그래프는 자주 사용하는 차트 중 하나입니다. <code class="language-plaintext highlighter-rouge">ggplot2</code> 패키지를
+이용하면 기본 설정만으로도 바로 그릴 수 있습니다. 다만 아무 설정 없이
+그리면 막대가 서로 너무 붙어 보이거나, 전체적으로 답답한 느낌이 들 때가
+있습니다. 이럴 때는 <code class="language-plaintext highlighter-rouge">geom_col(width)</code>와 <code class="language-plaintext highlighter-rouge">position_dodge(width)</code> 두 가지 옵션을 조절하면 됩니다. 각 옵션이 어떤 역할을 하는지, 그리고 어떻게 조합하면 좋은지 살펴보겠습니다.</p>
+
+<p><a href="https://rlogrim.github.io/chart/visualizing-multiple-variables/">여러 변수를 하나의 그래프로
+표현하기</a>
+글에서 그린 차트를 예제로 활용하겠습니다. <code class="language-plaintext highlighter-rouge">geom_col()</code>을 이용해 아무 옵션도 주지 않고 기본 막대그래프를
+그려봅니다. <code class="language-plaintext highlighter-rouge">position_dodge()</code>를 사용하면 같은 x위치에 있는 막대들을 옆으로
+나란히 배치해 줍니다. 완성된 차트를 보면, 막대들이 서로 붙어 있습니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 패키지 로드</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">showtext</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># 글꼴 설정</span><span class="w">
+</span><span class="n">font_add</span><span class="p">(</span><span class="s2">"kopub"</span><span class="p">,</span><span class="w"> </span><span class="s2">"C:/Windows/Fonts/KoPubDotumMedium.ttf"</span><span class="p">)</span><span class="w">
+
+</span><span class="n">showtext_auto</span><span class="p">()</span><span class="w">
+</span><span class="n">showtext_opts</span><span class="p">(</span><span class="n">dpi</span><span class="o">=</span><span class="m">300</span><span class="p">)</span><span class="w">
+
+</span><span class="n">theme.size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">14</span><span class="w">
+</span><span class="n">text.size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">theme.size</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">.pt</span><span class="w">
+
+</span><span class="c1"># 차트 그리기</span><span class="w">
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data2</span><span class="p">,</span><span class="w"> 
+       </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">구분</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">값</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">종류</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">종류</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_col</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="n">position_dodge</span><span class="p">())</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_text</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">scales</span><span class="o">::</span><span class="n">comma</span><span class="p">(</span><span class="n">값</span><span class="p">,</span><span class="w"> </span><span class="n">accuracy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.1</span><span class="p">)),</span><span class="w"> 
+            </span><span class="n">position</span><span class="o">=</span><span class="n">position_dodge</span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.9</span><span class="p">),</span><span class="w"> 
+            </span><span class="n">vjust</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">-0.5</span><span class="p">,</span><span class="w">
+            </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kopub"</span><span class="p">,</span><span class="w">
+            </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">text.size</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_y_continuous</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"길이(단위: cm)"</span><span class="p">,</span><span class="w">
+                     </span><span class="n">expand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expansion</span><span class="p">(</span><span class="n">mult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0.3</span><span class="p">)))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_bw</span><span class="p">(</span><span class="n">base_family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kopub"</span><span class="p">,</span><span class="w"> </span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">theme.size</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme</span><span class="p">(</span><span class="w">
+    </span><span class="n">axis.title.x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">(),</span><span class="w">
+    </span><span class="n">legend.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">(),</span><span class="w">
+    </span><span class="n">legend.key.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unit</span><span class="p">(</span><span class="n">theme.size</span><span class="p">,</span><span class="w"> </span><span class="s2">"pt"</span><span class="p">),</span><span class="w">
+    </span><span class="n">legend.key.spacing.y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unit</span><span class="p">(</span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="s2">"pt"</span><span class="p">)</span><span class="w">
+  </span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/images/2026-01-04-understanding-bar-width-and-spacing/unnamed-chunk-1-1.png" width="70%" style="display: block; margin: auto;" alt="막대그래프 간격과 너비 기본 설정 차트" /></p>
+
+<h2 id="막대-너비와-간격을-조절하는-두-가지-옵션">막대 너비와 간격을 조절하는 두 가지 옵션</h2>
+
+<p>막대그래프의 모양은 아래 두 개의 <code class="language-plaintext highlighter-rouge">width</code>로 결정됩니다.
+<code class="language-plaintext highlighter-rouge">geom_col(width)</code>로 막대 하나하나의 두께를 조절할 수 있습니다.
+<code class="language-plaintext highlighter-rouge">position_dodge(width)</code>로는 막대들이 얼마나 떨어져 배치될지를 결정할 수
+있습니다. 같은 x위치에 속한 막대 묶음 전체가 차지할 가로 폭을 정하기
+때문입니다.</p>
+
+<p>다음 규칙을 기억해두면 좋습니다. <code class="language-plaintext highlighter-rouge">geom_col(width)</code>가
+<code class="language-plaintext highlighter-rouge">position_dodge(width)</code>보다 작으면, 막대 사이에 여백이 생깁니다. 두 값이
+같으면, 막대가 딱 붙습니다. <code class="language-plaintext highlighter-rouge">geom_col(width)</code>가 더 크면, 막대가 서로
+겹치게 됩니다.</p>
+
+<h2 id="막대-두께는-얇게-만들고-간격은-없애기">막대 두께는 얇게 만들고 간격은 없애기</h2>
+
+<p>막대를 조금 얇게 만들면서 막대 사이 간격은 없애고 싶을 때는 아래와 같이
+설정하면 됩니다. 기본값보다 작은 값을 사용해 막대를 얇게 만들고, 두 같을
+같게 맞춰 막대들이 붙어서 정렬되도록 합니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ggplot</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data2</span><span class="p">,</span><span class="w"> 
+       </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">구분</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">값</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">종류</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">종류</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_col</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="n">position_dodge</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="m">0.5</span><span class="p">),</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.5</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_text</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">scales</span><span class="o">::</span><span class="n">comma</span><span class="p">(</span><span class="n">값</span><span class="p">,</span><span class="w"> </span><span class="n">accuracy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.1</span><span class="p">)),</span><span class="w"> 
+            </span><span class="n">position</span><span class="o">=</span><span class="n">position_dodge</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="m">0.5</span><span class="p">),</span><span class="w"> 
+            </span><span class="n">vjust</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">-0.5</span><span class="p">,</span><span class="w">
+            </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kopub"</span><span class="p">,</span><span class="w">
+            </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">text.size</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_y_continuous</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"길이(단위: cm)"</span><span class="p">,</span><span class="w">
+                     </span><span class="n">expand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expansion</span><span class="p">(</span><span class="n">mult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0.3</span><span class="p">)))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_bw</span><span class="p">(</span><span class="n">base_family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kopub"</span><span class="p">,</span><span class="w"> </span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">theme.size</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme</span><span class="p">(</span><span class="w">
+    </span><span class="n">axis.title.x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">(),</span><span class="w">
+    </span><span class="n">legend.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">(),</span><span class="w">
+    </span><span class="n">legend.key.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unit</span><span class="p">(</span><span class="n">theme.size</span><span class="p">,</span><span class="w"> </span><span class="s2">"pt"</span><span class="p">),</span><span class="w">
+    </span><span class="n">legend.key.spacing.y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unit</span><span class="p">(</span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="s2">"pt"</span><span class="p">)</span><span class="w">
+  </span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/images/2026-01-04-understanding-bar-width-and-spacing/unnamed-chunk-2-1.png" width="70%" style="display: block; margin: auto;" alt="막대 두께를 조절한 차트" /></p>
+
+<h2 id="막대-두께는-그대로-두고-간격만-넓히기기">막대 두께는 그대로 두고 간격만 넓히기기</h2>
+
+<p>이번에는 막대 두께는 그대로 유지한 채 막대 사이 간격만 넓혀보겠습니다.
+<code class="language-plaintext highlighter-rouge">geom_col()</code>의 <code class="language-plaintext highlighter-rouge">width</code>를 따로 지정하지 않으면 기본값 0.9가 적용됩니다.
+<code class="language-plaintext highlighter-rouge">position_dodge(width = 1)</code>로 막대 사이 공간을 조금 더 벌려줍니다.
+막대가 여전히 두껍기 때문에 경우에 따라서는 답답해 보일 수도 있습니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ggplot</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data2</span><span class="p">,</span><span class="w"> 
+       </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">구분</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">값</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">종류</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">종류</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_col</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="n">position_dodge</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="m">1</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_text</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">scales</span><span class="o">::</span><span class="n">comma</span><span class="p">(</span><span class="n">값</span><span class="p">,</span><span class="w"> </span><span class="n">accuracy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.1</span><span class="p">)),</span><span class="w"> 
+            </span><span class="n">position</span><span class="o">=</span><span class="n">position_dodge</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="m">1</span><span class="p">),</span><span class="w"> 
+            </span><span class="n">vjust</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">-0.5</span><span class="p">,</span><span class="w">
+            </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kopub"</span><span class="p">,</span><span class="w">
+            </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">text.size</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_y_continuous</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"길이(단위: cm)"</span><span class="p">,</span><span class="w">
+                     </span><span class="n">expand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expansion</span><span class="p">(</span><span class="n">mult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0.3</span><span class="p">)))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_bw</span><span class="p">(</span><span class="n">base_family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kopub"</span><span class="p">,</span><span class="w"> </span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">theme.size</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme</span><span class="p">(</span><span class="w">
+    </span><span class="n">axis.title.x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">(),</span><span class="w">
+    </span><span class="n">legend.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">(),</span><span class="w">
+    </span><span class="n">legend.key.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unit</span><span class="p">(</span><span class="n">theme.size</span><span class="p">,</span><span class="w"> </span><span class="s2">"pt"</span><span class="p">),</span><span class="w">
+    </span><span class="n">legend.key.spacing.y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unit</span><span class="p">(</span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="s2">"pt"</span><span class="p">)</span><span class="w">
+  </span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/images/2026-01-04-understanding-bar-width-and-spacing/unnamed-chunk-3-1.png" width="70%" style="display: block; margin: auto;" alt="막대 간격을 넓힌 차트" /></p>
+
+<h2 id="막대그래프에서-가장-많이-쓰는-너비와-간격-설정하기">막대그래프에서 가장 많이 쓰는 너비와 간격 설정하기</h2>
+
+<p>앞의 예제들은 막대 너비만 바꾸거나, 간격만 바꾸는 방식이었습니다. 하지만
+실제로 그래프를 그릴 때는 이 두 가지를 함께 조절하는 경우가 가장
+많습니다. 막대가 너무 두꺼우면 답답해 보이고, 반대로 너무 얇으면 값의
+차이가 눈에 잘 들어오지 않기 때문입니다. 아래 설정은 이런 점을 적당히
+균형 잡아 주는 조합입니다.</p>
+
+<p>이 설정에서는 <code class="language-plaintext highlighter-rouge">geom_col(width = 0.7)</code>로 막대의 두께를 기본값보다 약간
+줄여 막대 하나하나가 가볍게 보이도록 합니다. 동시에
+<code class="language-plaintext highlighter-rouge">position_dodge(width = 0.8)</code>를 사용해 같은 그룹 안에 있는 막대들이 서로
+너무 붙지 않도록 간격을 확보합니다. 이렇게 하면 막대는 얇아져 답답함이
+줄고, 막대 사이에는 자연스러운 여백이 생깁니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ggplot</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data2</span><span class="p">,</span><span class="w"> 
+       </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">구분</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">값</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">종류</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">종류</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_col</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="n">position_dodge</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="m">0.8</span><span class="p">),</span><span class="w"> </span><span class="n">width</span><span class="o">=</span><span class="m">0.7</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_text</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">scales</span><span class="o">::</span><span class="n">comma</span><span class="p">(</span><span class="n">값</span><span class="p">,</span><span class="w"> </span><span class="n">accuracy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.1</span><span class="p">)),</span><span class="w"> 
+            </span><span class="n">position</span><span class="o">=</span><span class="n">position_dodge</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="m">0.8</span><span class="p">),</span><span class="w"> 
+            </span><span class="n">vjust</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">-0.5</span><span class="p">,</span><span class="w">
+            </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kopub"</span><span class="p">,</span><span class="w">
+            </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">text.size</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_y_continuous</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"길이(단위: cm)"</span><span class="p">,</span><span class="w">
+                     </span><span class="n">expand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expansion</span><span class="p">(</span><span class="n">mult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0.3</span><span class="p">)))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_bw</span><span class="p">(</span><span class="n">base_family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kopub"</span><span class="p">,</span><span class="w"> </span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">theme.size</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme</span><span class="p">(</span><span class="w">
+    </span><span class="n">axis.title.x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">(),</span><span class="w">
+    </span><span class="n">legend.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">(),</span><span class="w">
+    </span><span class="n">legend.key.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unit</span><span class="p">(</span><span class="n">theme.size</span><span class="p">,</span><span class="w"> </span><span class="s2">"pt"</span><span class="p">),</span><span class="w">
+    </span><span class="n">legend.key.spacing.y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unit</span><span class="p">(</span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="s2">"pt"</span><span class="p">)</span><span class="w">
+  </span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/images/2026-01-04-understanding-bar-width-and-spacing/unnamed-chunk-4-1.png" width="70%" style="display: block; margin: auto;" alt="막대 너비와 간격 둘 모두 조정한 차트" /></p>
+
+<p>앞으로 막대그래프를 그릴 때 “왜 이렇게 답답해 보이지?”, “막대가 너무
+붙어 보이는 것 같은데?”라는 생각이 든다면, 이 글에서 정리한 내용을
+떠올려 보세요. <code class="language-plaintext highlighter-rouge">geom_col(width)</code>와 <code class="language-plaintext highlighter-rouge">position_dodge(width)</code> 값을 조금만 바꿔보는
+것만으로도 그래프의 완성도가 한 단계 올라가는 경험을 할 수 있습니다.</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2026-01-04T00:00:00+09:00">January 4, 2026</time></p>
+
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="/data/creating-a-descriptive-statistics-table/" class="pagination--pager" title="기술통계량 표 만들기">Previous</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">Next</a>
+    
+  </nav>
+
+
+    </div>
+
+    
+      
+        <p>
+          Comments are configured with provider: <strong>utterances</strong>,
+          but are disabled in non-production environments.
+        </p>
+      
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">You May Also Enjoy</h2>
+  <div class="grid__wrapper">
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/data/creating-a-descriptive-statistics-table/" rel="permalink">기술통계량 표 만들기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-03T00:00:00+09:00">January 3, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          4 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">여러 변수의 평균, 표준편차, 범위를 일일이 계산하고 계신가요? R을 이용해 기술통계량 표를 한 번에 만들고, 엑셀파일로 저장하는 방법을 소개합니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/chart/creating-a-bar-and-line-combo-chart/" rel="permalink">막대+선 혼합형 그래프 그리기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-03T00:00:00+09:00">January 3, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          4 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">막대그래프 위에 선그래프를 추가했는데 선이 보이지 않나요? 스케일을 조정하고 보조 y축을 활용해 혼합형 그래프를 만드는 방법을 설명합니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/chart/visualizing-multiple-variables/" rel="permalink">여러 변수를 하나의 그래프로 표현하기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-02T00:00:00+09:00">January 2, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">여러 변수를 동시에 비교해야 할 때 어떤 방식으로 시각화해야 할지 고민하고 있나요? 이 글에서는 ggplot2를 활용해 여러 속성을 한눈에 비교하는 방법부터, 속성별 분할과 정렬까지 실무에 바로 적용할 수 있는 시각화 기법을 단계별로 소개합니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/chart/ordering-bars-by-value/" rel="permalink">값을 기준으로 막대그래프 정렬하기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-02T00:00:00+09:00">January 2, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">막대그래프를 그렸지만 어떤 항목이 중요한지 한눈에 들어오지 않나요? 이 글에서는 값의 크기를 기준으로 막대그래프를 정렬하는 이유와 방법을 설명하며, 비교와 해석이 쉬운 시각화를 만드는 과정을 단계별로 소개합니다.
+</p>
+  </article>
+</div>
+
+    
+  </div>
+</div>
+
+  
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        
+
+
+<div class="page__footer-copyright">&copy; 2026 <a href="http://localhost:4000">알로그림</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+    <script>
+  'use strict';
+
+  (function() {
+    var commentContainer = document.querySelector('#utterances-comments');
+
+    if (!commentContainer) {
+      return;
+    }
+
+    var script = document.createElement('script');
+    script.setAttribute('src', 'https://utteranc.es/client.js');
+    script.setAttribute('repo', 'rlogrim/rlogrim.github.io');
+    script.setAttribute('issue-term', 'pathname');
+    script.setAttribute('label', 'comment');
+    script.setAttribute('theme', 'github-light');
+    script.setAttribute('crossorigin', 'anonymous');
+
+    commentContainer.appendChild(script);
+  })();
+</script>
+
+  
+
+
+
+
+  </body>
+</html>

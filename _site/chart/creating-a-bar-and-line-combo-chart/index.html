@@ -1,0 +1,815 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.3 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>막대+선 혼합형 그래프 그리기 - 알로그림</title>
+<meta name="description" content="막대그래프 위에 선그래프를 추가했는데 선이 보이지 않나요? 스케일을 조정하고 보조 y축을 활용해 혼합형 그래프를 만드는 방법을 설명합니다.">
+
+
+  <meta name="author" content="알빈치(Rvinci)">
+  
+  <meta property="article:author" content="알빈치(Rvinci)">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="알로그림">
+<meta property="og:title" content="막대+선 혼합형 그래프 그리기">
+<meta property="og:url" content="http://localhost:4000/chart/creating-a-bar-and-line-combo-chart/">
+
+
+  <meta property="og:description" content="막대그래프 위에 선그래프를 추가했는데 선이 보이지 않나요? 스케일을 조정하고 보조 y축을 활용해 혼합형 그래프를 만드는 방법을 설명합니다.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2026-01-03T00:00:00+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="http://localhost:4000/chart/creating-a-bar-and-line-combo-chart/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  window.enable_copy_code_button = true;
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- Pretendard (Korean UI / Body) -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css">
+
+<!-- JetBrains Mono (Code Blocks) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          알로그림
+          
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/data/"
+                
+                
+              >데이터 가공</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/chart/"
+                
+                
+              >차트</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/map/"
+                
+                
+              >지도</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="http://localhost:4000/">
+        <img src="/assets/images/avatar.png" alt="알빈치(Rvinci)" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="http://localhost:4000/" itemprop="url">알빈치(Rvinci)</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>R로 그림을 그린 지 어언 6년. 
+연구기관에 재직 중이며, 
+엑셀로 해결될 일도 굳이 R로 그려보는 편입니다.</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+
+      
+        
+          
+            <li><a href="mailto:rlogrim.blog@gmail.com" rel="nofollow noopener noreferrer me"><i class="fas fa-fw fa-envelope" aria-hidden="true"></i><span class="label">rlogrim.blog@gmail.com</span></a></li>
+          
+        
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="막대+선 혼합형 그래프 그리기">
+    <meta itemprop="description" content="막대그래프 위에 선그래프를 추가했는데 선이 보이지 않나요? 스케일을 조정하고 보조 y축을 활용해 혼합형 그래프를 만드는 방법을 설명합니다.">
+    <meta itemprop="datePublished" content="2026-01-03T00:00:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">
+            <a href="http://localhost:4000/chart/creating-a-bar-and-line-combo-chart/" itemprop="url">막대+선 혼합형 그래프 그리기
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-03T00:00:00+09:00">January 3, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          4 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>연도별 수치를 시각화할 때 절대값(규모)과 변화율(추세)을 함께 보고 싶은
+경우가 있습니다. 예를 들어 항공 승객 수의 전체 규모와 함께 전년 대비
+증감률을 동시에 표현하고 싶을 때입니다. 이럴 때 막대그래프와 선그래프를
+조합한 혼합형 그래프(이중축 그래프)가 유용합니다.</p>
+
+<p>이런 분들을 위한 글입니다.</p>
+<ul>
+  <li>막대와 선 그래프를 함께 그리고 싶은데 방법을 모르는 경우</li>
+  <li>값의 크기가 다른 두 지표를 한 그래프에 표현하고 싶은 경우</li>
+  <li>이중 축이 왜 필요한지 궁금한 경우</li>
+</ul>
+
+<p>이번에는 R에 내장된 <code class="language-plaintext highlighter-rouge">AirPassengers</code> 데이터를 사용합니다. 이 데이터는
+1949년부터 1960년까지 월별 항공 승객 수를 담고 있습니다(단위: 천 명).</p>
+
+<p><code class="language-plaintext highlighter-rouge">AirPassengers</code>는 시계열(ts) 형태이므로, <code class="language-plaintext highlighter-rouge">ggplot2</code>로 시각화하려면
+데이터프레임으로 변환해야 합니다. 각 행은 연도, 각 열(1~12)은 월별 승객 수를 나타냅니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 패키지 로드</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># 데이터 변환</span><span class="w">
+</span><span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data.frame</span><span class="p">(</span><span class="n">matrix</span><span class="p">(</span><span class="n">AirPassengers</span><span class="p">,</span><span class="w"> </span><span class="n">ncol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">12</span><span class="p">,</span><span class="w"> </span><span class="n">byrow</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span><span class="w">
+
+</span><span class="n">colnames</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">seq</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">12</span><span class="p">)</span><span class="w"> </span><span class="c1"># 열 이름 변경 (1~12월)</span><span class="w">
+
+</span><span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">mutate</span><span class="p">(</span><span class="n">년도</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">seq</span><span class="p">(</span><span class="m">1949</span><span class="p">,</span><span class="w"> </span><span class="m">1960</span><span class="p">))</span><span class="w">
+
+</span><span class="c1"># 데이터 확인</span><span class="w">
+</span><span class="n">head</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##     1   2   3   4   5   6   7   8   9  10  11  12 년도
+## 1 112 118 132 129 121 135 148 148 136 119 104 118 1949
+## 2 115 126 141 135 125 149 170 170 158 133 114 140 1950
+## 3 145 150 178 163 172 178 199 199 184 162 146 166 1951
+## 4 171 180 193 181 183 218 230 242 209 191 172 194 1952
+## 5 196 196 236 235 229 243 264 272 237 211 180 201 1953
+## 6 204 188 235 227 234 264 302 293 259 229 203 229 1954
+</code></pre></div></div>
+
+<p>이제 연도별로 승객 수를 합산하고 전년 대비 증감률을 계산합니다.
+<code class="language-plaintext highlighter-rouge">rowSums()</code>로 각 행의 1~12월 값을 모두 더합니다. <code class="language-plaintext highlighter-rouge">lag()</code>로 전년도 값을
+가져와서 증감률을 계산합니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 데이터 합산</span><span class="w">
+</span><span class="n">data2</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">mutate</span><span class="p">(</span><span class="w">
+    </span><span class="n">`승객 수`</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rowSums</span><span class="p">(</span><span class="n">across</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">12</span><span class="p">)),</span><span class="w">
+    </span><span class="n">`전년 대비 승객 수 증감률`</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">`승객 수`</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">lag</span><span class="p">(</span><span class="n">`승객 수`</span><span class="p">))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">lag</span><span class="p">(</span><span class="n">`승객 수`</span><span class="p">)</span><span class="w">
+  </span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">select</span><span class="p">(</span><span class="n">년도</span><span class="p">,</span><span class="w"> </span><span class="n">`승객 수`</span><span class="p">,</span><span class="w"> </span><span class="n">`전년 대비 승객 수 증감률`</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># 데이터 확인</span><span class="w">
+</span><span class="n">head</span><span class="p">(</span><span class="n">data2</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##   년도 승객 수 전년 대비 승객 수 증감률
+## 1 1949    1520                       NA
+## 2 1950    1676               0.10263158
+## 3 1951    2042               0.21837709
+## 4 1952    2364               0.15768854
+## 5 1953    2700               0.14213198
+## 6 1954    2867               0.06185185
+</code></pre></div></div>
+
+<h2 id="기본-막대그래프-그리기">기본 막대그래프 그리기</h2>
+
+<p>먼저 연도별 승객 수를 막대그래프로 그려줍니다. 막대그래프는
+<code class="language-plaintext highlighter-rouge">geom_col()</code>로 그릴 수 있습니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 패키지 로드</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># 막대그래프 생성</span><span class="w">
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_col</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">년도</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">`승객 수`</span><span class="p">),</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.6</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_x_continuous</span><span class="p">(</span><span class="n">n.breaks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">12</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_bw</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/images/2026-01-03-creating-a-bar-and-line-combo-chart/unnamed-chunk-3-1.png" alt="연도별 승객 수 막대그래프" width="70%" style="display: block; margin: auto;" /></p>
+
+<h2 id="선그래프-추가하기">선그래프 추가하기</h2>
+
+<p>앞서 그려놓은 막대그래프에 전년 대비 승객 수 증감률을 선그래프로
+추가합니다. 선그래프는 <code class="language-plaintext highlighter-rouge">geom_line()</code>으로 그릴 수 있습니다. 그러나 값의
+차이로 인해 선그래프가 거의 보이지 않습니다. 값의 차이가 커서 선그래프가
+화면 아래쪽에 붙어버립니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 선그래프 추가</span><span class="w">
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_col</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">년도</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">`승객 수`</span><span class="p">),</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.6</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_line</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">년도</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">`전년 대비 승객 수 증감률`</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_x_continuous</span><span class="p">(</span><span class="n">n.breaks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">12</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_bw</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/images/2026-01-03-creating-a-bar-and-line-combo-chart/unnamed-chunk-4-1.png" alt="연도별 승객 수 막대그래프와 전년 대비 승객 수 증감률 선그래프" width="70%" style="display: block; margin: auto;" /></p>
+
+<h2 id="선그래프-스케일-조정하기">선그래프 스케일 조정하기</h2>
+
+<p>두 지표를 같은 그래프에 표현하려면 증감률에 적절한 상수를 곱해 위치를
+조정해야 합니다. <code class="language-plaintext highlighter-rouge">coeff</code>는 증감률을 승객 수 범위에 맞추기 위한 비율을
+나타냅니다. 증감률에 <code class="language-plaintext highlighter-rouge">coeff</code>를 곱하면 선그래프가 적절한 높이에
+표시됩니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 상수 계산</span><span class="w">
+</span><span class="n">coeff</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">max</span><span class="p">(</span><span class="n">data2</span><span class="o">$</span><span class="n">`승객 수`</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="nf">max</span><span class="p">(</span><span class="n">data2</span><span class="o">$</span><span class="n">`전년 대비 승객 수 증감률`</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">2</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># 조정된 선그래프 생성</span><span class="w">
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_col</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">년도</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">`승객 수`</span><span class="p">),</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.6</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_line</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">년도</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">`전년 대비 승객 수 증감률`</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">coeff</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_x_continuous</span><span class="p">(</span><span class="n">n.breaks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">12</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_bw</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/images/2026-01-03-creating-a-bar-and-line-combo-chart/unnamed-chunk-5-1.png" alt="선그래프 스케일 조정한 그래프" width="70%" style="display: block; margin: auto;" /></p>
+
+<h2 id="이중축-표시하기">이중축 표시하기</h2>
+
+<p>이제 선그래프의 값 수준을 확인할 수 있도록 오른쪽에 보조 y축을
+추가합니다.<code class="language-plaintext highlighter-rouge">sec.axis</code>를 사용해 두 번째 y축을 만들고, 선그래프에 곱해
+주었던 상수(<code class="language-plaintext highlighter-rouge">coeff</code>)를 <code class="language-plaintext highlighter-rouge">~./coeff</code>로 다시 나누어 원래 증감률 값이
+표시되도록 합니다. <code class="language-plaintext highlighter-rouge">scales::percent_format()</code>을 적용해 증감률을
+퍼센트(%) 단위로 표현합니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 이중축 추가</span><span class="w">
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_col</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">년도</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">`승객 수`</span><span class="p">),</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.6</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_line</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">년도</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">`전년 대비 승객 수 증감률`</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">coeff</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_x_continuous</span><span class="p">(</span><span class="n">n.breaks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">12</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_y_continuous</span><span class="p">(</span><span class="w">
+    </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"승객 수(천명)"</span><span class="p">,</span><span class="w">
+    </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">scales</span><span class="o">::</span><span class="n">comma_format</span><span class="p">(),</span><span class="w">
+    </span><span class="n">sec.axis</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sec_axis</span><span class="p">(</span><span class="o">~</span><span class="n">.</span><span class="o">/</span><span class="n">coeff</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"전년 대비 승객 수 증감률(%)"</span><span class="p">,</span><span class="w">
+                        </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">scales</span><span class="o">::</span><span class="n">percent_format</span><span class="p">())</span><span class="w">
+  </span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_bw</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/images/2026-01-03-creating-a-bar-and-line-combo-chart/unnamed-chunk-6-1.png" alt="이중축 추가한 그래프" width="70%" style="display: block; margin: auto;" /></p>
+
+<h2 id="범례-추가로-완성하기">범례 추가로 완성하기</h2>
+
+<p>막대그래프와 선그래프가 각각 무엇을 의미하는지 분명히 보여주기 위해
+범례를 추가합니다.</p>
+
+<p>이를 위해 <code class="language-plaintext highlighter-rouge">geom_col(aes())</code>에는 <code class="language-plaintext highlighter-rouge">fill = "승객 수"</code>를,
+<code class="language-plaintext highlighter-rouge">geom_line(aes())</code>에는 <code class="language-plaintext highlighter-rouge">color = "전년 대비 승객 수 증감률"</code>을 지정해
+범례 항목을 생성합니다. 이후 <code class="language-plaintext highlighter-rouge">scale_fill_manual()</code>과
+<code class="language-plaintext highlighter-rouge">scale_color_manual()</code>을 사용해 막대와 선의 색상을 각각 지정합니다.</p>
+
+<p>또한 <code class="language-plaintext highlighter-rouge">theme()</code>에서 범례와 관련된 요소를 조정해 그래프를 깔끔하게
+정리합니다. 이 예제에서는 범례 제목과 배경, 여백을 제거하고, 범례가
+그래프 좌측 상단에 위치하도록 설정했습니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ggplot</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_col</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">년도</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">`승객 수`</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"승객 수"</span><span class="p">),</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.6</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_line</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">년도</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">`전년 대비 승객 수 증감률`</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">coeff</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"전년 대비 승객 수 증감률"</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_fill_manual</span><span class="p">(</span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"gray40"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_color_manual</span><span class="p">(</span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"gray70"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_x_continuous</span><span class="p">(</span><span class="n">n.breaks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">12</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_y_continuous</span><span class="p">(</span><span class="w">
+    </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"승객 수(천명)"</span><span class="p">,</span><span class="w">
+    </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">scales</span><span class="o">::</span><span class="n">comma_format</span><span class="p">(),</span><span class="w">
+    </span><span class="n">sec.axis</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sec_axis</span><span class="p">(</span><span class="o">~</span><span class="n">.</span><span class="o">/</span><span class="n">coeff</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"전년 대비 승객 수 증감률(%)"</span><span class="p">,</span><span class="w">
+                        </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">scales</span><span class="o">::</span><span class="n">percent_format</span><span class="p">())</span><span class="w">
+  </span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_bw</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme</span><span class="p">(</span><span class="w">
+    </span><span class="n">legend.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">(),</span><span class="w">
+    </span><span class="n">legend.background</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">(),</span><span class="w">
+    </span><span class="n">legend.position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"inside"</span><span class="p">,</span><span class="w">
+    </span><span class="n">legend.position.inside</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0.20</span><span class="p">,</span><span class="w"> </span><span class="m">0.90</span><span class="p">),</span><span class="w">
+    </span><span class="n">legend.margin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">margin</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">)</span><span class="w">
+  </span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/images/2026-01-03-creating-a-bar-and-line-combo-chart/unnamed-chunk-7-1.png" alt="범례 추가한 혼합형 그래프" width="70%" style="display: block; margin: auto;" /></p>
+
+<p>혼합형 그래프는 세 단계로 만들 수 있습니다. 먼저 문제를 파악합니다.
+크기가 다른 두 지표를 그대로 겹치면 한쪽이 보이지 않습니다. 다음으로,
+선그래프에 상수를 곱해 스케일을 맞춥니다. 이렇게 하면 막대그래프와 함께
+나타낼 수 있습니다. 마지막으로 보조 y축을 추가하면, 혼합형 그래프가
+완성됩니다.</p>
+
+<p>이 방법은 다양한 상황에서 활용할 수 있습니다. 매출과 성장률을 함께
+보여줄 때, 지역별 인구와 증가율을 비교할 때, 정책 지표의 수준과 변화를
+동시에 표현할 때도 같은 방식을 쓸 수 있습니다.</p>
+
+<p>다만 주의할 점이 있습니다. 이중축 그래프는 신중하게 사용해야 합니다.
+관련 없는 두 지표를 함께 놓으면 독자가 혼란스러워할 수 있습니다. 의미
+있는 관계가 있을 때만 사용하세요. 그리고 명확한 범례와 축 이름을
+제공하는 것을 잊지마세요!</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2026-01-03T00:00:00+09:00">January 3, 2026</time></p>
+
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="/chart/visualizing-multiple-variables/" class="pagination--pager" title="여러 변수를 하나의 그래프로 표현하기">Previous</a>
+    
+    
+      <a href="/data/creating-a-descriptive-statistics-table/" class="pagination--pager" title="기술통계량 표 만들기">Next</a>
+    
+  </nav>
+
+
+    </div>
+
+    
+      
+        <p>
+          Comments are configured with provider: <strong>utterances</strong>,
+          but are disabled in non-production environments.
+        </p>
+      
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">You May Also Enjoy</h2>
+  <div class="grid__wrapper">
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/chart/understanding-bar-width-and-spacing/" rel="permalink">막대그래프 너비와 간격 조절하기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-04T00:00:00+09:00">January 4, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">막대그래프를 그렸는데 막대가 너무 붙어 보이거나 답답하게 느껴진 적 있나요? 이 글에서는 geom_col(width)와 position_dodge(width)가 실제로 무엇을 의미하는지 설명하고, 막대 너비와 간격을 조절하는 방법을 알려드립니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/data/creating-a-descriptive-statistics-table/" rel="permalink">기술통계량 표 만들기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-03T00:00:00+09:00">January 3, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">여러 변수의 평균, 표준편차, 범위를 일일이 계산하고 계신가요? R을 이용해 기술통계량 표를 한 번에 만들고, 엑셀파일로 저장하는 방법을 소개합니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/chart/visualizing-multiple-variables/" rel="permalink">여러 변수를 하나의 그래프로 표현하기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-02T00:00:00+09:00">January 2, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">여러 변수를 동시에 비교해야 할 때 어떤 방식으로 시각화해야 할지 고민하고 있나요? 이 글에서는 ggplot2를 활용해 여러 속성을 한눈에 비교하는 방법부터, 속성별 분할과 정렬까지 실무에 바로 적용할 수 있는 시각화 기법을 단계별로 소개합니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/chart/ordering-bars-by-value/" rel="permalink">값을 기준으로 막대그래프 정렬하기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-02T00:00:00+09:00">January 2, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">막대그래프를 그렸지만 어떤 항목이 중요한지 한눈에 들어오지 않나요? 이 글에서는 값의 크기를 기준으로 막대그래프를 정렬하는 이유와 방법을 설명하며, 비교와 해석이 쉬운 시각화를 만드는 과정을 단계별로 소개합니다.
+</p>
+  </article>
+</div>
+
+    
+  </div>
+</div>
+
+  
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        
+
+
+<div class="page__footer-copyright">&copy; 2026 <a href="http://localhost:4000">알로그림</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+    <script>
+  'use strict';
+
+  (function() {
+    var commentContainer = document.querySelector('#utterances-comments');
+
+    if (!commentContainer) {
+      return;
+    }
+
+    var script = document.createElement('script');
+    script.setAttribute('src', 'https://utteranc.es/client.js');
+    script.setAttribute('repo', 'rlogrim/rlogrim.github.io');
+    script.setAttribute('issue-term', 'pathname');
+    script.setAttribute('label', 'comment');
+    script.setAttribute('theme', 'github-light');
+    script.setAttribute('crossorigin', 'anonymous');
+
+    commentContainer.appendChild(script);
+  })();
+</script>
+
+  
+
+
+
+
+  </body>
+</html>
