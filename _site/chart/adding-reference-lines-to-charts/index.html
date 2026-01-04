@@ -1,0 +1,819 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.3 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>기준선 추가해 데이터 비교하기 - 알로그림</title>
+<meta name="description" content="그래프에 평균이나 기준값을 함께 보여주고 싶었던 적 있나요? 기준선을 추가하는 방법을 통해 값의 위치를 한눈에 파악하고 해석이 쉬운 차트를 만드는 과정을 알려드립니다.">
+
+
+  <meta name="author" content="알빈치(Rvinci)">
+  
+  <meta property="article:author" content="알빈치(Rvinci)">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="알로그림">
+<meta property="og:title" content="기준선 추가해 데이터 비교하기">
+<meta property="og:url" content="http://localhost:4000/chart/adding-reference-lines-to-charts/">
+
+
+  <meta property="og:description" content="그래프에 평균이나 기준값을 함께 보여주고 싶었던 적 있나요? 기준선을 추가하는 방법을 통해 값의 위치를 한눈에 파악하고 해석이 쉬운 차트를 만드는 과정을 알려드립니다.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2026-01-04T00:00:00+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="http://localhost:4000/chart/adding-reference-lines-to-charts/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  window.enable_copy_code_button = true;
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- Pretendard (Korean UI / Body) -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css">
+
+<!-- JetBrains Mono (Code Blocks) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          알로그림
+          
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/data/"
+                
+                
+              >데이터 가공</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/chart/"
+                
+                
+              >차트</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/map/"
+                
+                
+              >지도</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="http://localhost:4000/">
+        <img src="/assets/images/avatar.png" alt="알빈치(Rvinci)" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="http://localhost:4000/" itemprop="url">알빈치(Rvinci)</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>R로 그림을 그린 지 어언 6년. 
+연구기관에 재직 중이며, 
+엑셀로 해결될 일도 굳이 R로 그려보는 편입니다.</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+
+      
+        
+          
+            <li><a href="mailto:rlogrim.blog@gmail.com" rel="nofollow noopener noreferrer me"><i class="fas fa-fw fa-envelope" aria-hidden="true"></i><span class="label">rlogrim.blog@gmail.com</span></a></li>
+          
+        
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="기준선 추가해 데이터 비교하기">
+    <meta itemprop="description" content="그래프에 평균이나 기준값을 함께 보여주고 싶었던 적 있나요? 기준선을 추가하는 방법을 통해 값의 위치를 한눈에 파악하고 해석이 쉬운 차트를 만드는 과정을 알려드립니다.">
+    <meta itemprop="datePublished" content="2026-01-04T00:00:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">
+            <a href="http://localhost:4000/chart/adding-reference-lines-to-charts/" itemprop="url">기준선 추가해 데이터 비교하기
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-04T00:00:00+09:00">January 4, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>값의 크기를 비교할 때 막대그래프를 자주 사용합니다. 한눈에 크고 작은
+값을 확인할 수 있기 때문입니다. 다만 막대만 놓고 보면 이 값이 평균보다
+높은지 낮은지는 바로 보이지 않는 경우가 많습니다. 막대의 상대적인 크기는
+알 수 있어도, 어디를 기준으로 봐야 하는지는 판단하기 어렵습니다.</p>
+
+<p>이럴 때 기준선을 함께 그리면 데이터를 훨씬 쉽게 이해할 수 있습니다.
+기준선은 하나의 비교 기준이 되어 주고, 각 값이 그 기준보다 위에 있는지
+아래에 있는지를 바로 보여줍니다.</p>
+
+<p>이번 글에서는 서울특별시 25개 구의 주민등록인구를 예로 들어 막대그래프에
+평균선을 추가하는 방법을 살펴봅니다. 이 방법은 평균선뿐 아니라
+목표값이나 기준값을 표시할 때도 그대로 활용할 수 있습니다.</p>
+
+<h2 id="패키지와-글꼴-설정하기">패키지와 글꼴 설정하기</h2>
+
+<p>먼저 데이터 처리와 시각화를 위해 필요한 패키지를 불러옵니다.
+<code class="language-plaintext highlighter-rouge">tidyverse</code>에는 <code class="language-plaintext highlighter-rouge">dplyr</code>와 <code class="language-plaintext highlighter-rouge">ggplot2</code>가 포함되어 있어 데이터 가공과
+시각화를 대부분 처리할 수 있습니다. 여기에 엑셀 파일을 읽기 위한
+<code class="language-plaintext highlighter-rouge">readxl</code>, 한글 글꼴을 사용하기 위한 <code class="language-plaintext highlighter-rouge">showtext</code>, 숫자 표기를 돕는
+<code class="language-plaintext highlighter-rouge">scales</code> 패키지를 함께 사용합니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">readxl</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">showtext</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">scales</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>특정한 한글 폰트를 사용하기 위해 글꼴도 함께 설정합니다. <code class="language-plaintext highlighter-rouge">font_add()</code>로
+사용할 글꼴을 등록하고, <code class="language-plaintext highlighter-rouge">showtext_auto()</code>를 사용해 그래프 출력 시 해당
+글꼴이 적용되도록 합니다. 이후 텍스트 크기를 계산해 차트 전반에 일관되게
+사용합니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">font_add</span><span class="p">(</span><span class="s2">"kopub"</span><span class="p">,</span><span class="w"> </span><span class="s2">"C:/Windows/Fonts/KoPubDotumMedium.ttf"</span><span class="p">)</span><span class="w">
+
+</span><span class="n">showtext_auto</span><span class="p">()</span><span class="w">
+</span><span class="n">showtext_opts</span><span class="p">(</span><span class="n">dpi</span><span class="o">=</span><span class="m">300</span><span class="p">)</span><span class="w">
+
+</span><span class="n">theme.size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">12</span><span class="w">
+</span><span class="n">text.size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">theme.size</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">.pt</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="데이터-준비하기">데이터 준비하기</h2>
+
+<p>이번 예제에서는 통계청에서 제공하는 <a href="https://kosis.kr/statHtml/statHtml.do?orgId=101&amp;tblId=DT_1YL20651E&amp;vw_cd=MT_GTITLE01&amp;list_id=101&amp;scrId=&amp;seqNo=&amp;lang_mode=ko&amp;obj_var_id=&amp;itm_id=&amp;conn_path=MT_GTITLE01&amp;path=%252FstatisticsList%252FstatisticsListIndex.do">시군구별 주민등록인구
+데이터</a>를
+사용합니다. 엑셀 파일을 그대로 불러와 이후 단계에서 필요한 형태로
+가공합니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read_xlsx</span><span class="p">(</span><span class="s2">"데이터/주민등록인구_시도_시군구_2023.xlsx"</span><span class="p">,</span><span class="w"> </span><span class="n">skip</span><span class="o">=</span><span class="m">1</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>이제 서울특별시 데이터만 남기고 차트에 사용할 변수를 정리합니다. 변수
+이름을 알아보기 쉽게 바꾸고, 서울특별시가 아닌 행은 제거합니다. 이후
+인구 수를 기준으로 순위를 계산해 상위 구만 다른 색으로 표시할 수 있도록
+색상 변수를 추가합니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">seoul_clr</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">rename</span><span class="p">(</span><span class="n">시도</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">`행정구역별(1)`</span><span class="p">,</span><span class="w">
+         </span><span class="n">구</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">`행정구역별(2)`</span><span class="p">,</span><span class="w">
+         </span><span class="n">인구수</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">`계 (명)`</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="c1"># 서울 데이터 추출</span><span class="w">
+  </span><span class="n">filter</span><span class="p">(</span><span class="n">시도</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"서울특별시"</span><span class="p">,</span><span class="w">
+         </span><span class="n">구</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s2">"소계"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="c1"># 색상 칼럼 생성</span><span class="w">
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">순위</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rank</span><span class="p">(</span><span class="o">-</span><span class="n">인구수</span><span class="p">),</span><span class="w">
+    </span><span class="n">색상</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">case_when</span><span class="p">(</span><span class="n">순위</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s2">"#027453"</span><span class="p">,</span><span class="w">
+                   </span><span class="nb">T</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s2">"#D9D8D6"</span><span class="p">))</span><span class="w">
+
+</span><span class="c1"># 데이터 확인</span><span class="w">
+</span><span class="n">head</span><span class="p">(</span><span class="n">seoul_clr</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## # A tibble: 6 × 5
+##   시도       구       인구수  순위 색상   
+##   &lt;chr&gt;      &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  
+## 1 서울특별시 종로구   139417    24 #D9D8D6
+## 2 서울특별시 중구     121312    25 #D9D8D6
+## 3 서울특별시 용산구   213151    23 #D9D8D6
+## 4 서울특별시 성동구   277361    21 #D9D8D6
+## 5 서울특별시 광진구   335554    17 #D9D8D6
+## 6 서울특별시 동대문구 341149    16 #D9D8D6
+</code></pre></div></div>
+
+<h2 id="기본-막대그래프-그리기">기본 막대그래프 그리기</h2>
+
+<p>이제 가공한 데이터를 이용해 막대그래프를 그려봅니다. 인구 수는 값이 너무
+크지 않도록 만 명 단위로 나누어 표시합니다. <code class="language-plaintext highlighter-rouge">reorder()</code>를 사용해 인구가
+많은 구가 왼쪽에 오도록 정렬하고, <code class="language-plaintext highlighter-rouge">geom_col()</code>로 막대를 그립니다. 막대
+위에는 <code class="language-plaintext highlighter-rouge">geom_text()</code>를 사용해 실제 값을 함께 표시합니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">seoul_clr</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="w">
+    </span><span class="n">aes</span><span class="p">(</span><span class="w">
+      </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reorder</span><span class="p">(</span><span class="n">구</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">인구수</span><span class="p">),</span><span class="w">
+      </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">인구수</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">10000</span><span class="p">,</span><span class="w">
+      </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">색상</span><span class="w">
+    </span><span class="p">)</span><span class="w">
+  </span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_col</span><span class="p">(</span><span class="w">
+    </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.6</span><span class="p">,</span><span class="w">
+    </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"gray10"</span><span class="p">,</span><span class="w">
+    </span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.2</span><span class="w">
+  </span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_text</span><span class="p">(</span><span class="w">
+    </span><span class="n">aes</span><span class="p">(</span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">comma</span><span class="p">(</span><span class="n">인구수</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">10000</span><span class="p">,</span><span class="w"> </span><span class="n">accuracy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)),</span><span class="w">
+    </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kopub"</span><span class="p">,</span><span class="w">
+    </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">text.size</span><span class="p">,</span><span class="w">
+    </span><span class="n">vjust</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">-1</span><span class="w">
+  </span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_x_discrete</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_y_continuous</span><span class="p">(</span><span class="w">
+    </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"주민등록인구 수(만 명)"</span><span class="p">,</span><span class="w">
+    </span><span class="n">expand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expansion</span><span class="p">(</span><span class="n">mult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0.1</span><span class="p">))</span><span class="w">
+  </span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_fill_identity</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_minimal</span><span class="p">(</span><span class="w">
+    </span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">theme.size</span><span class="p">,</span><span class="w">
+    </span><span class="n">base_family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kopub"</span><span class="w">
+  </span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme</span><span class="p">(</span><span class="w">
+    </span><span class="n">axis.line.x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_line</span><span class="p">(</span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.8</span><span class="p">),</span><span class="w">
+    </span><span class="n">panel.grid.major.x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">(),</span><span class="w">
+    </span><span class="n">panel.grid.minor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">(),</span><span class="w">
+    </span><span class="n">axis.text.x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_text</span><span class="p">(</span><span class="n">angle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">45</span><span class="p">,</span><span class="w"> </span><span class="n">hjust</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w">
+  </span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/images/2026-01-04-adding-reference-lines-to-charts/unnamed-chunk-5-1.png" width="100%" style="display: block; margin: auto;" alt="서울시 구별 주민등록인구 수 그래프" /></p>
+
+<p>이 상태에서도 각 구의 인구 규모 차이는 충분히 확인할 수 있습니다. 다만
+평균을 기준으로 보면 어떤 구가 평균보다 높은지, 낮은지는 바로 파악하기
+어렵습니다.</p>
+
+<h2 id="평균선-추가하기">평균선 추가하기</h2>
+
+<p>먼저 기준이 될 평균 인구 수를 계산합니다. 앞에서 그래프를 만 명 단위로
+그렸기 때문에 평균값도 같은 단위로 맞춰 계산합니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mean_value</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">seoul_clr</span><span class="o">$</span><span class="n">인구수</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">10000</span><span class="w">
+</span></code></pre></div></div>
+
+<p>이제 <code class="language-plaintext highlighter-rouge">geom_hline()</code>을 사용해 평균선을 추가합니다. <code class="language-plaintext highlighter-rouge">yintercept</code>에는
+기준이 될 평균값을 넣고, 점선으로 표시해 막대와 구분되도록 합니다.
+이어서 <code class="language-plaintext highlighter-rouge">annotate()</code>를 사용해 평균선이 무엇을 의미하는지 텍스트로 함께
+표시합니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">seoul_clr</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="w">
+    </span><span class="n">aes</span><span class="p">(</span><span class="w">
+      </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reorder</span><span class="p">(</span><span class="n">구</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">인구수</span><span class="p">),</span><span class="w">
+      </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">인구수</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">10000</span><span class="p">,</span><span class="w">
+      </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">색상</span><span class="w">
+    </span><span class="p">)</span><span class="w">
+  </span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_col</span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.6</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"gray10"</span><span class="p">,</span><span class="w"> </span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_text</span><span class="p">(</span><span class="w">
+    </span><span class="n">aes</span><span class="p">(</span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">comma</span><span class="p">(</span><span class="n">인구수</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">10000</span><span class="p">,</span><span class="w"> </span><span class="n">accuracy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)),</span><span class="w">
+    </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kopub"</span><span class="p">,</span><span class="w">
+    </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">text.size</span><span class="p">,</span><span class="w">
+    </span><span class="n">vjust</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">-1</span><span class="w">
+  </span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_hline</span><span class="p">(</span><span class="w">
+    </span><span class="n">yintercept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mean_value</span><span class="p">,</span><span class="w">
+    </span><span class="n">linetype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"dashed"</span><span class="p">,</span><span class="w">
+    </span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.7</span><span class="w">
+  </span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">annotate</span><span class="p">(</span><span class="w">
+    </span><span class="s2">"text"</span><span class="p">,</span><span class="w">
+    </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="n">unique</span><span class="p">(</span><span class="n">seoul_clr</span><span class="o">$</span><span class="n">구</span><span class="p">)),</span><span class="w">
+    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mean_value</span><span class="p">,</span><span class="w">
+    </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="s2">"평균: "</span><span class="p">,</span><span class="w"> </span><span class="n">comma</span><span class="p">(</span><span class="n">mean_value</span><span class="p">,</span><span class="w"> </span><span class="n">accuracy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)),</span><span class="w">
+    </span><span class="n">hjust</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w">
+    </span><span class="n">vjust</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">-1</span><span class="p">,</span><span class="w">
+    </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kopub"</span><span class="p">,</span><span class="w">
+    </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">text.size</span><span class="w">
+  </span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_x_discrete</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_y_continuous</span><span class="p">(</span><span class="w">
+    </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"주민등록인구 수(만 명)"</span><span class="p">,</span><span class="w">
+    </span><span class="n">expand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expansion</span><span class="p">(</span><span class="n">mult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0.1</span><span class="p">))</span><span class="w">
+  </span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_fill_identity</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">theme.size</span><span class="p">,</span><span class="w"> </span><span class="n">base_family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kopub"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme</span><span class="p">(</span><span class="w">
+    </span><span class="n">axis.line.x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_line</span><span class="p">(</span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.8</span><span class="p">),</span><span class="w">
+    </span><span class="n">panel.grid.major.x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">(),</span><span class="w">
+    </span><span class="n">panel.grid.minor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">(),</span><span class="w">
+    </span><span class="n">axis.text.x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_text</span><span class="p">(</span><span class="n">angle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">45</span><span class="p">,</span><span class="w"> </span><span class="n">hjust</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w">
+  </span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/images/2026-01-04-adding-reference-lines-to-charts/unnamed-chunk-7-1.png" width="100%" style="display: block; margin: auto;" alt="평균선 추가한 막대그래프" /></p>
+
+<p>평균선을 추가하면 각 구의 인구가 평균보다 많은지 적은지를 바로 확인할 수
+있습니다. 막대를 하나씩 비교하지 않아도 전체 분포와 위치 관계가
+자연스럽게 눈에 들어옵니다. 이 방법은 평균선뿐 아니라 목표값이나 정책
+기준선을 표시할 때도 그대로 사용할 수 있습니다. 가로 기준선은
+<code class="language-plaintext highlighter-rouge">geom_hline()</code>, 세로 기준선은 <code class="language-plaintext highlighter-rouge">geom_vline()</code>을 사용하면 됩니다. 기준선을
+적절히 활용하면 막대그래프를 훨씬 직관적으로 읽을 수 있어 해석이
+쉬워집니다.</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2026-01-04T00:00:00+09:00">January 4, 2026</time></p>
+
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="/data/creating-a-descriptive-statistics-table/" class="pagination--pager" title="기술통계량 표 만들기">Previous</a>
+    
+    
+      <a href="/chart/understanding-bar-width-and-spacing/" class="pagination--pager" title="막대그래프 너비와 간격 조절하기">Next</a>
+    
+  </nav>
+
+
+    </div>
+
+    
+      
+        <p>
+          Comments are configured with provider: <strong>utterances</strong>,
+          but are disabled in non-production environments.
+        </p>
+      
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">You May Also Enjoy</h2>
+  <div class="grid__wrapper">
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/chart/understanding-bar-width-and-spacing/" rel="permalink">막대그래프 너비와 간격 조절하기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-04T00:00:00+09:00">January 4, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">막대그래프를 그렸는데 막대가 너무 붙어 보이거나 답답하게 느껴진 적 있나요? 이 글에서는 geom_col(width)와 position_dodge(width)가 실제로 무엇을 의미하는지 설명하고, 막대 너비와 간격을 조절하는 방법을 알려드립니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/data/creating-a-descriptive-statistics-table/" rel="permalink">기술통계량 표 만들기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-03T00:00:00+09:00">January 3, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          4 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">여러 변수의 평균, 표준편차, 범위를 일일이 계산하고 계신가요? R을 이용해 기술통계량 표를 한 번에 만들고, 엑셀파일로 저장하는 방법을 소개합니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/chart/creating-a-bar-and-line-combo-chart/" rel="permalink">막대+선 혼합형 그래프 그리기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-03T00:00:00+09:00">January 3, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          4 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">막대그래프 위에 선그래프를 추가했는데 선이 보이지 않나요? 스케일을 조정하고 보조 y축을 활용해 혼합형 그래프를 만드는 방법을 설명합니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/chart/visualizing-multiple-variables/" rel="permalink">여러 변수를 하나의 그래프로 표현하기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-02T00:00:00+09:00">January 2, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">여러 변수를 동시에 비교해야 할 때 어떤 방식으로 시각화해야 할지 고민하고 있나요? 이 글에서는 ggplot2를 활용해 여러 속성을 한눈에 비교하는 방법부터, 속성별 분할과 정렬까지 실무에 바로 적용할 수 있는 시각화 기법을 단계별로 소개합니다.
+</p>
+  </article>
+</div>
+
+    
+  </div>
+</div>
+
+  
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        
+
+
+<div class="page__footer-copyright">&copy; 2026 <a href="http://localhost:4000">알로그림</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+    <script>
+  'use strict';
+
+  (function() {
+    var commentContainer = document.querySelector('#utterances-comments');
+
+    if (!commentContainer) {
+      return;
+    }
+
+    var script = document.createElement('script');
+    script.setAttribute('src', 'https://utteranc.es/client.js');
+    script.setAttribute('repo', 'rlogrim/rlogrim.github.io');
+    script.setAttribute('issue-term', 'pathname');
+    script.setAttribute('label', 'comment');
+    script.setAttribute('theme', 'github-light');
+    script.setAttribute('crossorigin', 'anonymous');
+
+    commentContainer.appendChild(script);
+  })();
+</script>
+
+  
+
+
+
+
+  </body>
+</html>
