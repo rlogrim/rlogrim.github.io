@@ -102,7 +102,7 @@ ggplot(data = sdg) +
 끌리는지를 설정합니다. 값이 클수록 라벨이 원래 위치에 가까이 붙고, 값이
 작을수록 중심에서 멀어질 수 있습니다.
 
-이 방법은 텍스트 수가 많지 않을 때 효과적입니다. 수도권처럼 폴리곤이
+이 방법은 라벨 수가 많지 않을 때 효과적입니다. 수도권처럼 폴리곤이
 많고 밀집된 지도에서는 모든 지역명을 깔끔하게 배치하기 어렵습니다.
 `force`나 `force_pull` 값을 조정해도 한계가 있습니다.
 
@@ -115,6 +115,7 @@ ggplot(data = sdg) +
   geom_sf(colour = "gray40", fill = "#eaeaea", linewidth = 0.5) +
   geom_text_repel(aes(label = SGG_NM, geometry = geometry),
                   stat = "sf_coordinates",
+                  max.overlaps = Inf,
                   family = "kopub",
                   size = text.size) +
   theme_void()
