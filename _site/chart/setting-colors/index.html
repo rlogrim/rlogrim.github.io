@@ -1,0 +1,827 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.3 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>차트 색상 바꾸기 - 알로그림</title>
+<meta name="description" content="그래프를 그렸는데 색상이 마음에 들지 않았던 적 있나요? 이 글에서는 ggplot2의 기본 색상 설정부터 RColorBrewer 팔레트, 직접 색상을 지정하는 방법까지 정리합니다.">
+
+
+  <meta name="author" content="알빈치(Rvinci)">
+  
+  <meta property="article:author" content="알빈치(Rvinci)">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="알로그림">
+<meta property="og:title" content="차트 색상 바꾸기">
+<meta property="og:url" content="http://localhost:4000/chart/setting-colors/">
+
+
+  <meta property="og:description" content="그래프를 그렸는데 색상이 마음에 들지 않았던 적 있나요? 이 글에서는 ggplot2의 기본 색상 설정부터 RColorBrewer 팔레트, 직접 색상을 지정하는 방법까지 정리합니다.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2026-01-05T00:00:00+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="http://localhost:4000/chart/setting-colors/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  window.enable_copy_code_button = true;
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- Pretendard (Korean UI / Body) -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css">
+
+<!-- JetBrains Mono (Code Blocks) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          알로그림
+          
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/data/"
+                
+                
+              >데이터 가공</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/chart/"
+                
+                
+              >차트</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/map/"
+                
+                
+              >지도</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="http://localhost:4000/">
+        <img src="/assets/images/avatar.png" alt="알빈치(Rvinci)" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="http://localhost:4000/" itemprop="url">알빈치(Rvinci)</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>R로 그림을 그린 지 어언 6년. 
+연구기관에 재직 중이며, 
+엑셀로 해결될 일도 굳이 R로 그려보는 편입니다.</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+
+      
+        
+          
+            <li><a href="mailto:rlogrim.blog@gmail.com" rel="nofollow noopener noreferrer me"><i class="fas fa-fw fa-envelope" aria-hidden="true"></i><span class="label">rlogrim.blog@gmail.com</span></a></li>
+          
+        
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="차트 색상 바꾸기">
+    <meta itemprop="description" content="그래프를 그렸는데 색상이 마음에 들지 않았던 적 있나요? 이 글에서는 ggplot2의 기본 색상 설정부터 RColorBrewer 팔레트, 직접 색상을 지정하는 방법까지 정리합니다.">
+    <meta itemprop="datePublished" content="2026-01-05T00:00:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">
+            <a href="http://localhost:4000/chart/setting-colors/" itemprop="url">차트 색상 바꾸기
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-05T00:00:00+09:00">January 5, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          4 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>값의 차이뿐 아니라 범주를 함께 비교해야 할 때 색상은 특히 중요한 역할을 합니다. 어떤 막대가 같은 그룹에 속하는지는 색상이 있어야 빠르게 인식할 수 있습니다. 같은 모양의 막대가 반복될수록 색상은 시선을 분산시키지 않으면서 정보를 구분해 주는 기준이 됩니다.</p>
+
+<p>또한 색상은 그래프를 읽는 순서에도 영향을 미칩니다. 강조된 색은 먼저
+보이고, 덜 눈에 띄는 색은 자연스럽게 배경으로 물러납니다. 따라서 어떤
+값을 강조할지, 어떤 값은 비교 대상으로 남길지에 따라 색상 설정이
+달라져야 합니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">ggplot2</code>는 기본 색상을 자동으로 지정해 주기 때문에 빠르게 그래프를
+그리기에는 충분합니다. 하지만 메시지를 분명하게 전달해야 하는 경우에는
+색상을 직접 조정하는 것이 좋습니다. 이럴 때 팔레트를 활용하거나 색상을
+직접 지정하면, 그래프의 가독성과 전달력을 함께 높일 수 있습니다.</p>
+
+<p>이번 글에서는 <code class="language-plaintext highlighter-rouge">ggplot2</code>로 막대그래프를 그릴 때 색상을 설정하는 기본
+흐름을 살펴봅니다. 먼저 기본 색상이 어떻게 적용되는지 확인하고,
+<code class="language-plaintext highlighter-rouge">RColorBrewer</code> 팔레트를 사용하는 방법과 직접 색상을 지정하는 방법을
+차례로 정리합니다.</p>
+
+<h2 id="데이터-준비하기">데이터 준비하기</h2>
+
+<p>이번 예제에서는 <code class="language-plaintext highlighter-rouge">iris</code> 데이터를 사용합니다. 품종별로 꽃받침과 꽃잎의
+평균 길이를 계산한 뒤, 막대그래프로 표현합니다. 이후 색상을 바꿔 가며
+결과가 어떻게 달라지는지 살펴봅니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">iris</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">rename</span><span class="p">(</span><span class="n">`꽃받침 길이`</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Sepal.Length</span><span class="p">,</span><span class="w"> 
+         </span><span class="n">`꽃받침 너비`</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Sepal.Width</span><span class="p">,</span><span class="w">
+         </span><span class="n">`꽃잎 길이`</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Petal.Length</span><span class="p">,</span><span class="w"> 
+         </span><span class="n">`꽃잎 너비`</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Petal.Width</span><span class="p">,</span><span class="w"> 
+         </span><span class="n">종류</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Species</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">group_by</span><span class="p">(</span><span class="n">종류</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">summarise</span><span class="p">(</span><span class="n">across</span><span class="p">(</span><span class="n">where</span><span class="p">(</span><span class="n">is.numeric</span><span class="p">),</span><span class="w"> </span><span class="n">mean</span><span class="p">))</span><span class="w">
+
+</span><span class="c1"># 데이터 확인</span><span class="w">
+</span><span class="n">head</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## # A tibble: 3 × 5
+##   종류       `꽃받침 길이` `꽃받침 너비` `꽃잎 길이` `꽃잎 너비`
+##   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;
+## 1 setosa              5.01          3.43        1.46       0.246
+## 2 versicolor          5.94          2.77        4.26       1.33 
+## 3 virginica           6.59          2.97        5.55       2.03
+</code></pre></div></div>
+
+<p>막대그래프를 그리기 쉬운 형태로 데이터를 변환합니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">data2</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">pivot_longer</span><span class="p">(</span><span class="w">
+    </span><span class="n">cols</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">`꽃받침 길이`</span><span class="o">:</span><span class="n">`꽃잎 너비`</span><span class="p">,</span><span class="w"> 
+    </span><span class="n">names_to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"구분"</span><span class="p">,</span><span class="w">
+    </span><span class="n">values_to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"값"</span><span class="w">
+  </span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># 데이터 확인</span><span class="w">
+</span><span class="n">head</span><span class="p">(</span><span class="n">data2</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## # A tibble: 6 × 3
+##   종류       구분           값
+##   &lt;fct&gt;      &lt;chr&gt;       &lt;dbl&gt;
+## 1 setosa     꽃받침 길이 5.01 
+## 2 setosa     꽃받침 너비 3.43 
+## 3 setosa     꽃잎 길이   1.46 
+## 4 setosa     꽃잎 너비   0.246
+## 5 versicolor 꽃받침 길이 5.94 
+## 6 versicolor 꽃받침 너비 2.77
+</code></pre></div></div>
+
+<h2 id="기본-색상-적용된-그래프-그리기">기본 색상 적용된 그래프 그리기</h2>
+
+<p>그래프를 그리기 전에 차트에서 사용할 글꼴과 텍스트 크기를 먼저
+설정합니다. 한글이 포함된 그래프를 그릴 때는 한글을 안정적으로 지원하는
+글꼴을 사용하는 편이 좋습니다. 여기서는 <code class="language-plaintext highlighter-rouge">showtext</code> 패키지를 사용해 KoPub
+돋움체 글꼴을 등록하고, 그래프 출력 시 해당 글꼴이 적용되도록
+설정합니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">showtext_auto()</code>는 그래프를 그릴 때 자동으로 <code class="language-plaintext highlighter-rouge">showtext</code>를 적용하도록
+지정합니다. <code class="language-plaintext highlighter-rouge">showtext_opts(dpi = 300)</code>은 고해상도 출력에서도 글자가
+또렷하게 보이도록 설정합니다. 이후 차트 전체에서 사용할 기본 글자 크기를
+<code class="language-plaintext highlighter-rouge">theme.size</code>로 정하고, 이를 <code class="language-plaintext highlighter-rouge">ggplot</code>에서 사용하는 단위로 변환해
+<code class="language-plaintext highlighter-rouge">text.size</code>로 저장합니다. 이렇게 설정해 두면 이후 그래프에서 텍스트
+크기를 일관되게 조절할 수 있습니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 패키지 로드</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">showtext</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># 글꼴 설정</span><span class="w">
+</span><span class="n">font_add</span><span class="p">(</span><span class="s2">"kopub"</span><span class="p">,</span><span class="w"> </span><span class="s2">"C:/Users/my910/appdata/local/microsoft/windows/fonts/kopub dotum medium.ttf"</span><span class="p">)</span><span class="w">
+
+</span><span class="n">showtext_auto</span><span class="p">()</span><span class="w">
+</span><span class="n">showtext_opts</span><span class="p">(</span><span class="n">dpi</span><span class="o">=</span><span class="m">300</span><span class="p">)</span><span class="w">
+
+</span><span class="n">theme.size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">14</span><span class="w">
+</span><span class="n">text.size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">theme.size</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">.pt</span><span class="w">
+</span></code></pre></div></div>
+
+<p>먼저 색상을 따로 지정하지 않은 상태에서 그래프를 그립니다.
+<code class="language-plaintext highlighter-rouge">fill = 종류</code>를 지정하면 <code class="language-plaintext highlighter-rouge">ggplot2</code>가 기본 색상을 자동으로 적용합니다. 기본 색상만 사용해도 품종 간 차이는 충분히 구분됩니다. 하지만 보고서나 발표자료에서는 특정 색상으로 직접 바꿔줘야 하는 경우가 있습니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 차트 그리기</span><span class="w">
+</span><span class="n">base</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ggplot</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data2</span><span class="p">,</span><span class="w"> 
+       </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">구분</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">값</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">종류</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">종류</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_col</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="n">position_dodge</span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.7</span><span class="p">),</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.6</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_text</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">scales</span><span class="o">::</span><span class="n">comma</span><span class="p">(</span><span class="n">값</span><span class="p">,</span><span class="w"> </span><span class="n">accuracy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.1</span><span class="p">)),</span><span class="w"> 
+            </span><span class="n">position</span><span class="o">=</span><span class="n">position_dodge</span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.7</span><span class="p">),</span><span class="w"> 
+            </span><span class="n">vjust</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">-0.5</span><span class="p">,</span><span class="w">
+            </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kopub"</span><span class="p">,</span><span class="w">
+            </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">text.size</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_y_continuous</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"길이(단위: cm)"</span><span class="p">,</span><span class="w">
+                     </span><span class="n">expand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expansion</span><span class="p">(</span><span class="n">mult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0.3</span><span class="p">)))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_bw</span><span class="p">(</span><span class="n">base_family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kopub"</span><span class="p">,</span><span class="w"> </span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">theme.size</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme</span><span class="p">(</span><span class="w">
+    </span><span class="n">axis.title.x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">(),</span><span class="w">
+    </span><span class="n">legend.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">(),</span><span class="w">
+    </span><span class="n">legend.key.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unit</span><span class="p">(</span><span class="n">theme.size</span><span class="p">,</span><span class="w"> </span><span class="s2">"pt"</span><span class="p">),</span><span class="w">
+    </span><span class="n">legend.key.spacing.y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unit</span><span class="p">(</span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="s2">"pt"</span><span class="p">)</span><span class="w">
+  </span><span class="p">)</span><span class="w">
+
+</span><span class="n">base</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/images/2026-01-05-setting-colors/unnamed-chunk-4-1.png" width="100%" style="display: block; margin: auto;" alt="기본 색상 적용된 그래프" /></p>
+
+<h2 id="rcolorbrewer-팔레트-사용하기">RColorBrewer 팔레트 사용하기</h2>
+
+<p><code class="language-plaintext highlighter-rouge">RColorBrewer</code>는 미리 정리된 색상 조합을 제공하는 패키지로, 데이터의
+성격과 시각화 목적에 맞는 색상을 비교적 안전하게 선택할 수 있도록
+돕습니다. 색상을 직접 고르지 않아도 되기 때문에, 색상 선택에 익숙하지
+않은 경우에도 그래프의 가독성을 유지하기 쉽습니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">RColorBrewer</code>에서 제공하는 팔레트는 크게 세 가지 유형으로 나뉩니다.</p>
+<ul>
+  <li>연속형 팔레트는 값이 낮은 곳에서 높은 곳으로 자연스럽게 이어지는
+데이터를 표현할 때 사용합니다. 온도, 판매량, 인구 수처럼 크기의 흐름이
+중요한 경우에 적합합니다.</li>
+  <li>발산형 팔레트는 특정 기준값을 중심으로 양쪽
+방향의 차이를 강조할 때 사용합니다. 예를 들어 0을 기준으로 음수와 양수를 구분하거나, 기준 대비 증감 여부를 보여줄 때 활용합니다.</li>
+  <li>범주형 팔레트는 순서가 없는 범주를 구분할 때 사용합니다. 꽃의 종류, 제품 유형,
+지역 구분처럼 크기나 방향보다 구분 자체가 중요한 경우에 적합합니다.</li>
+</ul>
+
+<p>이번 예제에서는 iris 데이터의 품종처럼 범주 간 순서가 없는 데이터를
+다룹니다. 따라서 연속형이나 발산형 팔레트보다는 범주형 팔레트를 사용하는
+것이 적합합니다.</p>
+
+<p>어떤 팔레트가 있는지 감이 오지 않는다면 <code class="language-plaintext highlighter-rouge">display.brewer.all()</code> 함수를
+사용해 확인할 수 있습니다. 이 함수는 <code class="language-plaintext highlighter-rouge">RColorBrewer</code>에서 제공하는 모든
+팔레트를 한 화면에 보여주며, 각 팔레트의 이름과 색상 구성을 함께 확인할
+수 있게 해줍니다. 팔레트 이름만 보고 선택하기 어려울 때 특히 유용합니다.
+또한 <a href="https://colorbrewer2.org">colorbrewer2 웹사이트</a>를 참고하면,
+데이터 유형별로 추천 팔레트를 직관적으로 살펴볼 수 있습니다.</p>
+
+<p>먼저 사용 가능한 팔레트를 확인합니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 패키지 로드</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">RColorBrewer</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># 팔레트 보기</span><span class="w">
+</span><span class="n">display.brewer.all</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/images/2026-01-05-setting-colors/unnamed-chunk-5-1.png" width="100%" style="display: block; margin: auto;" alt="RColorBrewer 팔레트 종류" /></p>
+
+<p>이제 범주형 팔레트 중 하나인 <code class="language-plaintext highlighter-rouge">Pastel2</code>를 적용합니다.
+<code class="language-plaintext highlighter-rouge">scale_fill_brewer()</code>는 범주형 데이터를 색상으로 구분할 때 사용하는
+함수입니다. 팔레트 이름만 바꾸면 전체 색상을 쉽게 바꿀 수 있습니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">base</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_fill_brewer</span><span class="p">(</span><span class="n">palette</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Pastel2"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/images/2026-01-05-setting-colors/unnamed-chunk-6-1.png" width="100%" style="display: block; margin: auto;" alt="팔레트 적용한 그래프" /></p>
+
+<h2 id="직접-색상-지정하기">직접 색상 지정하기</h2>
+
+<p>디자인 가이드나 발표자료 테마에 맞춰 색상을 직접 지정해야 할 때도
+있습니다. 이제 색상 팔레트를 사용하는 대신, 각 범주에 원하는 색상을 직접
+지정해 봅니다. 이때 사용하는 함수가 <code class="language-plaintext highlighter-rouge">scale_fill_manual()</code>입니다. 이
+함수는 범주형 변수의 값과 색상을 1:1로 연결해 설정할 때 사용합니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">values</code> 인자에는 범주 이름과 색상 코드를 쌍으로 지정합니다. 여기서는
+꽃의 종류인 setosa, versicolor, virginica에 각각 보라색, 황토색,
+민트색을 할당합니다. 범주 이름은 데이터에 실제로 들어 있는 값과 정확히
+같아야 하며, 이름이 다르면 색상이 적용되지 않습니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">base</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_fill_manual</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="s2">"setosa"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"#C072ED"</span><span class="p">,</span><span class="w"> 
+                             </span><span class="s2">"versicolor"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"#EDC272"</span><span class="p">,</span><span class="w"> 
+                             </span><span class="s2">"virginica"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"#72EDAC"</span><span class="w">
+                             </span><span class="p">)</span><span class="w">
+                    </span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/images/2026-01-05-setting-colors/unnamed-chunk-7-1.png" width="100%" style="display: block; margin: auto;" alt="직접 색상 지정한 그래프" /></p>
+
+<p>이번 글에서는 <code class="language-plaintext highlighter-rouge">ggplot2</code>로 그래프를 그릴 때 색상을 설정하는 방법을
+살펴봤습니다. 먼저 기본 색상이 어떻게 적용되는지 확인하고,
+<code class="language-plaintext highlighter-rouge">RColorBrewer</code> 팔레트를 사용해 범주형 데이터를 안정적으로 구분하는
+방법을 정리했습니다. 이어서 <code class="language-plaintext highlighter-rouge">scale_fill_manual()</code>을 사용해 색상을 직접
+지정하는 방법도 함께 살펴봤습니다.</p>
+
+<p>이 방법은 막대그래프에만 국한되지 않습니다. 선그래프, 점그래프, 영역
+그래프처럼 <code class="language-plaintext highlighter-rouge">color</code>나 <code class="language-plaintext highlighter-rouge">fill</code>을 사용하는 다른 차트에서도 같은 방식으로
+적용할 수 있습니다. 차트의 종류가 달라져도 색상을 설정하는 원리는 크게
+달라지지 않습니다.</p>
+
+<p>빠르게 결과를 확인할 때는 기본 색상이나 팔레트를 활용하고, 보고서나 발표
+자료처럼 색상 규칙이 필요한 경우에는 직접 색상을 지정해 보세요!</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2026-01-05T00:00:00+09:00">January 5, 2026</time></p>
+
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="/chart/understanding-bar-width-and-spacing/" class="pagination--pager" title="막대그래프 너비와 간격 조절하기">Previous</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">Next</a>
+    
+  </nav>
+
+
+    </div>
+
+    
+      
+        <p>
+          Comments are configured with provider: <strong>utterances</strong>,
+          but are disabled in non-production environments.
+        </p>
+      
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">You May Also Enjoy</h2>
+  <div class="grid__wrapper">
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/chart/understanding-bar-width-and-spacing/" rel="permalink">막대그래프 너비와 간격 조절하기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-04T00:00:00+09:00">January 4, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">막대그래프를 그렸는데 막대가 너무 붙어 보이거나 답답하게 느껴진 적 있나요? 이 글에서는 geom_col(width)와 position_dodge(width)가 실제로 무엇을 의미하는지 설명하고, 막대 너비와 간격을 조절하는 방법을 알려드립니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/chart/adding-reference-lines-to-charts/" rel="permalink">기준선 추가해 데이터 비교하기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-04T00:00:00+09:00">January 4, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">그래프에 평균이나 기준값을 함께 보여주고 싶었던 적 있나요? 기준선을 추가하는 방법을 통해 값의 위치를 한눈에 파악하고 해석이 쉬운 차트를 만드는 과정을 알려드립니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/data/creating-a-descriptive-statistics-table/" rel="permalink">기술통계량 표 만들기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-03T00:00:00+09:00">January 3, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          4 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">여러 변수의 평균, 표준편차, 범위를 일일이 계산하고 계신가요? R을 이용해 기술통계량 표를 한 번에 만들고, 엑셀파일로 저장하는 방법을 소개합니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/chart/creating-a-bar-and-line-combo-chart/" rel="permalink">막대+선 혼합형 그래프 그리기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-03T00:00:00+09:00">January 3, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          4 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">막대그래프 위에 선그래프를 추가했는데 선이 보이지 않나요? 스케일을 조정하고 보조 y축을 활용해 혼합형 그래프를 만드는 방법을 설명합니다.
+</p>
+  </article>
+</div>
+
+    
+  </div>
+</div>
+
+  
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        
+
+
+<div class="page__footer-copyright">&copy; 2026 <a href="http://localhost:4000">알로그림</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+    <script>
+  'use strict';
+
+  (function() {
+    var commentContainer = document.querySelector('#utterances-comments');
+
+    if (!commentContainer) {
+      return;
+    }
+
+    var script = document.createElement('script');
+    script.setAttribute('src', 'https://utteranc.es/client.js');
+    script.setAttribute('repo', 'rlogrim/rlogrim.github.io');
+    script.setAttribute('issue-term', 'pathname');
+    script.setAttribute('label', 'comment');
+    script.setAttribute('theme', 'github-light');
+    script.setAttribute('crossorigin', 'anonymous');
+
+    commentContainer.appendChild(script);
+  })();
+</script>
+
+  
+
+
+
+
+  </body>
+</html>
