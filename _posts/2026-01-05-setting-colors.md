@@ -96,7 +96,7 @@ head(data2)
 library(showtext)
 
 # 글꼴 설정
-font_add("kopub", "C:/Users/my910/appdata/local/microsoft/windows/fonts/kopub dotum medium.ttf")
+font_add("kopub", "C:/Users/.../appdata/local/microsoft/windows/fonts/kopub dotum medium.ttf")
 
 showtext_auto()
 showtext_opts(dpi=300)
