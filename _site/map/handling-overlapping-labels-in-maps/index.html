@@ -1,0 +1,764 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.3 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>지도 지역명이 겹칠 때 해결하기 - 알로그림</title>
+<meta name="description" content="지도 위에 지역명을 모두 표시하려다 텍스트가 겹쳐 난감했던 적 있나요? geom_text_repel()로 라벨을 분산 배치하는 방법과, 일부 지역명을 생략해 지도를 단순화하는 방법을 소개합니다.">
+
+
+  <meta name="author" content="알빈치(Rvinci)">
+  
+  <meta property="article:author" content="알빈치(Rvinci)">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="알로그림">
+<meta property="og:title" content="지도 지역명이 겹칠 때 해결하기">
+<meta property="og:url" content="http://localhost:4000/map/handling-overlapping-labels-in-maps/">
+
+
+  <meta property="og:description" content="지도 위에 지역명을 모두 표시하려다 텍스트가 겹쳐 난감했던 적 있나요? geom_text_repel()로 라벨을 분산 배치하는 방법과, 일부 지역명을 생략해 지도를 단순화하는 방법을 소개합니다.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2026-01-05T00:00:00+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="http://localhost:4000/map/handling-overlapping-labels-in-maps/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  window.enable_copy_code_button = true;
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- Pretendard (Korean UI / Body) -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css">
+
+<!-- JetBrains Mono (Code Blocks) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          알로그림
+          
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/data/"
+                
+                
+              >데이터 가공</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/chart/"
+                
+                
+              >차트</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/map/"
+                
+                
+              >지도</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="http://localhost:4000/">
+        <img src="/assets/images/avatar.png" alt="알빈치(Rvinci)" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="http://localhost:4000/" itemprop="url">알빈치(Rvinci)</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>R로 그림을 그린 지 어언 6년. 
+연구기관에 재직 중이며, 
+엑셀로 해결될 일도 굳이 R로 그려보는 편입니다.</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+
+      
+        
+          
+            <li><a href="mailto:rlogrim.blog@gmail.com" rel="nofollow noopener noreferrer me"><i class="fas fa-fw fa-envelope" aria-hidden="true"></i><span class="label">rlogrim.blog@gmail.com</span></a></li>
+          
+        
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="지도 지역명이 겹칠 때 해결하기">
+    <meta itemprop="description" content="지도 위에 지역명을 모두 표시하려다 텍스트가 겹쳐 난감했던 적 있나요? geom_text_repel()로 라벨을 분산 배치하는 방법과, 일부 지역명을 생략해 지도를 단순화하는 방법을 소개합니다.">
+    <meta itemprop="datePublished" content="2026-01-05T00:00:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">
+            <a href="http://localhost:4000/map/handling-overlapping-labels-in-maps/" itemprop="url">지도 지역명이 겹칠 때 해결하기
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-05T00:00:00+09:00">January 5, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>폴리곤 크기가 작은 지역들이 인접해 있는 경우, 여러 지역명이 한곳에
+몰리면서 서로 겹치는 문제가 발생했습니다. 지도에서 텍스트가 겹치면
+지역을 식별하기 어려워집니다.</p>
+
+<p>이번 글에서는 지도에서 텍스트가 겹치는 문제를 해결하는 두 가지 방법을
+살펴봅니다. 첫 번째 방법은 <code class="language-plaintext highlighter-rouge">geom_text_repel()</code>을 사용해 텍스트를
+자동으로 분산 배치하는 방식입니다. 두 번째 방법은 특정 기준을 정해 일부
+지역명을 생략하고, 지도를 더 단순하게 만드는 방식입니다.</p>
+
+<h2 id="기본-지도-그려-문제-상황-확인하기">기본 지도 그려 문제 상황 확인하기</h2>
+
+<p>먼저 지도를 그리기 위해 필요한 패키지를 불러옵니다. <code class="language-plaintext highlighter-rouge">tidyverse</code>는 데이터
+가공과 정리, 지도 시각화에 사용하고, <code class="language-plaintext highlighter-rouge">sf</code>는 공간 데이터를 읽고 처리하는
+데 사용합니다. <code class="language-plaintext highlighter-rouge">showtext</code>는 폰트를 설정하기 위해 사용합니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 패키지 로드</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">sf</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">showtext</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># 글꼴 설정</span><span class="w">
+</span><span class="n">font_add</span><span class="p">(</span><span class="s2">"kopub"</span><span class="p">,</span><span class="w"> </span><span class="s2">"C:/Users/.../appdata/local/microsoft/windows/fonts/kopub dotum medium.ttf"</span><span class="p">)</span><span class="w">
+</span><span class="n">showtext_auto</span><span class="p">()</span><span class="w">
+</span><span class="n">showtext_opts</span><span class="p">(</span><span class="n">dpi</span><span class="o">=</span><span class="m">300</span><span class="p">)</span><span class="w">
+
+</span><span class="n">theme.size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">12</span><span class="w">
+</span><span class="n">text.size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">theme.size</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">.pt</span><span class="w">
+</span></code></pre></div></div>
+
+<p>다음으로 수도권 행정구 경계가 저장된 shp 파일을 불러옵니다. <code class="language-plaintext highlighter-rouge">st_read()</code>
+함수는 공간 데이터 파일을 읽어 sf 객체로 변환합니다. 이렇게 불러온
+데이터는 일반 데이터프레임처럼 다룰 수 있으면서도, 공간 정보를 함께
+포함합니다.</p>
+
+<p>이후 <code class="language-plaintext highlighter-rouge">separate()</code>를 사용해 시군구 이름이 들어 있는 <code class="language-plaintext highlighter-rouge">SGG_NM</code> 변수를
+분리합니다. 원본 데이터에서는 시도명과 시군구명이 하나의 문자열로 들어
+있어, 이후 작업에 불편함이 생길 수 있습니다. <code class="language-plaintext highlighter-rouge">sep = " "</code> 옵션을 사용해
+공백을 기준으로 시도명과 시군구명을 나누고, 각각 <code class="language-plaintext highlighter-rouge">SD_NM</code>과 <code class="language-plaintext highlighter-rouge">SGG_NM</code>
+변수로 저장합니다. <code class="language-plaintext highlighter-rouge">fill = "right"</code>는 이름이 하나만 있는 경우에도 오류
+없이 처리하도록 설정합니다. 이 과정을 거치면 시도 단위와 시군구 단위를
+각각 따로 사용할 수 있어, 이후 지도 시각화와 라벨 처리 작업이 훨씬
+수월해집니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 데이터 불러오기</span><span class="w">
+</span><span class="n">sdg</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">st_read</span><span class="p">(</span><span class="s2">"아웃풋/수도권 행정구 병합 지도.shp"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+    </span><span class="n">separate</span><span class="p">(</span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SGG_NM</span><span class="p">,</span><span class="w">
+           </span><span class="n">into</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"SD_NM"</span><span class="p">,</span><span class="w"> </span><span class="s2">"SGG_NM"</span><span class="p">),</span><span class="w">
+           </span><span class="n">sep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">" "</span><span class="p">,</span><span class="w">
+           </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"right"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Reading layer `수도권 행정구 병합 지도' from data source 
+##   `...\아웃풋\수도권 행정구 병합 지도.shp' 
+##   using driver `ESRI Shapefile'
+## Simple feature collection with 66 features and 2 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -10044.95 ymin: 477264 xmax: 274945.2 ymax: 631207.8
+## Projected CRS: KGD2002 / Central Belt 2010
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 지도 작성</span><span class="w">
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sdg</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_sf</span><span class="p">(</span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"gray40"</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"#eaeaea"</span><span class="p">,</span><span class="w"> </span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.5</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_sf_text</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SGG_NM</span><span class="p">),</span><span class="w">
+               </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kopub"</span><span class="p">,</span><span class="w">
+               </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">text.size</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_void</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/images/2026-01-05-handling-overlapping-labels-in-maps/unnamed-chunk-2-1.png" width="100%" style="display: block; margin: auto;" alt="수도권 지도" /></p>
+
+<p>이 결과를 보면, 서울과 경기 일부 소규모 지역이 밀집된 곳에서 지역명이
+겹치는 것을 확인할 수 있습니다.</p>
+
+<h2 id="geom_text_repel로-지역명-분산-배치하기"><code class="language-plaintext highlighter-rouge">geom_text_repel()</code>로 지역명 분산 배치하기</h2>
+
+<p>첫 번째 방법은 <code class="language-plaintext highlighter-rouge">ggrepel</code> 패키지의 <code class="language-plaintext highlighter-rouge">geom_text_repel()</code>을 사용하는
+방식입니다. 이 함수는 텍스트 라벨들이 서로 겹치지 않도록 자동으로 위치를
+조정합니다. 지도처럼 좌표가 있는 sf 객체에 사용할 때는
+<code class="language-plaintext highlighter-rouge">stat = "sf_coordinates"</code>를 지정해 좌표를 추출합니다. <code class="language-plaintext highlighter-rouge">geometry = geometry</code>를 지정해 각 폴리곤의 중심 좌표를 기준으로 텍스트를
+배치합니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">geom_text_repel()</code>에는 텍스트 배치를 조절하는 여러 인자가 있습니다. 이
+중에서 자주 사용하는 것이 <code class="language-plaintext highlighter-rouge">force</code>와 <code class="language-plaintext highlighter-rouge">force_pull</code>입니다.</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">force</code>는
+텍스트 라벨들끼리 서로 밀어내는 힘의 크기를 의미합니다. 값이 클수록 라벨
+사이 간격이 더 넓어지고, 값이 작을수록 라벨이 가까이 모입니다.</li>
+  <li><code class="language-plaintext highlighter-rouge">force_pull</code>은 라벨이 원래 위치, 즉 폴리곤 중심 좌표로 얼마나 강하게
+끌리는지를 설정합니다. 값이 클수록 라벨이 원래 위치에 가까이 붙고, 값이
+작을수록 중심에서 멀어질 수 있습니다.</li>
+</ul>
+
+<p>이 방법은 텍스트 수가 많지 않을 때 효과적입니다. 수도권처럼 폴리곤이
+많고 밀집된 지도에서는 모든 지역명을 깔끔하게 배치하기 어렵습니다.
+<code class="language-plaintext highlighter-rouge">force</code>나 <code class="language-plaintext highlighter-rouge">force_pull</code> 값을 조정해도 한계가 있습니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 패키지 로드</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">ggrepel</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># 지도 작성</span><span class="w">
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sdg</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_sf</span><span class="p">(</span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"gray40"</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"#eaeaea"</span><span class="p">,</span><span class="w"> </span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.5</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_text_repel</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SGG_NM</span><span class="p">,</span><span class="w"> </span><span class="n">geometry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">geometry</span><span class="p">),</span><span class="w">
+                  </span><span class="n">stat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"sf_coordinates"</span><span class="p">,</span><span class="w">
+                  </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kopub"</span><span class="p">,</span><span class="w">
+                  </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">text.size</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_void</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/images/2026-01-05-handling-overlapping-labels-in-maps/unnamed-chunk-3-1.png" width="100%" style="display: block; margin: auto;" alt="지역명 분산 배치한 수도권 지도" /></p>
+
+<h2 id="일부-지역명-생략하기">일부 지역명 생략하기</h2>
+
+<p>두 번째 방법은 모든 지역명을 표시하려고 하지 않고, 일부 지역명을 과감히
+생략하는 방식입니다. 예를 들어 폴리곤 면적이 작은 지역은 이름을 표시하지
+않도록 설정할 수 있습니다.</p>
+
+<p>먼저 각 지역의 면적을 계산합니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sdg</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sdg</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">면적</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">st_area</span><span class="p">(</span><span class="n">sdg</span><span class="p">)))</span><span class="w">
+</span></code></pre></div></div>
+
+<p>이제 면적이 중위값보다 작은 지역은 빈 문자열로 처리해 라벨이 표시되지
+않습니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ggplot</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sdg</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_sf</span><span class="p">(</span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"gray40"</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"#eaeaea"</span><span class="p">,</span><span class="w"> </span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.5</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_sf_text</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ifelse</span><span class="p">(</span><span class="n">sdg</span><span class="o">$</span><span class="n">면적</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">median</span><span class="p">(</span><span class="n">sdg</span><span class="o">$</span><span class="n">면적</span><span class="p">),</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> </span><span class="n">SGG_NM</span><span class="p">)),</span><span class="w">
+                  </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kopub"</span><span class="p">,</span><span class="w">
+                  </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">text.size</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_void</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/images/2026-01-05-handling-overlapping-labels-in-maps/unnamed-chunk-5-1.png" width="100%" style="display: block; margin: auto;" alt="지역명 일부 생략한 수도권 지도" /></p>
+
+<p>이번 글에서는 지도에서 지역명이 겹치는 문제를 해결하는 두 가지 방법을
+살펴봤습니다. <code class="language-plaintext highlighter-rouge">geom_text_repel()</code>은 텍스트를 자동으로 분산 배치해
+주지만, 복잡한 지도에서는 한계가 있습니다. 한편, 일부 지역명을 생략하는
+방법은 정보를 줄이는 대신 지도를 깔끔하게 만들어줍니다.</p>
+
+<p>지도에서 어떤 정보가 가장 중요한지 먼저 정하고, 그에 맞는 방법을 선택해
+보세요!</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2026-01-05T00:00:00+09:00">January 5, 2026</time></p>
+
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="/chart/understanding-bar-width-and-spacing/" class="pagination--pager" title="막대그래프 너비와 간격 조절하기">Previous</a>
+    
+    
+      <a href="/chart/setting-colors/" class="pagination--pager" title="차트 색상 바꾸기">Next</a>
+    
+  </nav>
+
+
+    </div>
+
+    
+      
+        <p>
+          Comments are configured with provider: <strong>utterances</strong>,
+          but are disabled in non-production environments.
+        </p>
+      
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">You May Also Enjoy</h2>
+  <div class="grid__wrapper">
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/chart/setting-colors/" rel="permalink">차트 색상 바꾸기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-05T00:00:00+09:00">January 5, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          4 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">그래프를 그렸는데 색상이 마음에 들지 않았던 적 있나요? 이 글에서는 ggplot2의 기본 색상 설정부터 RColorBrewer 팔레트, 직접 색상을 지정하는 방법까지 정리합니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/chart/understanding-bar-width-and-spacing/" rel="permalink">막대그래프 너비와 간격 조절하기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-04T00:00:00+09:00">January 4, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">막대그래프를 그렸는데 막대가 너무 붙어 보이거나 답답하게 느껴진 적 있나요? 이 글에서는 geom_col(width)와 position_dodge(width)가 실제로 무엇을 의미하는지 설명하고, 막대 너비와 간격을 조절하는 방법을 알려드립니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/chart/adding-reference-lines-to-charts/" rel="permalink">기준선 추가해 데이터 비교하기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-04T00:00:00+09:00">January 4, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">그래프에 평균이나 기준값을 함께 보여주고 싶었던 적 있나요? 기준선을 추가하는 방법을 통해 값의 위치를 한눈에 파악하고 해석이 쉬운 차트를 만드는 과정을 알려드립니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/data/creating-a-descriptive-statistics-table/" rel="permalink">기술통계량 표 만들기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-03T00:00:00+09:00">January 3, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          4 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">여러 변수의 평균, 표준편차, 범위를 일일이 계산하고 계신가요? R을 이용해 기술통계량 표를 한 번에 만들고, 엑셀파일로 저장하는 방법을 소개합니다.
+</p>
+  </article>
+</div>
+
+    
+  </div>
+</div>
+
+  
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        
+
+
+<div class="page__footer-copyright">&copy; 2026 <a href="http://localhost:4000">알로그림</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+    <script>
+  'use strict';
+
+  (function() {
+    var commentContainer = document.querySelector('#utterances-comments');
+
+    if (!commentContainer) {
+      return;
+    }
+
+    var script = document.createElement('script');
+    script.setAttribute('src', 'https://utteranc.es/client.js');
+    script.setAttribute('repo', 'rlogrim/rlogrim.github.io');
+    script.setAttribute('issue-term', 'pathname');
+    script.setAttribute('label', 'comment');
+    script.setAttribute('theme', 'github-light');
+    script.setAttribute('crossorigin', 'anonymous');
+
+    commentContainer.appendChild(script);
+  })();
+</script>
+
+  
+
+
+
+
+  </body>
+</html>
