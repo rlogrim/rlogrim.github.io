@@ -1,0 +1,787 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.3 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>연평균성장률(CAGR) 계산하기 - 알로그림</title>
+<meta name="description" content="‘얼마나’ 변했는지가 아니라 ‘어느 정도 속도’로 변했는지 알고 싶으신가요? 1995~2023년 주민등록인구 데이터를 예로 들어 R에서 n년간 연평균성장률(CAGR)을 계산하는 방법을 알려드립니다.">
+
+
+  <meta name="author" content="알빈치(Rvinci)">
+  
+  <meta property="article:author" content="알빈치(Rvinci)">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="알로그림">
+<meta property="og:title" content="연평균성장률(CAGR) 계산하기">
+<meta property="og:url" content="http://localhost:4000/data/calculating-cagr/">
+
+
+  <meta property="og:description" content="‘얼마나’ 변했는지가 아니라 ‘어느 정도 속도’로 변했는지 알고 싶으신가요? 1995~2023년 주민등록인구 데이터를 예로 들어 R에서 n년간 연평균성장률(CAGR)을 계산하는 방법을 알려드립니다.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2026-01-06T00:00:00+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="http://localhost:4000/data/calculating-cagr/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  window.enable_copy_code_button = true;
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- Pretendard (Korean UI / Body) -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css">
+
+<!-- JetBrains Mono (Code Blocks) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          알로그림
+          
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/data/"
+                
+                
+              >데이터 가공</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/chart/"
+                
+                
+              >차트</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/map/"
+                
+                
+              >지도</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="http://localhost:4000/">
+        <img src="/assets/images/avatar.png" alt="알빈치(Rvinci)" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="http://localhost:4000/" itemprop="url">알빈치(Rvinci)</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>R로 그림을 그린 지 어언 6년. 
+연구기관에 재직 중이며, 
+엑셀로 해결될 일도 굳이 R로 그려보는 편입니다.</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+
+      
+        
+          
+            <li><a href="mailto:rlogrim.blog@gmail.com" rel="nofollow noopener noreferrer me"><i class="fas fa-fw fa-envelope" aria-hidden="true"></i><span class="label">rlogrim.blog@gmail.com</span></a></li>
+          
+        
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="연평균성장률(CAGR) 계산하기">
+    <meta itemprop="description" content="‘얼마나’ 변했는지가 아니라 ‘어느 정도 속도’로 변했는지 알고 싶으신가요? 1995~2023년 주민등록인구 데이터를 예로 들어 R에서 n년간 연평균성장률(CAGR)을 계산하는 방법을 알려드립니다.">
+    <meta itemprop="datePublished" content="2026-01-06T00:00:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">
+            <a href="http://localhost:4000/data/calculating-cagr/" itemprop="url">연평균성장률(CAGR) 계산하기
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-06T00:00:00+09:00">January 6, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>연평균성장률(Compound Annual Growth Rate, CAGR)은 시작값과 끝값을
+기준으로, 그 사이가 매년 같은 비율로 변했다고 가정했을 때의 평균
+성장률입니다. 연도별로 등락이 있더라도 기간 전체의 흐름을 하나의 숫자로
+요약할 수 있어서 장기 추세를 비교할 때 자주 사용합니다. 이번 시간에는
+1995~2023년 주민등록인구 데이터를 이용해 연평균성장률(CAGR)을 계산하는
+과정을 살펴봅니다.</p>
+
+<p>먼저 엑셀 파일을 읽어오고, 데이터가 기대한 형태로 들어왔는지 앞부분을
+확인합니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 패키지 로드</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">readxl</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># 데이터 로드</span><span class="w">
+</span><span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read_xlsx</span><span class="p">(</span><span class="s2">"데이터/주민등록인구_시도_1995-2023.xlsx"</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># 데이터 확인</span><span class="w">
+</span><span class="n">head</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## # A tibble: 6 × 3
+##   행정구역별 시점  `계 (명)`  
+##   &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt;      
+## 1 전국       1995  4.5858029E7
+## 2 전국       1996  4.6266256E7
+## 3 전국       1997  4.6684069E7
+## 4 전국       1998  4.6991171E7
+## 5 전국       1999  4.7335678E7
+## 6 전국       2000  4.7732558E7
+</code></pre></div></div>
+
+<p>다음으로, 칼럼을 정리합니다. 엑셀에서 인구 칼럼 이름이 ’계 (명)’처럼
+들어오는 경우가 많아서, 직관적으로 이해할 수 있는 주민등록인구수로
+바꿉니다. 그리고 시점과 인구수는 계산에 써야 하므로 숫자형으로
+변환합니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">rename</span><span class="p">(</span><span class="n">주민등록인구수</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">`계 (명)`</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">시점</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">시점</span><span class="p">),</span><span class="w">
+         </span><span class="n">주민등록인구수</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">주민등록인구수</span><span class="p">))</span><span class="w">
+
+</span><span class="n">head</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## # A tibble: 6 × 3
+##   행정구역별  시점 주민등록인구수
+##   &lt;chr&gt;      &lt;dbl&gt;          &lt;dbl&gt;
+## 1 전국        1995       45858029
+## 2 전국        1996       46266256
+## 3 전국        1997       46684069
+## 4 전국        1998       46991171
+## 5 전국        1999       47335678
+## 6 전국        2000       47732558
+</code></pre></div></div>
+
+<h2 id="연평균성장률cagr-공식-이해하기">연평균성장률(CAGR) 공식 이해하기</h2>
+
+<p>CAGR은 아래 공식을 사용합니다. 결과는 ’비율’로 나오기 때문에,
+퍼센트(%)로 보고 싶다면 100을 곱하거나 나중에 퍼센트 포맷으로 바꾸면
+됩니다.</p>
+
+<p><em>CAGR</em> = (<em>V</em><sub><em>f</em></sub>/<em>V</em><sub><em>i</em></sub>)<sup>(1/<em>n</em>)</sup> − 1</p>
+
+<p><em>V</em><sub><em>f</em></sub>: 최종 값, <em>V</em><sub><em>i</em></sub>: 초기 값, <em>n</em>: 기간(연수)</p>
+
+<p>이 공식을 그대로 함수로 만들어 두면, 1년이든 5년이든 같은 방식으로
+재사용할 수 있습니다.</p>
+
+<p>아래 함수는 시작값, 끝값, 시작 연도, 끝 연도를 받아 CAGR을 계산합니다.
+연수는 <code class="language-plaintext highlighter-rouge">final_year - initial_year</code>로 계산합니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cagr</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">initial_value</span><span class="p">,</span><span class="w"> </span><span class="n">final_value</span><span class="p">,</span><span class="w"> </span><span class="n">initial_year</span><span class="p">,</span><span class="w"> </span><span class="n">final_year</span><span class="p">){</span><span class="w">
+  </span><span class="n">years</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">final_year</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">initial_year</span><span class="w">
+  </span><span class="n">cagr</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="p">((</span><span class="n">final_value</span><span class="o">/</span><span class="n">initial_value</span><span class="p">)</span><span class="o">^</span><span class="p">(</span><span class="m">1</span><span class="o">/</span><span class="n">years</span><span class="p">))</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="전년도-대비-성장률-구하기">전년도 대비 성장률 구하기</h2>
+
+<p>이제 행정구역별로 ’전년도 대비 성장률’을 계산합니다. 핵심은 <code class="language-plaintext highlighter-rouge">lag()</code>로
+이전 연도의 값을 가져오는 것입니다. 예를 들어 1995~1996년 성장률은
+1996년 행에 기록됩니다. 그래서 현재 행의 인구수와 <code class="language-plaintext highlighter-rouge">lag()</code>로 가져온 이전
+행의 인구수를 비교합니다.</p>
+
+<p>또한 행정구역마다 따로 계산되어야 하므로 <code class="language-plaintext highlighter-rouge">group_by()</code>로 묶어 둡니다.
+마지막으로 <code class="language-plaintext highlighter-rouge">percent()</code>로 값을 퍼센트 문자열로 보기 좋게 바꿉니다. 계산을
+이어서 하려면 퍼센트 변환 전에 숫자(비율) 형태를 별도로 보관해 두는 것도
+좋습니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">scales</span><span class="p">)</span><span class="w">
+
+</span><span class="n">data</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">arrange</span><span class="p">(</span><span class="n">행정구역별</span><span class="p">,</span><span class="w"> </span><span class="n">시점</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">group_by</span><span class="p">(</span><span class="n">행정구역별</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">mutate</span><span class="p">(</span><span class="w">
+    </span><span class="n">`1년 성장률`</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cagr</span><span class="p">(</span><span class="w">
+      </span><span class="n">lag</span><span class="p">(</span><span class="n">주민등록인구수</span><span class="p">),</span><span class="w">
+      </span><span class="n">주민등록인구수</span><span class="p">,</span><span class="w">
+      </span><span class="n">lag</span><span class="p">(</span><span class="n">시점</span><span class="p">),</span><span class="w">
+      </span><span class="n">시점</span><span class="w">
+    </span><span class="p">),</span><span class="w">
+    </span><span class="n">`1년 성장률`</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">percent</span><span class="p">(</span><span class="n">`1년 성장률`</span><span class="p">,</span><span class="w"> </span><span class="n">accuracy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.01</span><span class="p">)</span><span class="w">
+  </span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## # A tibble: 507 × 4
+## # Groups:   행정구역별 [18]
+##    행정구역별      시점 주민등록인구수 `1년 성장률`
+##    &lt;chr&gt;          &lt;dbl&gt;          &lt;dbl&gt; &lt;chr&gt;       
+##  1 강원특별자치도  1995        1528488 &lt;NA&gt;        
+##  2 강원특별자치도  1996        1528671 0.01%       
+##  3 강원특별자치도  1997        1537106 0.55%       
+##  4 강원특별자치도  1998        1552667 1.01%       
+##  5 강원특별자치도  1999        1556979 0.28%       
+##  6 강원특별자치도  2000        1554688 -0.15%      
+##  7 강원특별자치도  2001        1552407 -0.15%      
+##  8 강원특별자치도  2002        1538720 -0.88%      
+##  9 강원특별자치도  2003        1527034 -0.76%      
+## 10 강원특별자치도  2004        1521375 -0.37%      
+## # ℹ 497 more rows
+</code></pre></div></div>
+
+<h2 id="5년-연평균성장률-계산하기">5년 연평균성장률 계산하기</h2>
+
+<p>5년 단위 CAGR도 구조는 같습니다. 달라지는 점은 ‘5년 전’ 값을 가져와야
+한다는 것뿐입니다. <code class="language-plaintext highlighter-rouge">lag(x, n = 5)</code>처럼 <code class="language-plaintext highlighter-rouge">n</code> 값을 주면 5행 이전(5년
+이전)의 값을 참조합니다. 이렇게 하면 예를 들어 1995~2000년 CAGR이 2000년
+행에 계산됩니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">data</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">arrange</span><span class="p">(</span><span class="n">행정구역별</span><span class="p">,</span><span class="w"> </span><span class="n">시점</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">group_by</span><span class="p">(</span><span class="n">행정구역별</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">mutate</span><span class="p">(</span><span class="w">
+    </span><span class="n">`5년 성장률`</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cagr</span><span class="p">(</span><span class="w">
+      </span><span class="n">lag</span><span class="p">(</span><span class="n">주민등록인구수</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5</span><span class="p">),</span><span class="w">
+      </span><span class="n">주민등록인구수</span><span class="p">,</span><span class="w">
+      </span><span class="n">lag</span><span class="p">(</span><span class="n">시점</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5</span><span class="p">),</span><span class="w">
+      </span><span class="n">시점</span><span class="w">
+    </span><span class="p">),</span><span class="w">
+    </span><span class="n">`5년 성장률`</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">percent</span><span class="p">(</span><span class="n">`5년 성장률`</span><span class="p">,</span><span class="w"> </span><span class="n">accuracy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.01</span><span class="p">)</span><span class="w">
+  </span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## # A tibble: 507 × 4
+## # Groups:   행정구역별 [18]
+##    행정구역별      시점 주민등록인구수 `5년 성장률`
+##    &lt;chr&gt;          &lt;dbl&gt;          &lt;dbl&gt; &lt;chr&gt;       
+##  1 강원특별자치도  1995        1528488 &lt;NA&gt;        
+##  2 강원특별자치도  1996        1528671 &lt;NA&gt;        
+##  3 강원특별자치도  1997        1537106 &lt;NA&gt;        
+##  4 강원특별자치도  1998        1552667 &lt;NA&gt;        
+##  5 강원특별자치도  1999        1556979 &lt;NA&gt;        
+##  6 강원특별자치도  2000        1554688 0.34%       
+##  7 강원특별자치도  2001        1552407 0.31%       
+##  8 강원특별자치도  2002        1538720 0.02%       
+##  9 강원특별자치도  2003        1527034 -0.33%      
+## 10 강원특별자치도  2004        1521375 -0.46%      
+## # ℹ 497 more rows
+</code></pre></div></div>
+
+<p>이번 글에서는 주민등록인구 데이터를 예로 들어 CAGR을 계산하는 흐름을
+정리했습니다. 위 방식은 3년, 10년 등 다양한 기간에 대해서도 그대로
+적용할 수 있습니다. <code class="language-plaintext highlighter-rouge">lag(..., n = 기간)</code>만 바꿔서 같은 패턴으로 계산하면
+됩니다.</p>
+
+<p>매출, 사용자 수, 예산, 면적처럼 시간에 따라 변하는 값이라면
+연평균성장률을 계산할 수 있습니다!</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2026-01-06T00:00:00+09:00">January 6, 2026</time></p>
+
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="/chart/setting-colors/" class="pagination--pager" title="차트 색상 바꾸기">Previous</a>
+    
+    
+      <a href="/data/combining-multiple-excel-files/" class="pagination--pager" title="여러 엑셀 파일 한 번에 합치기">Next</a>
+    
+  </nav>
+
+
+    </div>
+
+    
+      
+        <p>
+          Comments are configured with provider: <strong>utterances</strong>,
+          but are disabled in non-production environments.
+        </p>
+      
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">You May Also Enjoy</h2>
+  <div class="grid__wrapper">
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/data/combining-multiple-excel-files/" rel="permalink">여러 엑셀 파일 한 번에 합치기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-06T00:00:00+09:00">January 6, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">지역별로 나뉜 엑셀 파일을 하나씩 열어 복사해 붙이느라 시간을 쓰고 계신가요? 폴더에 들어 있는 여러 엑셀 파일을 한 번에 읽고, 하나의 테이블로 합치는 방법을 소개합니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/chart/setting-colors/" rel="permalink">차트 색상 바꾸기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-05T00:00:00+09:00">January 5, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          4 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">그래프를 그렸는데 색상이 마음에 들지 않았던 적 있나요? 이 글에서는 ggplot2의 기본 색상 설정부터 RColorBrewer 팔레트, 직접 색상을 지정하는 방법까지 정리합니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/map/handling-overlapping-labels-in-maps/" rel="permalink">지도 지역명이 겹칠 때 해결하기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-05T00:00:00+09:00">January 5, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">지도 위에 지역명을 모두 표시하려다 텍스트가 겹쳐 난감했던 적 있나요? geom_text_repel()로 라벨을 분산 배치하는 방법과, 일부 지역명을 생략해 지도를 단순화하는 방법을 소개합니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/chart/understanding-bar-width-and-spacing/" rel="permalink">막대그래프 너비와 간격 조절하기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-04T00:00:00+09:00">January 4, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">막대그래프를 그렸는데 막대가 너무 붙어 보이거나 답답하게 느껴진 적 있나요? 이 글에서는 geom_col(width)와 position_dodge(width)가 실제로 무엇을 의미하는지 설명하고, 막대 너비와 간격을 조절하는 방법을 알려드립니다.
+</p>
+  </article>
+</div>
+
+    
+  </div>
+</div>
+
+  
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        
+
+
+<div class="page__footer-copyright">&copy; 2026 <a href="http://localhost:4000">알로그림</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+    <script>
+  'use strict';
+
+  (function() {
+    var commentContainer = document.querySelector('#utterances-comments');
+
+    if (!commentContainer) {
+      return;
+    }
+
+    var script = document.createElement('script');
+    script.setAttribute('src', 'https://utteranc.es/client.js');
+    script.setAttribute('repo', 'rlogrim/rlogrim.github.io');
+    script.setAttribute('issue-term', 'pathname');
+    script.setAttribute('label', 'comment');
+    script.setAttribute('theme', 'github-light');
+    script.setAttribute('crossorigin', 'anonymous');
+
+    commentContainer.appendChild(script);
+  })();
+</script>
+
+  
+
+
+
+
+  </body>
+</html>

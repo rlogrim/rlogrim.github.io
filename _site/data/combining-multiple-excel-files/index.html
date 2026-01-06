@@ -1,0 +1,747 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.3 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>여러 엑셀 파일 한 번에 합치기 - 알로그림</title>
+<meta name="description" content="지역별로 나뉜 엑셀 파일을 하나씩 열어 복사해 붙이느라 시간을 쓰고 계신가요? 폴더에 들어 있는 여러 엑셀 파일을 한 번에 읽고, 하나의 테이블로 합치는 방법을 소개합니다.">
+
+
+  <meta name="author" content="알빈치(Rvinci)">
+  
+  <meta property="article:author" content="알빈치(Rvinci)">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="알로그림">
+<meta property="og:title" content="여러 엑셀 파일 한 번에 합치기">
+<meta property="og:url" content="http://localhost:4000/data/combining-multiple-excel-files/">
+
+
+  <meta property="og:description" content="지역별로 나뉜 엑셀 파일을 하나씩 열어 복사해 붙이느라 시간을 쓰고 계신가요? 폴더에 들어 있는 여러 엑셀 파일을 한 번에 읽고, 하나의 테이블로 합치는 방법을 소개합니다.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2026-01-06T00:00:00+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="http://localhost:4000/data/combining-multiple-excel-files/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  window.enable_copy_code_button = true;
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- Pretendard (Korean UI / Body) -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css">
+
+<!-- JetBrains Mono (Code Blocks) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          알로그림
+          
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/data/"
+                
+                
+              >데이터 가공</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/chart/"
+                
+                
+              >차트</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/map/"
+                
+                
+              >지도</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="http://localhost:4000/">
+        <img src="/assets/images/avatar.png" alt="알빈치(Rvinci)" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="http://localhost:4000/" itemprop="url">알빈치(Rvinci)</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>R로 그림을 그린 지 어언 6년. 
+연구기관에 재직 중이며, 
+엑셀로 해결될 일도 굳이 R로 그려보는 편입니다.</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+
+      
+        
+          
+            <li><a href="mailto:rlogrim.blog@gmail.com" rel="nofollow noopener noreferrer me"><i class="fas fa-fw fa-envelope" aria-hidden="true"></i><span class="label">rlogrim.blog@gmail.com</span></a></li>
+          
+        
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="여러 엑셀 파일 한 번에 합치기">
+    <meta itemprop="description" content="지역별로 나뉜 엑셀 파일을 하나씩 열어 복사해 붙이느라 시간을 쓰고 계신가요? 폴더에 들어 있는 여러 엑셀 파일을 한 번에 읽고, 하나의 테이블로 합치는 방법을 소개합니다.">
+    <meta itemprop="datePublished" content="2026-01-06T00:00:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">
+            <a href="http://localhost:4000/data/combining-multiple-excel-files/" itemprop="url">여러 엑셀 파일 한 번에 합치기
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-06T00:00:00+09:00">January 6, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>지역별로 나뉜 엑셀 파일을 받으면, 보통은 파일을 하나씩 열어서 복사해
+붙이는 방식으로 데이터를 모으게 됩니다. 그런데 파일이 몇 개만 늘어나도
+작업이 고단해집니다. R에서는 폴더에 있는 파일을 한 번에 읽고, 같은
+규칙으로 정리한 뒤, 하나의 테이블로 간단히 합칠 수 있습니다.</p>
+
+<p>관광지식정보시스템의 <a href="https://know.tour.go.kr/stat/visitStatDis/table.do">주요관광지점 입장객
+통계</a> 자료를 예로
+들어 서울, 경기, 인천 파일을 합쳐 하나의 테이블로 만드는 과정을
+보여드리겠습니다.</p>
+
+<h2 id="데이터-준비하기">데이터 준비하기</h2>
+
+<p>먼저 필요한 패키지를 로드합니다. 그리고 파일을 합치기 전에, 데이터
+구조가 어떤지 하나만 먼저 확인해 두는 편이 안전합니다. 여기서는 서울
+파일을 열어 앞부분을 살펴보겠습니다. 데이터를 보면 칼럼명이 첫 번째
+행에만 있는 게 아니라 두 번째 행에도 들어가 있습니다. 이런 형태는 그대로
+병합하면 열이 어긋나기 쉬워서, 데이터를 읽을 때 ’어느 행부터가 진짜
+데이터인지’를 지정해 주는 처리가 필요합니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 패키지 로드</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">readxl</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># 확인용 데이터 로드</span><span class="w">
+</span><span class="n">tmp</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read_xls</span><span class="p">(</span><span class="s2">"데이터/수도권 주요관광지점 입장객/주요관광지점 입장객_서울_2023.xls"</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># 데이터 확인</span><span class="w">
+</span><span class="n">head</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## # A tibble: 6 × 6
+##   시도       군구   관광지 `내/외국인`    총계 `(2023년 ~ 2023년)`
+##   &lt;chr&gt;      &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt;              
+## 1 &lt;NA&gt;       &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;             NA 2023년             
+## 2 서울특별시 종로구 경복궁 내국인      4485430 4485430            
+## 3 서울특별시 종로구 경복궁 외국인      1094475 1094475            
+## 4 서울특별시 종로구 경복궁 합계        5579905 5579905            
+## 5 서울특별시 종로구 종묘   내국인       272304 272304             
+## 6 서울특별시 종로구 종묘   외국인        66629 66629
+</code></pre></div></div>
+
+<h2 id="폴더-안의-파일-목록-가져오기">폴더 안의 파일 목록 가져오기</h2>
+
+<p>이제 폴더에 들어 있는 엑셀 파일을 한 번에 모읍니다. <code class="language-plaintext highlighter-rouge">list.files()</code>를
+사용하면 특정 폴더에서 원하는 확장자만 골라 파일 목록을 만들 수
+있습니다. <code class="language-plaintext highlighter-rouge">full.names = TRUE</code>를 주면 전체 경로가 들어가서, 이후에
+<code class="language-plaintext highlighter-rouge">read_xls()</code>로 바로 읽을 수 있습니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 데이터 폴더 경로</span><span class="w">
+</span><span class="n">folder_path</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"데이터/수도권 주요관광지점 입장객"</span><span class="w">
+
+</span><span class="c1"># 확장자가 .xls인 파일 목록 가져오기</span><span class="w">
+</span><span class="n">file_list</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">list.files</span><span class="p">(</span><span class="n">folder_path</span><span class="p">,</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"\\.xls$"</span><span class="p">,</span><span class="w"> </span><span class="n">full.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># 파일 목록 확인</span><span class="w">
+</span><span class="n">file_list</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] "데이터/수도권 주요관광지점 입장객/주요관광지점 입장객_경기_2023.xls"  
+## [2] "데이터/수도권 주요관광지점 입장객/주요관광지점 입장객_서울_2023.xls"  
+## [3] "데이터/수도권 주요관광지점 입장객/주요관광지점 입장객_인천_2023.xls"
+</code></pre></div></div>
+
+<h2 id="파일을-같은-규칙으로-정리한-뒤-합치기">파일을 같은 규칙으로 정리한 뒤 합치기</h2>
+
+<p>이제부터는 파일마다 똑같은 작업을 반복합니다. ‘읽기 → 필요한 열만 남기기
+→ 칼럼명 통일하기’ 순서로 정리한 결과를 차곡차곡 쌓아 하나의 테이블로
+합치겠습니다.</p>
+
+<p>수동으로 한다면 파일을 하나 열고, 필요한 행과 열을 고르고, 칼럼명을 바꾼
+뒤 저장하는 일을 파일 개수만큼 반복해야 합니다. 이 과정을 자동으로 바꿔
+주는 게 <code class="language-plaintext highlighter-rouge">lapply()</code>와 그 안에 들어가는 <code class="language-plaintext highlighter-rouge">function(file) { ... }</code>입니다.
+파일 목록만 만들어 두면, 나머지는 ’각 파일에 대해 같은 규칙을 적용’하는
+방식으로 한 번에 끝낼 수 있습니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">lapply()</code>는 리스트(또는 벡터)의 각 원소에 함수를 적용하고, 결과를
+리스트로 돌려주는 함수입니다. 여기서 <code class="language-plaintext highlighter-rouge">file_list</code>는 파일 경로가 들어 있는
+문자 벡터이고, <code class="language-plaintext highlighter-rouge">function(file)</code>은 파일 경로 하나를 입력으로 받아 정리된
+데이터프레임 하나를 반환하는 함수입니다. 그래서 <code class="language-plaintext highlighter-rouge">lapply()</code>가 실제로 하는
+일은 아래처럼 이해하면 됩니다.</p>
+
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">file_list</code>의 첫 번째 경로를 <code class="language-plaintext highlighter-rouge">file</code>에 넣고 함수를 실행합니다.</li>
+  <li>그 결과를 리스트의 1번째 칸에 저장합니다.</li>
+  <li>이걸 n번째 반복한 뒤 데이터프레임들의 리스트를 반환합니다.</li>
+</ol>
+
+<p>즉, 아래 코드는 파일을 하나씩 수동으로 처리하는 대신, 파일 개수만큼 자동
+반복해서 결과를 모아 줍니다.</p>
+
+<p>여기서 중요한 부분은 <code class="language-plaintext highlighter-rouge">skip = 1</code>입니다. 앞에서 확인한 것처럼 칼럼명이 두
+줄로 들어가 있는 구조라면, 두 번째 행부터 읽어야 실제 데이터가
+안정적으로 들어옵니다. 그리고 파일마다 열 이름이 조금씩 다를 수 있으니,
+병합 전에 칼럼명을 한 번에 통일해 두는 것이 좋습니다. 그래야
+<code class="language-plaintext highlighter-rouge">bind_rows()</code>가 같은 열끼리 정확히 붙여 줍니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 모든 파일 읽고 가공</span><span class="w">
+</span><span class="n">all_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">lapply</span><span class="p">(</span><span class="n">file_list</span><span class="p">,</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">file</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">read_xls</span><span class="p">(</span><span class="n">file</span><span class="p">,</span><span class="w"> </span><span class="n">skip</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">  </span><span class="c1"># 두 번째 행부터 읽기</span><span class="w">
+    </span><span class="n">select</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">                   </span><span class="c1"># 필요한 열 선택</span><span class="w">
+    </span><span class="n">setNames</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s2">"시도"</span><span class="p">,</span><span class="w"> </span><span class="s2">"시군구"</span><span class="p">,</span><span class="w"> </span><span class="s2">"관광지"</span><span class="p">,</span><span class="w"> </span><span class="s2">"구분"</span><span class="p">,</span><span class="w"> </span><span class="s2">"총계"</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="c1"># 칼럼명 지정 </span><span class="w">
+    </span><span class="n">mutate</span><span class="p">(</span><span class="n">구분</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.character</span><span class="p">(</span><span class="n">구분</span><span class="p">))</span><span class="w">
+</span><span class="p">})</span><span class="w">
+
+</span><span class="c1"># 하나로 병합</span><span class="w">
+</span><span class="n">united_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">bind_rows</span><span class="p">(</span><span class="n">all_data</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># 데이터 확인</span><span class="w">
+</span><span class="n">head</span><span class="p">(</span><span class="n">united_data</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## # A tibble: 6 × 5
+##   시도   시군구 관광지                     구분     총계
+##   &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;                      &lt;chr&gt;   &lt;dbl&gt;
+## 1 경기도 수원시 kbs수원센터(kbs수원아트홀) 내국인  19612
+## 2 경기도 수원시 kbs수원센터(kbs수원아트홀) 합계    19612
+## 3 경기도 수원시 경기대학교소성박물관       내국인  18150
+## 4 경기도 수원시 경기대학교소성박물관       합계    18150
+## 5 경기도 수원시 서수원칠보체육관           내국인 113703
+## 6 경기도 수원시 서수원칠보체육관           합계   113703
+</code></pre></div></div>
+
+<p>이제 서울, 경기, 인천처럼 파일로 나뉘어 있던 데이터가 하나의 테이블로
+합쳐졌습니다. 이 상태가 되면 지역별 합계, 관광지 순위, 특정 조건만
+필터링 등의 작업을 파일마다 반복할 필요가 없습니다.</p>
+
+<p>같은 구조의 엑셀 파일을 자주 사용한다면, 파일을 ’하나씩 열어서 처리’하는
+방식 대신 ’폴더에서 한 번에 읽어 병합’하는 방법을 시도해 보세요!</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2026-01-06T00:00:00+09:00">January 6, 2026</time></p>
+
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="/data/calculating-cagr/" class="pagination--pager" title="연평균성장률(CAGR) 계산하기">Previous</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">Next</a>
+    
+  </nav>
+
+
+    </div>
+
+    
+      
+        <p>
+          Comments are configured with provider: <strong>utterances</strong>,
+          but are disabled in non-production environments.
+        </p>
+      
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">You May Also Enjoy</h2>
+  <div class="grid__wrapper">
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/data/calculating-cagr/" rel="permalink">연평균성장률(CAGR) 계산하기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-06T00:00:00+09:00">January 6, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">‘얼마나’ 변했는지가 아니라 ‘어느 정도 속도’로 변했는지 알고 싶으신가요? 1995~2023년 주민등록인구 데이터를 예로 들어 R에서 n년간 연평균성장률(CAGR)을 계산하는 방법을 알려드립니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/chart/setting-colors/" rel="permalink">차트 색상 바꾸기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-05T00:00:00+09:00">January 5, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          4 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">그래프를 그렸는데 색상이 마음에 들지 않았던 적 있나요? 이 글에서는 ggplot2의 기본 색상 설정부터 RColorBrewer 팔레트, 직접 색상을 지정하는 방법까지 정리합니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/map/handling-overlapping-labels-in-maps/" rel="permalink">지도 지역명이 겹칠 때 해결하기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-05T00:00:00+09:00">January 5, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">지도 위에 지역명을 모두 표시하려다 텍스트가 겹쳐 난감했던 적 있나요? geom_text_repel()로 라벨을 분산 배치하는 방법과, 일부 지역명을 생략해 지도를 단순화하는 방법을 소개합니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/chart/understanding-bar-width-and-spacing/" rel="permalink">막대그래프 너비와 간격 조절하기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-04T00:00:00+09:00">January 4, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">막대그래프를 그렸는데 막대가 너무 붙어 보이거나 답답하게 느껴진 적 있나요? 이 글에서는 geom_col(width)와 position_dodge(width)가 실제로 무엇을 의미하는지 설명하고, 막대 너비와 간격을 조절하는 방법을 알려드립니다.
+</p>
+  </article>
+</div>
+
+    
+  </div>
+</div>
+
+  
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        
+
+
+<div class="page__footer-copyright">&copy; 2026 <a href="http://localhost:4000">알로그림</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+    <script>
+  'use strict';
+
+  (function() {
+    var commentContainer = document.querySelector('#utterances-comments');
+
+    if (!commentContainer) {
+      return;
+    }
+
+    var script = document.createElement('script');
+    script.setAttribute('src', 'https://utteranc.es/client.js');
+    script.setAttribute('repo', 'rlogrim/rlogrim.github.io');
+    script.setAttribute('issue-term', 'pathname');
+    script.setAttribute('label', 'comment');
+    script.setAttribute('theme', 'github-light');
+    script.setAttribute('crossorigin', 'anonymous');
+
+    commentContainer.appendChild(script);
+  })();
+</script>
+
+  
+
+
+
+
+  </body>
+</html>
