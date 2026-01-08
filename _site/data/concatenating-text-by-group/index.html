@@ -1,0 +1,760 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.3 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>그룹별 텍스트 한 줄로 모으기 - 알로그림</title>
+<meta name="description" content="그룹마다 텍스트 행을 한 줄로 모아 목록을 만들고 싶었던 적이 있지 않나요? 같은 그룹에 속한 값을 쉼표로 연결해 문자열 한 줄로 만드는 방법을 소개합니다. 예제로 시도별 시군구 목록을 만들어봅니다.">
+
+
+  <meta name="author" content="알빈치(Rvinci)">
+  
+  <meta property="article:author" content="알빈치(Rvinci)">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="알로그림">
+<meta property="og:title" content="그룹별 텍스트 한 줄로 모으기">
+<meta property="og:url" content="http://localhost:4000/data/concatenating-text-by-group/">
+
+
+  <meta property="og:description" content="그룹마다 텍스트 행을 한 줄로 모아 목록을 만들고 싶었던 적이 있지 않나요? 같은 그룹에 속한 값을 쉼표로 연결해 문자열 한 줄로 만드는 방법을 소개합니다. 예제로 시도별 시군구 목록을 만들어봅니다.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2026-01-08T00:00:00+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="http://localhost:4000/data/concatenating-text-by-group/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  window.enable_copy_code_button = true;
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- Pretendard (Korean UI / Body) -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css">
+
+<!-- JetBrains Mono (Code Blocks) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          알로그림
+          
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/data/"
+                
+                
+              >데이터 가공</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/chart/"
+                
+                
+              >차트</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/map/"
+                
+                
+              >지도</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="http://localhost:4000/">
+        <img src="/assets/images/avatar.png" alt="알빈치(Rvinci)" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="http://localhost:4000/" itemprop="url">알빈치(Rvinci)</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>R로 그림을 그린 지 어언 6년. 
+연구기관에 재직 중이며, 
+엑셀로 해결될 일도 굳이 R로 그려보는 편입니다.</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+
+      
+        
+          
+            <li><a href="mailto:rlogrim.blog@gmail.com" rel="nofollow noopener noreferrer me"><i class="fas fa-fw fa-envelope" aria-hidden="true"></i><span class="label">rlogrim.blog@gmail.com</span></a></li>
+          
+        
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="그룹별 텍스트 한 줄로 모으기">
+    <meta itemprop="description" content="그룹마다 텍스트 행을 한 줄로 모아 목록을 만들고 싶었던 적이 있지 않나요? 같은 그룹에 속한 값을 쉼표로 연결해 문자열 한 줄로 만드는 방법을 소개합니다. 예제로 시도별 시군구 목록을 만들어봅니다.">
+    <meta itemprop="datePublished" content="2026-01-08T00:00:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">
+            <a href="http://localhost:4000/data/concatenating-text-by-group/" itemprop="url">그룹별 텍스트 한 줄로 모으기
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-08T00:00:00+09:00">January 8, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <h2 id="그룹별-텍스트를-한-줄로-모으면-어떤-점이-좋나요">그룹별 텍스트를 한 줄로 모으면 어떤 점이 좋나요?</h2>
+
+<p>같은 그룹에 속한 텍스트를 한 줄로 모으면, 정보가 압축적으로 표현되어 이해하기 쉬워집니다.
+시도별 시군구 목록처럼 ’여러 행에 흩어진 값’을 한 셀에 모아두는거죠.
+쇼핑몰 데이터에서 고객별 구매 상품명을 한 줄로 나열하거나,
+설문 데이터에서 부서별로 자주 나온 의견 키워드를 한 줄로 모을 수도 있습니다.</p>
+
+<p>이번 글에서는 시도별로 시군구 이름을 쉼표로 연결해 한 줄로 만들고,
+시도별 시군구 수를 계산하여 하나의 표로 정리하는 과정을
+보여드리겠습니다.</p>
+
+<h2 id="데이터-준비하기">데이터 준비하기</h2>
+
+<p>통계청에서 제공하는 시군구 자료를 열어보면, 시도와 시군구가 계층 구조로
+들어 있는 경우가 많습니다. 여기서는 <a href="https://kosis.kr/statHtml/statHtml.do?orgId=101&amp;tblId=DT_1YL20631&amp;vw_cd=MT_GTITLE01&amp;list_id=101&amp;scrId=&amp;seqNo=&amp;lang_mode=ko&amp;obj_var_id=&amp;itm_id=&amp;conn_path=MT_GTITLE01&amp;path=%252FstatisticsList%252FstatisticsListIndex.do">시군구별 고령인구
+데이터</a>를 사용하겠습니다. 먼저 파일을 불러온 뒤, <code class="language-plaintext highlighter-rouge">head()</code>로 데이터를
+확인하면서 시도와 시군구가 어떤 열에 들어 있는지 살펴봅니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">readxl</span><span class="p">)</span><span class="w">
+
+</span><span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read_xlsx</span><span class="p">(</span><span class="s2">"데이터/인구/고령인구비율_시군구_2023.xlsx"</span><span class="p">,</span><span class="w"> </span><span class="n">skip</span><span class="o">=</span><span class="m">1</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># 데이터 확인</span><span class="w">
+</span><span class="n">head</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## # A tibble: 6 × 4
+##   `행정구역별(1)` `행정구역별(2)` 65세이상인구&lt;br&gt;(A) (명)…¹… `전체인구&lt;br&gt;(B) (명)`
+##   &lt;chr&gt;           &lt;chr&gt;                             &lt;dbl&gt;                  &lt;dbl&gt;
+## 1 전국            소계                            9730411               51325329
+## 2 서울특별시      소계                            1733580                9386034
+## 3 서울특별시      종로구                            28500                 139417
+## 4 서울특별시      중구                              25525                 121312
+## 5 서울특별시      용산구                            39239                 213151
+## 6 서울특별시      성동구                            49260                 277361
+## # ℹ abbreviated name: ¹​`65세이상인구&lt;br&gt;(A) (명)`
+</code></pre></div></div>
+
+<p>데이터를 보면, <code class="language-plaintext highlighter-rouge">행정구역별(1)</code> 열에는 전국과 17개 시도가,
+<code class="language-plaintext highlighter-rouge">행정구역별(2)</code> 열에는 각 시도의 소계와 시군구 목록이 포함되어 있습니다.
+시군구 목록만 만들고 싶다면 ’전국’은 제외하고, ’소계’는 시군구가
+아니므로 목록과 개수 계산에서 빠지도록 처리합니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">transmute()</code>를 활용해 열 이름을 이해하기 쉽게 시도, 시군구로 바꾸고,
+해당 열만 선택합니다. <code class="language-plaintext highlighter-rouge">filter()</code>를 이용해 ‘전국’과 ’소계’ 데이터를
+제거합니다. 세종특별자치시 하위에는 시군구가 없기 때문에, 예외로 유지합니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span><span class="w">
+
+</span><span class="n">tmp</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">transmute</span><span class="p">(</span><span class="n">시도</span><span class="o">=</span><span class="n">`행정구역별(1)`</span><span class="p">,</span><span class="w">
+           </span><span class="n">시군구</span><span class="o">=</span><span class="n">`행정구역별(2)`</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">filter</span><span class="p">(</span><span class="n">시도</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s2">"전국"</span><span class="p">,</span><span class="w">
+         </span><span class="p">(</span><span class="n">시도</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"세종특별자치시"</span><span class="p">)</span><span class="o">|</span><span class="p">(</span><span class="n">시군구</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s2">"소계"</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">시군구</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">if_else</span><span class="p">(</span><span class="n">시군구</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"소계"</span><span class="p">,</span><span class="w"> </span><span class="kc">NA_character_</span><span class="p">,</span><span class="w"> </span><span class="n">시군구</span><span class="p">))</span><span class="w">
+
+</span><span class="c1"># 결과 확인</span><span class="w">
+</span><span class="n">head</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## # A tibble: 6 × 2
+##   시도       시군구  
+##   &lt;chr&gt;      &lt;chr&gt;   
+## 1 서울특별시 종로구  
+## 2 서울특별시 중구    
+## 3 서울특별시 용산구  
+## 4 서울특별시 성동구  
+## 5 서울특별시 광진구  
+## 6 서울특별시 동대문구
+</code></pre></div></div>
+
+<h2 id="시도별로-시군구-이름을-한-줄로-합치기">시도별로 시군구 이름을 한 줄로 합치기</h2>
+
+<p>이제 <code class="language-plaintext highlighter-rouge">group_by()</code>로 시도를 묶고, <code class="language-plaintext highlighter-rouge">summarise()</code>에서 시군구 값을 한 줄
+문자열로 합칩니다. <code class="language-plaintext highlighter-rouge">str_c()</code>는 <code class="language-plaintext highlighter-rouge">collapse</code> 인자를 지원해서 벡터를
+구분자로 이어 붙이는 작업을 지원합니다. <code class="language-plaintext highlighter-rouge">na.omit(시군구)</code>는 앞에서
+<code class="language-plaintext highlighter-rouge">NA</code>로 바꿔둔 값을 제외합니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sum</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tmp</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">group_by</span><span class="p">(</span><span class="n">시도</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">summarise</span><span class="p">(</span><span class="w">
+    </span><span class="n">시군구</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">str_c</span><span class="p">(</span><span class="n">na.omit</span><span class="p">(</span><span class="n">시군구</span><span class="p">),</span><span class="w"> </span><span class="n">collapse</span><span class="o">=</span><span class="s2">", "</span><span class="p">),</span><span class="w">
+    </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"drop"</span><span class="w">
+    </span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># 결과 확인</span><span class="w">
+</span><span class="n">head</span><span class="p">(</span><span class="n">sum</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## # A tibble: 6 × 2
+##   시도           시군구                                                         
+##   &lt;chr&gt;          &lt;chr&gt;                                                          
+## 1 강원특별자치도 춘천시, 원주시, 강릉시, 동해시, 태백시, 속초시, 삼척시, 홍천군, 횡성군, 영월군, 평창군, 정선군, 철원…
+## 2 경기도         수원시, 성남시, 의정부시, 안양시, 부천시, 광명시, 평택시, 동두천시, 안산시, 고양시, 과천시, 구리시, …
+## 3 경상남도       진주시, 통영시, 사천시, 김해시, 밀양시, 거제시, 양산시, 창원시, 의령군, 함안군, 창녕군, 고성군, 남해…
+## 4 경상북도       포항시, 경주시, 김천시, 안동시, 구미시, 영주시, 영천시, 상주시, 문경시, 경산시, 의성군, 청송군, 영양…
+## 5 광주광역시     동구, 서구, 남구, 북구, 광산구                                 
+## 6 대구광역시     중구, 동구, 서구, 남구, 북구, 수성구, 달서구, 달성군, 군위군
+</code></pre></div></div>
+
+<h2 id="시도별-시군구-개수-계산하기">시도별 시군구 개수 계산하기</h2>
+
+<p>시군구 수도 같이 정리하여 보여주겠습니다. 이때는 같은 <code class="language-plaintext highlighter-rouge">summarise()</code>에서
+<code class="language-plaintext highlighter-rouge">NA</code>가 아닌 값의 개수를 세면 됩니다. <code class="language-plaintext highlighter-rouge">n()</code>는 그룹의 전체 행 개수를 세기
+때문에, <code class="language-plaintext highlighter-rouge">NA</code>를 제외한 행 개수를 세기 위해 <code class="language-plaintext highlighter-rouge">sum(!is.na(시군구))</code>를
+사용하여 시군구 수를 구해줍니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sum</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tmp</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+</span><span class="n">group_by</span><span class="p">(</span><span class="n">시도</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+</span><span class="n">summarise</span><span class="p">(</span><span class="w">
+  </span><span class="n">수</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="o">!</span><span class="nf">is.na</span><span class="p">(</span><span class="n">시군구</span><span class="p">)),</span><span class="w">
+  </span><span class="n">시군구</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">str_c</span><span class="p">(</span><span class="n">na.omit</span><span class="p">(</span><span class="n">시군구</span><span class="p">),</span><span class="w"> </span><span class="n">collapse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">", "</span><span class="p">),</span><span class="w">
+  </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"drop"</span><span class="w">
+</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># 결과 확인</span><span class="w">
+</span><span class="n">head</span><span class="p">(</span><span class="n">sum</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## # A tibble: 6 × 3
+##   시도              수 시군구                                                   
+##   &lt;chr&gt;          &lt;int&gt; &lt;chr&gt;                                                    
+## 1 강원특별자치도    18 춘천시, 원주시, 강릉시, 동해시, 태백시, 속초시, 삼척시, 홍천군, 횡성군, 영월군, 평창군, 정…
+## 2 경기도            31 수원시, 성남시, 의정부시, 안양시, 부천시, 광명시, 평택시, 동두천시, 안산시, 고양시, 과천시,…
+## 3 경상남도          18 진주시, 통영시, 사천시, 김해시, 밀양시, 거제시, 양산시, 창원시, 의령군, 함안군, 창녕군, 고…
+## 4 경상북도          22 포항시, 경주시, 김천시, 안동시, 구미시, 영주시, 영천시, 상주시, 문경시, 경산시, 의성군, 청…
+## 5 광주광역시         5 동구, 서구, 남구, 북구, 광산구                           
+## 6 대구광역시         9 중구, 동구, 서구, 남구, 북구, 수성구, 달서구, 달성군, 군위군……
+</code></pre></div></div>
+
+<h2 id="표-저장하기">표 저장하기</h2>
+
+<p><code class="language-plaintext highlighter-rouge">writexl</code> 패키지의 <code class="language-plaintext highlighter-rouge">write_xlsx()</code> 함수를 이용하면, 완성된 표를
+엑셀파일로 저장할 수 있습니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">writexl</span><span class="p">)</span><span class="w">
+
+</span><span class="n">write_xlsx</span><span class="p">(</span><span class="n">sum</span><span class="p">,</span><span class="w"> </span><span class="s2">"아웃풋/시도별 시군구 목록과 개수.xlsx"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>각 시도에 대해 시군구 목록과 시군구 수를 한 번에 보여주는 표를 만들어
+봤습니다. 그룹별 텍스트를 요약해야 한다면, 이 방식을 활용해 보세요!</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2026-01-08T00:00:00+09:00">January 8, 2026</time></p>
+
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="/map/using-one-legend-across-multiple-maps/" class="pagination--pager" title="지도 범례 고정해서 시점별 변화 비교하기">Previous</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">Next</a>
+    
+  </nav>
+
+
+    </div>
+
+    
+      
+        <p>
+          Comments are configured with provider: <strong>utterances</strong>,
+          but are disabled in non-production environments.
+        </p>
+      
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">You May Also Enjoy</h2>
+  <div class="grid__wrapper">
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/map/using-one-legend-across-multiple-maps/" rel="permalink">지도 범례 고정해서 시점별 변화 비교하기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-07T00:00:00+09:00">January 7, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          4 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">연도별 지도를 그렸는데 지도마다 색이 달라져서 값 비교가 어렵지 않았나요? 여러 지도가 같은 색상 범례를 공유하면 색만 봐도 값의 크기와 변화를 한 눈에 비교할 수 있습니다. 공통 범례 설정 방법을 알려드립니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/data/regex-basics/" rel="permalink">정규표현식 기초 익히고 문자열 다루기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-07T00:00:00+09:00">January 7, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">형식이 제각각인 문자열 때문에 정리하는 데 시간이 걸린 적이 있나요? stringr 패키지와 정규표현식을 함께 쓰면 문자열에서 원하는 패턴이 있는지 확인하고, 필요한 부분만 뽑아내고, 표기를 같은 형식으로 맞출 수 있습니다. 정규표현식의 기본 개념을 간단히 짚은 뒤, 바로 따라 할...</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/data/combining-multiple-excel-files/" rel="permalink">여러 엑셀 파일 한 번에 합치기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-06T00:00:00+09:00">January 6, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">지역별로 나뉜 엑셀 파일을 하나씩 열어 복사해 붙이느라 시간을 쓰고 계신가요? 폴더에 들어 있는 여러 엑셀 파일을 한 번에 읽고, 하나의 테이블로 합치는 방법을 소개합니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/data/calculating-cagr/" rel="permalink">연평균성장률(CAGR) 계산하기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-06T00:00:00+09:00">January 6, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">‘얼마나’ 변했는지가 아니라 ‘어느 정도 속도’로 변했는지 알고 싶으신가요? 1995~2023년 주민등록인구 데이터를 예로 들어 R에서 n년간 연평균성장률(CAGR)을 계산하는 방법을 알려드립니다.
+</p>
+  </article>
+</div>
+
+    
+  </div>
+</div>
+
+  
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        
+
+
+<div class="page__footer-copyright">&copy; 2026 <a href="http://localhost:4000">알로그림</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+    <script>
+  'use strict';
+
+  (function() {
+    var commentContainer = document.querySelector('#utterances-comments');
+
+    if (!commentContainer) {
+      return;
+    }
+
+    var script = document.createElement('script');
+    script.setAttribute('src', 'https://utteranc.es/client.js');
+    script.setAttribute('repo', 'rlogrim/rlogrim.github.io');
+    script.setAttribute('issue-term', 'pathname');
+    script.setAttribute('label', 'comment');
+    script.setAttribute('theme', 'github-light');
+    script.setAttribute('crossorigin', 'anonymous');
+
+    commentContainer.appendChild(script);
+  })();
+</script>
+
+  
+
+
+
+
+  </body>
+</html>
