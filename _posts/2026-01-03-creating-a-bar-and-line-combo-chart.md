@@ -186,7 +186,8 @@ ggplot(data = data2) +
     legend.title = element_blank(),
     legend.background = element_blank(),
     legend.position = "inside",
-    legend.position.inside = c(0.20, 0.90),
+    legend.position.inside = c(0.05, 0.95),
+    legend.justification = c(0, 1),
     legend.margin = margin(0, 0, 0, 0)
   )
 ```
