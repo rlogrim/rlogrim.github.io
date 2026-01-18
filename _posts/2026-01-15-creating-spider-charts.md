@@ -1,8 +1,8 @@
 ---
-title: 스파이더차트 그리는 법
+title: 스파이더 차트 그리는 법
 author: Rvinci
-description: 다차원 특성을 한눈에 비교할 순 없을까 고민한 적이 있나요? R을 이용해 스파이더차트 그리는 법을 알려드립니다.
-excerpt: 다차원 특성을 한눈에 비교할 순 없을까 고민한 적이 있나요? R을 이용해 스파이더차트 그리는 법을 알려드립니다.
+description: 다차원 특성을 한눈에 비교할 순 없을까 고민한 적이 있나요? R을 이용해 스파이더 차트 원리부터 그리는 법까지 차근차근 알려드립니다.
+excerpt: 다차원 특성을 한눈에 비교할 순 없을까 고민한 적이 있나요? R을 이용해 스파이더 차트 원리부터 그리는 법까지 차근차근 알려드립니다.
 categories: [chart]
 tags: [r, tidyverse, geom_polygon, geom_path, geom_line]
 published: true
