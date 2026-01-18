@@ -1,0 +1,750 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.3 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>보고서 규격에 맞는 차트와 글꼴 크기 설정하는 법 - 알로그림</title>
+<meta name="description" content="내가 만든 차트는 왜 보고서에 넣으면 글씨가 작고 깨질까 고민한 적이 있나요? 문서 레이아웃에 맞춘 크기 설정, 고해상도 인쇄를 위한 dpi 조절 등 R을 활용해 고품질 차트를 생성하는 방법을 소개합니다.">
+
+
+  <meta name="author" content="알빈치(Rvinci)">
+  
+  <meta property="article:author" content="알빈치(Rvinci)">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="알로그림">
+<meta property="og:title" content="보고서 규격에 맞는 차트와 글꼴 크기 설정하는 법">
+<meta property="og:url" content="http://localhost:4000/chart/chart-exporting/">
+
+
+  <meta property="og:description" content="내가 만든 차트는 왜 보고서에 넣으면 글씨가 작고 깨질까 고민한 적이 있나요? 문서 레이아웃에 맞춘 크기 설정, 고해상도 인쇄를 위한 dpi 조절 등 R을 활용해 고품질 차트를 생성하는 방법을 소개합니다.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2026-01-16T00:00:00+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="http://localhost:4000/chart/chart-exporting/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  window.enable_copy_code_button = true;
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- Pretendard (Korean UI / Body) -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css">
+
+<!-- JetBrains Mono (Code Blocks) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- math 표현 -->>
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script>
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          알로그림
+          
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/data/"
+                
+                
+              >데이터 가공</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/chart/"
+                
+                
+              >차트</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/map/"
+                
+                
+              >지도</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="http://localhost:4000/">
+        <img src="/assets/images/avatar.png" alt="알빈치(Rvinci)" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="http://localhost:4000/" itemprop="url">알빈치(Rvinci)</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>R로 그림을 그린 지 어언 6년. 
+연구기관에 재직 중이며, 
+엑셀로 해결될 일도 굳이 R로 그려보는 편입니다.</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+
+      
+        
+          
+            <li><a href="mailto:rlogrim.blog@gmail.com" rel="nofollow noopener noreferrer me"><i class="fas fa-fw fa-envelope" aria-hidden="true"></i><span class="label">rlogrim.blog@gmail.com</span></a></li>
+          
+        
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="보고서 규격에 맞는 차트와 글꼴 크기 설정하는 법">
+    <meta itemprop="description" content="내가 만든 차트는 왜 보고서에 넣으면 글씨가 작고 깨질까 고민한 적이 있나요? 문서 레이아웃에 맞춘 크기 설정, 고해상도 인쇄를 위한 dpi 조절 등 R을 활용해 고품질 차트를 생성하는 방법을 소개합니다.">
+    <meta itemprop="datePublished" content="2026-01-16T00:00:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">
+            <a href="http://localhost:4000/chart/chart-exporting/" itemprop="url">보고서 규격에 맞는 차트와 글꼴 크기 설정하는 법
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-16T00:00:00+09:00">January 16, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <h2 id="공들여-만든-내-차트-왜-저장만-하면-깨지고-흐릿할까">공들여 만든 내 차트, 왜 저장만 하면 깨지고 흐릿할까?</h2>
+
+<p>보고서나 발표 자료를 만들 때 가장 공을 들이는 부분 중 하나가 바로
+차트입니다. 하지만 엑셀에서 차트를 복사해서 붙여넣거나 화면을 캡처해
+사용하다 보면, 문서 안에서 글씨가 너무 작아 보이거나 해상도가 낮아져
+이미지가 깨지는 경험을 한 번쯤 해보셨을 겁니다.</p>
+
+<p>R의 <code class="language-plaintext highlighter-rouge">ggplot2</code> 패키지는 그래프를 그리는 데 그치지 않고, 우리가 작성하는
+문서의 규격에 딱 맞춰 저장하는 <code class="language-plaintext highlighter-rouge">ggsave</code>라는 강력한 도구를 제공합니다.
+이번 글에서는 보고서의 가독성을 극대화할 수 있는 글꼴 크기 설정법부터,
+인쇄물에서도 선명함을 유지하는 고해상도 저장 방법까지 다뤄보겠습니다.</p>
+
+<h2 id="글꼴-크기-설정하기">글꼴 크기 설정하기</h2>
+
+<p>전문적인 보고서의 특징은 본문 텍스트와 차트 내 텍스트의 크기가
+조화롭다는 점입니다. 예를 들어 보고서 본문이 11pt라면, 차트 내부는
+이보다 살짝 작은 10pt 정도로 설정하는 것이 시각적으로 안정적입니다.</p>
+
+<p>R에서는 <code class="language-plaintext highlighter-rouge">showtext</code> 패키지를 통해 시스템 글꼴을 불러오고,
+<code class="language-plaintext highlighter-rouge">theme_minimal()</code> 등의 함수 내 <code class="language-plaintext highlighter-rouge">base_size</code> 옵션으로 전체적인 글꼴 크기를
+조절할 수 있습니다. 이때 주의할 점은 R의 기본 단위와 실제 출력 단위(mm)
+사이의 차이를 보정해주는 작업입니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 패키지 로드</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">scales</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">showtext</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># 글꼴 설정</span><span class="w">
+</span><span class="n">font_add</span><span class="p">(</span><span class="s2">"kopub"</span><span class="p">,</span><span class="w"> </span><span class="s2">"C:/Users/.../AppData/Local/Microsoft/Windows/Fonts/Kopub dotum medium.ttf"</span><span class="p">)</span><span class="w">
+</span><span class="n">showtext_auto</span><span class="p">()</span><span class="w"> </span><span class="c1"># showtext 자동 활성화</span><span class="w">
+</span><span class="n">showtext_opts</span><span class="p">(</span><span class="n">dpi</span><span class="o">=</span><span class="m">300</span><span class="p">)</span><span class="w"> </span><span class="c1"># dpi 300 설정</span><span class="w">
+
+</span><span class="c1"># 글꼴 크기 설정</span><span class="w">
+</span><span class="n">theme.size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="c1"># pt 단위</span><span class="w">
+</span><span class="n">text.size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">theme.size</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">.pt</span><span class="w"> </span><span class="c1"># mm 단위</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="그래프-그리기">그래프 그리기</h2>
+
+<p>글꼴 설정이 끝났다면 이제 저장할 그래프를 그려야 합니다. 여기서는
+1995년부터 2023년까지 서울과 경기도의 주민등록인구 변화 추이를 선
+그래프로 나타내 보겠습니다. 나중에 파일로 저장하기 위해 완성된 그래프
+객체를 <code class="language-plaintext highlighter-rouge">p</code>라는 변수에 저장하겠습니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">p</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data2</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">시점</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">주민등록인구수</span><span class="p">,</span><span class="w"> 
+             </span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">시도</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">시도</span><span class="p">,</span><span class="w">
+             </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">comma</span><span class="p">(</span><span class="n">라벨</span><span class="p">,</span><span class="w"> </span><span class="n">accuracy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_line</span><span class="p">(</span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.4</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_point</span><span class="p">(</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_text</span><span class="p">(</span><span class="n">vjust</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data2</span><span class="o">$</span><span class="n">vjust</span><span class="p">,</span><span class="w">
+            </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kopub"</span><span class="p">,</span><span class="w">
+            </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">text.size</span><span class="p">,</span><span class="w">
+            </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"gray10"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_x_discrete</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+                   </span><span class="n">expand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expansion</span><span class="p">(</span><span class="n">mult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.05</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_y_continuous</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"주민등록인구 수(만 명)"</span><span class="p">,</span><span class="w">
+                     </span><span class="n">expand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expansion</span><span class="p">(</span><span class="n">mult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.2</span><span class="p">),</span><span class="w">
+                     </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">comma_format</span><span class="p">())</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_color_brewer</span><span class="p">(</span><span class="n">palette</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Dark2"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">theme.size</span><span class="p">,</span><span class="w"> </span><span class="n">base_family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kopub"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme</span><span class="p">(</span><span class="w">
+    </span><span class="n">axis.line</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_line</span><span class="p">(</span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.5</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"gray10"</span><span class="p">),</span><span class="w">
+    </span><span class="n">axis.ticks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_line</span><span class="p">(</span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"gray10"</span><span class="p">),</span><span class="w">
+    
+    </span><span class="n">panel.grid.minor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">(),</span><span class="w">
+    
+    </span><span class="n">axis.text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_text</span><span class="p">(</span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"gray10"</span><span class="p">),</span><span class="w">
+    </span><span class="n">axis.text.x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_text</span><span class="p">(</span><span class="n">angle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">45</span><span class="p">,</span><span class="w"> </span><span class="n">vjust</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">hjust</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">),</span><span class="w">
+    
+    </span><span class="n">legend.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">(),</span><span class="w">
+    </span><span class="n">legend.position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"bottom"</span><span class="w">
+    </span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># 그래프 확인</span><span class="w">
+</span><span class="n">p</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/images/2026-01-16-chart-exporting/unnamed-chunk-2-1.png" alt="" width="100%" style="display: block; margin: auto;" /></p>
+
+<h2 id="ggsave로-그림-파일-저장하기"><code class="language-plaintext highlighter-rouge">ggsave</code>로 그림 파일 저장하기</h2>
+
+<p>이제 가장 중요한 저장 단계입니다. <code class="language-plaintext highlighter-rouge">ggsave</code>는 파일 형식, 물리적 크기,
+해상도(DPI)를 직접 지정할 수 있습니다.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">filename</code>: 파일 경로, 이름, 확장자를 지정합니다</li>
+  <li><code class="language-plaintext highlighter-rouge">plot</code>: 저장할 그래프 객체를 지정합니다</li>
+  <li><code class="language-plaintext highlighter-rouge">width</code>, <code class="language-plaintext highlighter-rouge">height</code>: 그림파일 크기를 설정하며, 단위는 <code class="language-plaintext highlighter-rouge">unit</code>으로
+지정합니다</li>
+  <li><code class="language-plaintext highlighter-rouge">dpi</code>: 해상도를 설정하며, 300 정도면 고품질 출력에 적합합니다</li>
+</ul>
+
+<p>아래 코드는 한글 문서(A4)의 일반적인 레이아웃에 맞춰 가로 145mm, 세로
+70mm 크기로 차트를 저장하는 예시입니다. 해상도를 300dpi로 설정하면 실제
+보고서를 인쇄했을 때 선명하게 출력됩니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ggsave</span><span class="p">(</span><span class="w">
+  </span><span class="n">filename</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"아웃풋/1995~2023년 서울, 경기 주민등록인구 추이.jpeg"</span><span class="p">,</span><span class="w">
+  </span><span class="n">plot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">,</span><span class="w">
+  </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">145</span><span class="p">,</span><span class="w">
+  </span><span class="n">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">70</span><span class="p">,</span><span class="w">
+  </span><span class="n">unit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"mm"</span><span class="p">,</span><span class="w">
+  </span><span class="n">dpi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">300</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>차트를 잘 그리는 것만큼이나 중요한 것이 바로 ’어떻게 보여주느냐’입니다.
+<code class="language-plaintext highlighter-rouge">ggsave</code>를 활용해 차트의 크기와 해상도를 조정하면, 보고서나 발표자료
+안에서 차트가 훨씬 더 신뢰감 있게 전달될 것입니다. 오늘 배운 팁을 활용해
+여러분의 문서 레이아웃에 딱 맞는, 깨지지 않는 차트를 직접 만들어 보시길
+바랍니다!</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2026-01-16T00:00:00+09:00">January 16, 2026</time></p>
+
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="/map/adding-text-halos/" class="pagination--pager" title="지역명에 윤곽선 두르는 법">Previous</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">Next</a>
+    
+  </nav>
+
+
+    </div>
+
+    
+      
+        <p>
+          Comments are configured with provider: <strong>utterances</strong>,
+          but are disabled in non-production environments.
+        </p>
+      
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">You May Also Enjoy</h2>
+  <div class="grid__wrapper">
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/map/adding-text-halos/" rel="permalink">지역명에 윤곽선 두르는 법
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-16T00:00:00+09:00">January 16, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">지도에 지역명이 잘 보이지 않아 고민한 적 있나요? 글자 주위에 윤곽선을 둘러, 어떤 지도에서도 글씨가 또렷하게 보이는 법을 알려드립니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/chart/creating-spider-charts/" rel="permalink">스파이더차트 그리는 법
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-15T00:00:00+09:00">January 15, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          9 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">다차원 특성을 한눈에 비교할 순 없을까 고민한 적이 있나요? R을 이용해 스파이더차트 그리는 법을 알려드립니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/chart/combining-boxplots-and-scatter-plots/" rel="permalink">박스플롯과 산점도 겹쳐 그리는 법
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-15T00:00:00+09:00">January 15, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">박스플롯을 그리고 난 후 개별 데이터 값도 확인하고 싶었던 적이 있나요? 박스플롯으로 데이터 경향성을 파악하고, 개별 데이터 산점도를 추가하는 방법을 소개합니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/data/mastering-data-normalization/" rel="permalink">데이터를 정규화하는 6가지 방법
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-14T00:00:00+09:00">January 14, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">서로 다른 단위의 데이터를 비교하기 위해 정규화를 고려한 적이 있나요? 엑셀에서 일일이 수식을 입력하던 번거로움에서 벗어나, R을 이용해 손쉽게 정규화하는 6가지 방법을 소개합니다.
+</p>
+  </article>
+</div>
+
+    
+  </div>
+</div>
+
+  
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        
+
+
+<div class="page__footer-copyright">&copy; 2026 <a href="http://localhost:4000">알로그림</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+    <script>
+  'use strict';
+
+  (function() {
+    var commentContainer = document.querySelector('#utterances-comments');
+
+    if (!commentContainer) {
+      return;
+    }
+
+    var script = document.createElement('script');
+    script.setAttribute('src', 'https://utteranc.es/client.js');
+    script.setAttribute('repo', 'rlogrim/rlogrim.github.io');
+    script.setAttribute('issue-term', 'pathname');
+    script.setAttribute('label', 'comment');
+    script.setAttribute('theme', 'github-light');
+    script.setAttribute('crossorigin', 'anonymous');
+
+    commentContainer.appendChild(script);
+  })();
+</script>
+
+  
+
+
+
+
+  </body>
+</html>
