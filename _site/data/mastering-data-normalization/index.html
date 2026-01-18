@@ -1,0 +1,817 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.3 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>데이터를 정규화하는 6가지 방법 - 알로그림</title>
+<meta name="description" content="서로 다른 단위의 데이터를 비교하기 위해 정규화를 고려한 적이 있나요? 엑셀에서 일일이 수식을 입력하던 번거로움에서 벗어나, R을 이용해 손쉽게 정규화하는 6가지 방법을 소개합니다.">
+
+
+  <meta name="author" content="알빈치(Rvinci)">
+  
+  <meta property="article:author" content="알빈치(Rvinci)">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="알로그림">
+<meta property="og:title" content="데이터를 정규화하는 6가지 방법">
+<meta property="og:url" content="http://localhost:4000/data/mastering-data-normalization/">
+
+
+  <meta property="og:description" content="서로 다른 단위의 데이터를 비교하기 위해 정규화를 고려한 적이 있나요? 엑셀에서 일일이 수식을 입력하던 번거로움에서 벗어나, R을 이용해 손쉽게 정규화하는 6가지 방법을 소개합니다.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2026-01-14T00:00:00+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="http://localhost:4000/data/mastering-data-normalization/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  window.enable_copy_code_button = true;
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- Pretendard (Korean UI / Body) -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css">
+
+<!-- JetBrains Mono (Code Blocks) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          알로그림
+          
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/data/"
+                
+                
+              >데이터 가공</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/chart/"
+                
+                
+              >차트</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/map/"
+                
+                
+              >지도</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="http://localhost:4000/">
+        <img src="/assets/images/avatar.png" alt="알빈치(Rvinci)" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="http://localhost:4000/" itemprop="url">알빈치(Rvinci)</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>R로 그림을 그린 지 어언 6년. 
+연구기관에 재직 중이며, 
+엑셀로 해결될 일도 굳이 R로 그려보는 편입니다.</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+
+      
+        
+          
+            <li><a href="mailto:rlogrim.blog@gmail.com" rel="nofollow noopener noreferrer me"><i class="fas fa-fw fa-envelope" aria-hidden="true"></i><span class="label">rlogrim.blog@gmail.com</span></a></li>
+          
+        
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="데이터를 정규화하는 6가지 방법">
+    <meta itemprop="description" content="서로 다른 단위의 데이터를 비교하기 위해 정규화를 고려한 적이 있나요? 엑셀에서 일일이 수식을 입력하던 번거로움에서 벗어나, R을 이용해 손쉽게 정규화하는 6가지 방법을 소개합니다.">
+    <meta itemprop="datePublished" content="2026-01-14T00:00:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">
+            <a href="http://localhost:4000/data/mastering-data-normalization/" itemprop="url">데이터를 정규화하는 6가지 방법
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-14T00:00:00+09:00">January 14, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <h2 id="정규화가-왜-필요한가요">정규화가 왜 필요한가요?</h2>
+
+<p>데이터 분석을 하다 보면 서로 다른 단위의 데이터를 비교해야 하는 상황을
+자주 마주합니다. 예를 들어 인구수와 예산액을 하나의 차트에 그려보면,
+숫자의 단위가 너무 커서 비교 자체가 불가능합니다. 이처럼 서로 다른
+데이터를 올바르게 비교하기 위해 반드시 거쳐야 하는 과정이 바로
+정규화(Normalization)입니다. 엑셀에서는 이를 위해 매번 수식을 복사하고
+범위를 지정해야 했지만, R을 활용하면 단 몇 줄의 코드로 수만 줄의
+데이터를 오차 없이 처리하고 분석 과정을 자동화할 수 있습니다.</p>
+
+<p>정규화는 단위가 다른 변수를 동일한 선상에 놓을 수 있게 해주고, 너무
+크거나 작은 이상치의 영향을 조절하며, 전체 집단 내에서 해당 데이터의
+상대적 위치를 직관적으로 보여줍니다.</p>
+
+<p>오늘 소개할 6가지 정규화 기법을 익혀두면 어떤 데이터 문제에도 범용적으로
+적용할 수 있습니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>정규화 방법</th>
+      <th>특징</th>
+      <th>장점</th>
+      <th>단점</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>순위(Ranking)</td>
+      <td>데이터 값의 순위를 계산</td>
+      <td>- 단순하고 이상치의 영향을 받지 않음<br />- 상대적 비교가 용이</td>
+      <td>- 절대적 정보가 손실됨<br />- 데이터 간 간격에 대한 정보 제공 불가</td>
+    </tr>
+    <tr>
+      <td>표준화(Standardization or z-score)</td>
+      <td>평균이 0, 표준편차가 1이 되도록 변환</td>
+      <td>- 값의 분포를 표준화하여 비교 가능<br />- 데이터 간 차이를 반영</td>
+      <td>- 이상치의 영향을 받기 쉬움- 직관적인 해석이 어려움</td>
+    </tr>
+    <tr>
+      <td>최소-최대 정규화(Min-max normalization)</td>
+      <td>데이터의 최소값을 0, 최대값을 1로 변환</td>
+      <td>- 값이 항상 0~1 범위에 있어 해석이 직관적<br />- 모든 값이 동일한 스케일로 정규화</td>
+      <td>- 이상치가 있으면 결과 왜곡됨- 새로운 데이터 추가 시 범위 재조정 필요함</td>
+    </tr>
+    <tr>
+      <td>기준값까지의 거리(Distance to a reference)</td>
+      <td>- 기준값과의 절대적 거리로 정규화<br />- 기준값은 목표값이나 벤치마크로 설정</td>
+      <td>- 특정 목표나 기준과의 비교가 가능<br />- 결과 해석이 직관적</td>
+      <td>- 기준값 설정의 자의성<br />- 기준값에 따라 결과가 크게 달라질 수 있음</td>
+    </tr>
+    <tr>
+      <td>범주형 척도(Categorical scale)</td>
+      <td>값을 범주로 나누고 범주별 점수를 부여</td>
+      <td>- 간단하고 명확한 비교 가능<br />- 이상치의 영향을 받지 않음</td>
+      <td>- 데이터의 연속적 특성이 손실됨<br />- 범주 구분 기준 설정의 자의성</td>
+    </tr>
+    <tr>
+      <td>평균 위/아래 지표(Indicators above/below the mean)</td>
+      <td>평균 기준으로 -1(아래), 0(평균), 1(위)로 변환</td>
+      <td>- 이상치의 영향을 받지 않음<br />- 상대적 위치를 직관적으로 표현 가능</td>
+      <td>- 절대적 정보 손실<br />- 평균을 기준으로 한 변환의 자의성</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>이제 순서대로 R을 활용하여 정규화하는 방법을 알아보겠습니다.</p>
+
+<h2 id="정규화-실전-적용">정규화 실전 적용</h2>
+
+<p>이제 엑셀의 복잡한 함수 대신 활용할 수 있는 R 코드를 살펴보겠습니다.
+예시 데이터로 <code class="language-plaintext highlighter-rouge">values</code>라는 숫자 묶음을 사용하여 각 기법을 적용해
+보겠습니다.</p>
+
+<h3 id="1-순위ranking">1. 순위(Ranking)</h3>
+
+<p>절대적인 숫자보다 ’누가 1등이고 누가 꼴찌인가’가 중요할 때 쓰는
+방법입니다. 엑셀의 RANK 함수를 떠올리시면 되는데요, R은 데이터가 많아도
+훨씬 빠르고 정확하게 처리해줍니다. 게다가 튀는 값(이상치)이 섞여 있어도
+순위가 엉망이 되지 않는다는 게 큰 장점이에요.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 예시 데이터 생성</span><span class="w">
+</span><span class="n">values</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="m">200</span><span class="p">,</span><span class="w"> </span><span class="m">150</span><span class="p">,</span><span class="w"> </span><span class="m">50</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># 순위 부여 (가장 작은 값이 1위)</span><span class="w">
+</span><span class="n">rank</span><span class="p">(</span><span class="n">values</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] 2 4 3 1
+</code></pre></div></div>
+
+<h3 id="2-표준화standardization-or-z-score">2. 표준화(Standardization or Z-score)</h3>
+
+<p>평균을 0으로 맞춰서 각 데이터가 평균에서 얼마나 떨어져 있는지를 표준편차
+단위로 보여주는 방법입니다. 서로 다른 단위의 데이터를 공정하게 비교할 때
+꼭 필요한 작업이죠. R의 <code class="language-plaintext highlighter-rouge">scale()</code> 함수 하나면 엑셀에서 평균, 표준편차
+따로 구하고 일일이 계산하던 수고를 한 방에 끝낼 수 있어요.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 평균 0, 표준편차 1로 변환</span><span class="w">
+</span><span class="n">scale</span><span class="p">(</span><span class="n">values</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##            [,1]
+## [1,] -0.3872983
+## [2,]  1.1618950
+## [3,]  0.3872983
+## [4,] -1.1618950
+## attr(,"scaled:center")
+## [1] 125
+## attr(,"scaled:scale")
+## [1] 64.54972
+</code></pre></div></div>
+
+<h3 id="3-최소-최대-정규화min-max-normalization">3. 최소-최대 정규화(Min-max normalization)</h3>
+
+<p>모든 값을 0과 1 사이로 바꿔주는 방법입니다. “최댓값 대비 지금 얼마나
+되는 거지?”를 한눈에 파악할 수 있어서 그래프 그릴 때 특히 유용해요.
+함수를 만들어두면 어떤 데이터에도 적용할 수 있습니다.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 최소-최대 정규화 함수 정의</span><span class="w">
+</span><span class="n">min_max_norm</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nf">min</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="nf">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nf">min</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="c1"># 함수 적용</span><span class="w">
+</span><span class="n">min_max_norm</span><span class="p">(</span><span class="n">values</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] 0.3333333 1.0000000 0.6666667 0.0000000
+</code></pre></div></div>
+
+<h3 id="4-기준값까지의-거리distance-to-a-reference">4. 기준값까지의 거리(Distance to a reference)</h3>
+
+<p>목표치나 기준점을 정해두고, 실제 값이 거기서 얼마나 떨어져 있는지
+계산하는 방식입니다. “목표 달성률이 얼마나 되지?” 같은 성과 지표를 만들
+때 쓸모 있어요.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 기준값 대비 거리 계산 함수</span><span class="w">
+</span><span class="n">dist_to_ref</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">ref</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="nf">abs</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">ref</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="c1"># 70점을 기준으로 거리 계산</span><span class="w">
+</span><span class="n">dist_to_ref</span><span class="p">(</span><span class="n">values</span><span class="p">,</span><span class="w"> </span><span class="n">ref</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">70</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1]  30 130  80  20
+</code></pre></div></div>
+
+<h3 id="5-범주형-척도categorical-scale">5. 범주형 척도(Categorical scale)</h3>
+
+<p>연속된 숫자를 ‘상/중/하’ 같은 그룹으로 나누는 방법입니다. 엑셀에서 IF 문
+여러 개 중첩해서 머리 아프게 만들던 작업을, R의 <code class="language-plaintext highlighter-rouge">cut()</code> 함수로 쉽게
+정리할 수 있어요.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 구간 나누기 함수</span><span class="w">
+</span><span class="n">ctg</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">breaks</span><span class="p">,</span><span class="w"> </span><span class="n">labels</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">cut</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">breaks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">breaks</span><span class="p">,</span><span class="w"> </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">labels</span><span class="p">,</span><span class="w"> </span><span class="n">include.lowest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="c1"># 0~100(Low), 101~150(Medium), 151~200(High)</span><span class="w">
+</span><span class="n">breaks_pts</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="m">150</span><span class="p">,</span><span class="w"> </span><span class="m">200</span><span class="p">)</span><span class="w">
+</span><span class="n">labels_txt</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"Low"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Medium"</span><span class="p">,</span><span class="w"> </span><span class="s2">"High"</span><span class="p">)</span><span class="w">
+
+</span><span class="n">ctg</span><span class="p">(</span><span class="n">values</span><span class="p">,</span><span class="w"> </span><span class="n">breaks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">breaks_pts</span><span class="p">,</span><span class="w"> </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">labels_txt</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] Low    High   Medium Low   
+## Levels: Low Medium High
+</code></pre></div></div>
+
+<h3 id="6-평균-위아래-지표indicators-abovebelow-the-mean">6. 평균 위/아래 지표(Indicators above/below the mean)</h3>
+
+<p>평균을 기준으로 각 값이 평균보다 높은지 낮은지만 보는 방법입니다. 집단
+평균 대비 어디에 속하는지 빠르게 파악할 때 효과적이에요.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 평균 기준 위(1), 아래(-1), 같음(0) 판별</span><span class="w">
+</span><span class="n">ab_bl</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">mean_x</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w">
+  </span><span class="n">ifelse</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">mean_x</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">ifelse</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">mean_x</span><span class="p">,</span><span class="w"> </span><span class="m">-1</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">))</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">ab_bl</span><span class="p">(</span><span class="n">values</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] -1  1  1 -1
+</code></pre></div></div>
+
+<p>지금까지 살펴본 6가지 기법은 서로 다른 데이터를 같은 기준으로 비교할 때
+사용할 수 있습니다. 엑셀도 당장 눈앞의 숫자 몇 개 바꾸기엔 편하지만,
+분석 과정을 체계적으로 기록하고 대량의 데이터를 일관되게 처리하기엔
+한계가 있습니다.</p>
+
+<p>R로 정규화 과정을 코드로 만들어두면, 데이터가 바뀌거나 분석 대상이
+달라져도 실행 버튼 하나로 결과를 쉽게 얻을 수 있습니다. 여기서 소개한
+방법들은 나중에 머신러닝이나 고급 시각화 작업을 할 때도 이용할 수
+있습니다. 이제 엑셀의 익숙함에서 한 발짝 나아가, R과 함께 더 체계적이고
+전문적인 데이터 분석의 세계로 들어가 보세요!</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2026-01-14T00:00:00+09:00">January 14, 2026</time></p>
+
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="/chart/showing-percentages-and-absolute-values-together/" class="pagination--pager" title="라벨에 백분율과 절대값 함께 표기하기">Previous</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">Next</a>
+    
+  </nav>
+
+
+    </div>
+
+    
+      
+        <p>
+          Comments are configured with provider: <strong>utterances</strong>,
+          but are disabled in non-production environments.
+        </p>
+      
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">You May Also Enjoy</h2>
+  <div class="grid__wrapper">
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/chart/showing-percentages-and-absolute-values-together/" rel="permalink">라벨에 백분율과 절대값 함께 표기하기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-13T00:00:00+09:00">January 13, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">백분율만 적어 둔 그래프를 보고 ‘그래서 실제로 몇 명인가요?’라는 질문을 받은 적이 있나요? 2023년 시도별 시, 군, 구 주민등록인구 비중 데이터를 예로, 누적막대그래프 라벨에 백분율과 절대값을 함께 표기하는 방법을 알려드립니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/chart/creating-stacked-bar-charts/" rel="permalink">누적막대그래프 그리기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-13T00:00:00+09:00">January 13, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">누적막대그래프는 여러 범주의 ‘구성 비율’을 한눈에 보여줍니다. 누적막대그래프를 어떻게 그려야 할지 막막하신가요? 시도별 시·군·구 주민등록인구 비중 데이터를 예로, ggplot2에서 누적막대그래프를 만드는 방법을 알려드립니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/chart/positioning-legends/" rel="permalink">범례 위치 조정하기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-11T00:00:00+09:00">January 11, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">범례 위치를 조정하고 싶었던 적이 있나요? 이번 글에서는 theme()으로 범례를 오른쪽에서 아래로 옮기고, 패널 안쪽에 배치하는 방법을 알려드립니다. 범례 키 크기, 간격, 배경 등을 바꾸는 방법도 다룹니다.
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/chart/labeling-line-ends/" rel="permalink">선 그래프 끝에 라벨 달기
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-11T00:00:00+09:00">January 11, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">선이 여러 개인 그래프를 볼 때, 범례와 선을 번갈아 보느라 힘들었던 적 있지 않나요? 이번 글에서는 ggplot2 선 그래프 끝에 이름을 직접 붙여, 범례 없이도 한눈에 들어오는 직관적인 차트를 만드는 방법을 소개합니다.
+</p>
+  </article>
+</div>
+
+    
+  </div>
+</div>
+
+  
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        
+
+
+<div class="page__footer-copyright">&copy; 2026 <a href="http://localhost:4000">알로그림</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+    <script>
+  'use strict';
+
+  (function() {
+    var commentContainer = document.querySelector('#utterances-comments');
+
+    if (!commentContainer) {
+      return;
+    }
+
+    var script = document.createElement('script');
+    script.setAttribute('src', 'https://utteranc.es/client.js');
+    script.setAttribute('repo', 'rlogrim/rlogrim.github.io');
+    script.setAttribute('issue-term', 'pathname');
+    script.setAttribute('label', 'comment');
+    script.setAttribute('theme', 'github-light');
+    script.setAttribute('crossorigin', 'anonymous');
+
+    commentContainer.appendChild(script);
+  })();
+</script>
+
+  
+
+
+
+
+  </body>
+</html>
